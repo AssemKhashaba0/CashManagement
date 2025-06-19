@@ -3,80 +3,695 @@
 @{
     ViewData["Title"] = "الخطوط المتاحة";
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<h1>الخطوط المتاحة</h1>
+<style>
+    /* الألوان المخصصة */
+    :root {
+        --primary-color: #1E3A8A;
+        --secondary-color: #3B82F6;
+        --background-color: #1F2937;
+        --accent-color: #34D399;
+        --error-color: #F87171;
+        --text-color: #F3F4F6;
+        --card-bg: #374151;
+        --border-color: #4B5563;
+        --warning-color: #F59E0B;
+        --info-color: #06B6D4;
+        --muted-color: #9CA3AF;
+    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
+    .available-lines-container {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        padding: 20px;
+        direction: rtl;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<div class="row">
-    <div class="col-md-4 mb-3">
-        <form asp-action="SearchAvailableLines" method="post">
-            <div class="input-group">
-                <input type="number" name="amount" class="form-control" placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة" step="0.01" min="0" required />
-                <button type="submit" class="btn btn-primary">بحث</button>
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite;
+    }
+
+    @@keyframes shimmer {
+        0%, 100% { transform: translateX(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    .page-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Alert Styles */
+    .alert {
+        border-radius: 12px;
+        padding: 18px 24px;
+        margin-bottom: 25px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+    }
+
+    .alert-success::before {
+        content: '\f058';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 1.3rem;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+        color: white;
+    }
+
+    .alert-danger::before {
+        content: '\f057';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 1.3rem;
+    }
+
+    /* Search Container */
+    .search-container {
+        background: var(--card-bg);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+    }
+
+    .search-title {
+        color: var(--text-color);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 15px;
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .search-input-group {
+        flex: 1;
+        min-width: 300px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 15px 20px 15px 50px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--background-color);
+        color: var(--text-color);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-input::placeholder {
+        color: var(--muted-color);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-color);
+        font-size: 1.2rem;
+    }
+
+    .search-btn {
+        padding: 15px 25px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+    }
+
+    /* Cards Container */
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    /* Available Line Card */
+    .available-line-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .available-line-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-color);
+    }
+
+    .available-line-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--info-color));
+    }
+
+    .card-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    .phone-number {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .owner-name {
+        font-size: 1rem;
+        color: var(--muted-color);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .balance-section {
+        background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(16, 185, 129, 0.1));
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+
+    .balance-label {
+        font-size: 0.9rem;
+        color: var(--muted-color);
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .balance-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    /* Progress Sections */
+    .progress-section {
+        margin-bottom: 20px;
+    }
+
+    .progress-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 28px;
+        background: var(--border-color);
+        border-radius: 14px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar-custom {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-color), #10B981);
+        border-radius: 14px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.85rem;
+        position: relative;
+        min-width: 50px;
+    }
+
+    .progress-warning {
+        background: linear-gradient(90deg, var(--warning-color), #F59E0B);
+    }
+
+    .progress-danger {
+        background: linear-gradient(90deg, var(--error-color), #EF4444);
+    }
+
+    /* Card Actions */
+    .card-actions {
+        padding: 18px 20px;
+        border-top: 1px solid var(--border-color);
+        background: rgba(0, 0, 0, 0.1);
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        min-width: 90px;
+    }
+
+    .btn-withdraw {
+        background: linear-gradient(135deg, var(--info-color), #0891B2);
+        color: white;
+    }
+
+    .btn-deposit {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* No Results Message */
+    .no-results {
+        background: var(--card-bg);
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px dashed var(--border-color);
+        margin-bottom: 30px;
+    }
+
+    .no-results-icon {
+        font-size: 3rem;
+        color: var(--muted-color);
+        margin-bottom: 15px;
+    }
+
+    .no-results-text {
+        font-size: 1.2rem;
+        color: var(--muted-color);
+        margin: 0;
+    }
+
+    /* Back Button */
+    .back-container {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .back-btn {
+        padding: 12px 25px;
+        background: var(--border-color);
+        color: var(--text-color);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .back-btn:hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .available-lines-container {
+            padding: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+        
+        .search-form {
+            flex-direction: column;
+        }
+        
+        .search-input-group {
+            min-width: 100%;
+        }
+        
+        .cards-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .card-actions {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            flex: none;
+        }
+    }
+
+    /* Loading Animation */
+    .btn-loading {
+        position: relative;
+        color: transparent !important;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Card Animation */
+    .available-line-card {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .available-line-card:nth-child(odd) {
+        animation-delay: 0.1s;
+    }
+
+    .available-line-card:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+
+    @@keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="available-lines-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-list-ul"></i>
+            الخطوط المتاحة
+        </h1>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <div class="search-title">
+            <i class="fas fa-search"></i>
+            البحث عن الخطوط المتاحة
+        </div>
+        <form asp-action="SearchAvailableLines" method="post" class="search-form">
+            <div class="search-input-group">
+                <input type="number" name="amount" class="search-input" 
+                       placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة" 
+                       step="0.01" min="0" required />
+                <i class="fas fa-dollar-sign search-icon"></i>
             </div>
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+                بحث
+            </button>
         </form>
+    </div>
+
+    <!-- Available Lines Cards -->
+    @if (Model.Any())
+    {
+        <div class="cards-container">
+            @foreach (var item in Model)
+            {
+                <div class="available-line-card">
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <h3 class="phone-number">
+                            <i class="fas fa-phone"></i>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </h3>
+                        <p class="owner-name">
+                            <i class="fas fa-user"></i>
+                            @Html.DisplayFor(modelItem => item.OwnerName)
+                        </p>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Balance Section -->
+                        <div class="balance-section">
+                            <div class="balance-label">
+                                <i class="fas fa-wallet"></i>
+                                الرصيد الحالي
+                            </div>
+                            <div class="balance-value">@Html.DisplayFor(modelItem => item.CurrentBalance)</div>
+                        </div>
+
+                        <!-- Daily Progress -->
+                        <div class="progress-section">
+                            <div class="progress-title">
+                                <i class="fas fa-chart-pie"></i>
+                                النسبة المتبقية يوميًا
+                            </div>
+                            @{
+                                var dailyClass = item.DailyRemainingPercentage > 50 ? "" : 
+                                                item.DailyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                            }
+                            <div class="progress-container">
+                                <div class="progress-bar-custom @dailyClass" style="width: @item.DailyRemainingPercentage%;">
+                                    @item.DailyRemainingPercentage.ToString("F1")%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Progress -->
+                        <div class="progress-section">
+                            <div class="progress-title">
+                                <i class="fas fa-chart-line"></i>
+                                النسبة المتبقية شهريًا
+                            </div>
+                            @{
+                                var monthlyClass = item.MonthlyRemainingPercentage > 50 ? "" : 
+                                                  item.MonthlyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                            }
+                            <div class="progress-container">
+                                <div class="progress-bar-custom @monthlyClass" style="width: @item.MonthlyRemainingPercentage%;">
+                                    @item.MonthlyRemainingPercentage.ToString("F1")%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Actions -->
+                    <div class="card-actions">
+                        <a asp-action="Withdraw" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="action-btn btn-withdraw">
+                            <i class="fas fa-arrow-down"></i>
+                            سحب
+                        </a>
+                        <a asp-action="Deposit" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="action-btn btn-deposit">
+                            <i class="fas fa-arrow-up"></i>
+                            إيداع
+                        </a>
+                        <a asp-action="Details" asp-controller="CashTransactions" asp-route-id="@item.Id" class="action-btn btn-details">
+                            <i class="fas fa-info-circle"></i>
+                            التفاصيل
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-results">
+            <div class="no-results-icon">
+                <i class="fas fa-search-minus"></i>
+            </div>
+            <p class="no-results-text">لا توجد خطوط متاحة لهذا المبلغ</p>
+        </div>
+    }
+
+    <!-- Back Button -->
+    <div class="back-container">
+        <a asp-action="Index" class="back-btn">
+            <i class="fas fa-arrow-right"></i>
+            رجوع إلى الصفحة الرئيسية
+        </a>
     </div>
 </div>
 
-@if (Model.Any())
-{
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>رقم الهاتف</th>
-                <th>اسم المالك</th>
-                <th>الرصيد الحالي</th>
-                <th>النسبة المتبقية يوميًا</th>
-                <th>النسبة المتبقية شهريًا</th>
-                <th>الإجراءات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                    <td>@Html.DisplayFor(modelItem => item.OwnerName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CurrentBalance)</td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: @item.DailyRemainingPercentage%;" aria-valuenow="@item.DailyRemainingPercentage" aria-valuemin="0" aria-valuemax="100">
-                                @item.DailyRemainingPercentage.ToString("F2")%
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: @item.MonthlyRemainingPercentage%;" aria-valuenow="@item.MonthlyRemainingPercentage" aria-valuemin="0" aria-valuemax="100">
-                                @item.MonthlyRemainingPercentage.ToString("F2")%
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a asp-action="Withdraw" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="btn btn-info btn-sm">سحب</a>
-                        <a asp-action="Deposit" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="btn btn-info btn-sm">إيداع</a>
-                        <a asp-action="Details" asp-controller="CashTransactions" asp-route-id="@item.Id" class="btn btn-info btn-sm">التفاصيل</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p class="text-muted">لا توجد خطوط متاحة لهذا المبلغ.</p>
-}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // إضافة تأثير بصري للأزرار عند الإرسال
+            $("form").submit(function () {
+                var submitBtn = $(this).find("button[type='submit']");
+                var originalText = submitBtn.html();
+                
+                submitBtn.addClass("btn-loading");
+                submitBtn.prop("disabled", true);
+                
+                // إعادة تفعيل الزر بعد 3 ثواني في حالة عدم الانتقال
+                setTimeout(function() {
+                    submitBtn.removeClass("btn-loading");
+                    submitBtn.prop("disabled", false);
+                    submitBtn.html(originalText);
+                }, 3000);
+            });
 
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
-</div>
+            // تحسين تجربة المستخدم للكروت
+            $('.available-line-card').hover(
+                function() {
+                    $(this).addClass('card-hover-effect');
+                },
+                function() {
+                    $(this).removeClass('card-hover-effect');
+                }
+            );
+
+            // إضافة تأثيرات التحريك للكروت عند التحميل
+            $('.available-line-card').each(function(index) {
+                $(this).css('animation-delay', (index * 0.1) + 's');
+            });
+
+            // تحسين تفاعل حقل البحث
+            $('.search-input').on('focus', function() {
+                $(this).parent().find('.search-icon').css('color', 'var(--secondary-color)');
+            }).on('blur', function() {
+                $(this).parent().find('.search-icon').css('color', 'var(--muted-color)');
+            });
+        });
+    </script>
+}

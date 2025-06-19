@@ -678,6 +678,7 @@
         </div>
 
         <ul class="sidebar-menu">
+            <!-- الصفحة الرئيسية -->
             <li class="nav-item">
                 <a href="/home/index" class="nav-link active" title="الصفحة الرئيسية">
                     <i class="fas fa-home"></i>
@@ -686,88 +687,112 @@
                 </a>
             </li>
 
+            <!-- إدارة المستخدمين -->
+            <li class="nav-header">إدارة المستخدمين</li>
             <li class="nav-item">
-                <a href="/User/Create" class="nav-link" title="إضافة مستخدم">
+                <a href="/EmployeeDashboard/index" class="nav-link" title="نظرة عامة على الموظفين">
+                    <i class="fas fa-user-tie"></i>
+                    <span>نظرة الموظفين</span>
+                    <div class="tooltip">نظرة عامة على الموظفين</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/User/Create" class="nav-link" title="إضافة مستخدم جديد">
                     <i class="fas fa-user-plus"></i>
                     <span>إضافة مستخدم</span>
-                    <div class="tooltip">إضافة مستخدم</div>
+                    <div class="tooltip">إضافة مستخدم جديد</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/user/index" class="nav-link" title="كل المستخدمين">
+                <a href="/user/index" class="nav-link" title="قائمة المستخدمين">
                     <i class="fas fa-users"></i>
-                    <span>كل المستخدمين</span>
-                    <div class="tooltip">كل المستخدمين</div>
+                    <span>المستخدمين</span>
+                    <div class="tooltip">قائمة المستخدمين</div>
                 </a>
             </li>
 
+            <!-- إدارة الخطوط -->
+            <li class="nav-header">إدارة الخطوط</li>
             <li class="nav-item">
-                <a href="/cashLines/index" class="nav-link" title="كل الخطوط">
-                    <i class="fas fa-phone-alt"></i>
-                    <span>كل الخطوط</span>
-                    <div class="tooltip">كل الخطوط</div>
+                <a href="/cashLines/index" class="nav-link" title="عرض جميع الخطوط">
+                    <i class="fas fa-phone-square"></i>
+                    <span>الخطوط</span>
+                    <div class="tooltip">عرض جميع الخطوط</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/cashLines/Create" class="nav-link" title="إضافة خط">
-                    <i class="fas fa-plus-circle"></i>
+                <a href="/cashLines/Create" class="nav-link" title="إضافة خط جديد">
+                    <i class="fas fa-plus-square"></i>
                     <span>إضافة خط</span>
-                    <div class="tooltip">إضافة خط</div>
+                    <div class="tooltip">إضافة خط جديد</div>
                 </a>
             </li>
 
+            <!-- إدارة الكاش -->
+            <li class="nav-header">إدارة الكاش</li>
             <li class="nav-item">
-                <a href="/CashTransactions/TransactionsDashboard" class="nav-link" title="لوحة التحكم بالكاش">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>لوحة التحكم بالكاش</span>
-                    <div class="tooltip">لوحة التحكم بالكاش</div>
+                <a href="/CashTransactions/TransactionsDashboard" class="nav-link" title="لوحة تحكم الكاش">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة الكاش</span>
+                    <div class="tooltip">لوحة تحكم الكاش</div>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/cashtransactions/index" class="nav-link" title="عمليات الكاش">
-                    <i class="fas fa-money-bill-wave"></i>
+                    <i class="fas fa-money-bill"></i>
                     <span>عمليات الكاش</span>
                     <div class="tooltip">عمليات الكاش</div>
                 </a>
             </li>
 
+            <!-- العمليات النقدية -->
+            <li class="nav-header">العمليات النقدية</li>
             <li class="nav-item">
-                <a href="/PhysicalCash/index" class="nav-link" title="عمليات النقدية ">
-                    <i class="fas fa-file-plus"></i>
-                    <span>كل عمليات النقدية </span>
-                    <div class="tooltip">كل عمليات النقدية</div>
+                <a href="/PhysicalCash/index" class="nav-link" title="جميع العمليات النقدية">
+                    <i class="fas fa-wallet"></i>
+                    <span>العمليات النقدية</span>
+                    <div class="tooltip">جميع العمليات النقدية</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/PhysicalCash/Withdraw" class="nav-link" title="السحب النقدي">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>السحب النقدي</span>
-                    <div class="tooltip">السحب النقدي</div>
+                <a href="/PhysicalCash/Withdraw" class="nav-link" title="سحب نقدي">
+                    <i class="fas fa-money-check-alt"></i>
+                    <span>سحب نقدي</span>
+                    <div class="tooltip">سحب نقدي</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/PhysicalCash/Deposit" class="nav-link" title="الايداع النقدي">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>الايداع النقدي</span>
-                    <div class="tooltip">الايداع النقدي</div>
+                <a href="/PhysicalCash/Deposit" class="nav-link" title="إيداع نقدي">
+                    <i class="fas fa-money-check"></i>
+                    <span>إيداع نقدي</span>
+                    <div class="tooltip">إيداع نقدي</div>
+                </a>
+            </li>
+
+            <!-- إدارة إنستا باي -->
+            <li class="nav-header">إدارة إنستا باي</li>
+            <li class="nav-item">
+                <a href="/InstaPay/SearchAccounts" class="nav-link" title="البحث عن حسابات إنستا باي">
+                    <i class="fas fa-search"></i>
+                    <span>بحث الحسابات</span>
+                    <div class="tooltip">البحث عن حسابات إنستا باي</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/Categorie/Create" class="nav-link" title="إضافة فئة">
-                    <i class="fas fa-folder-plus"></i>
-                    <span>إضافة فئة</span>
-                    <div class="tooltip">إضافة فئة</div>
+                <a href="/InstaPay/Create" class="nav-link" title="إضافة حساب إنستا باي">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة حساب</span>
+                    <div class="tooltip">إضافة حساب إنستا باي</div>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/Categorie/index" class="nav-link" title="كل الفئات">
-                    <i class="fas fa-layer-group"></i>
-                    <span>كل الفئات</span>
-                    <div class="tooltip">كل الفئات</div>
+                <a href="/InstaPay/Transactions" class="nav-link" title="عمليات إنستا باي">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>عمليات إنستا باي</span>
+                    <div class="tooltip">عمليات إنستا باي</div>
                 </a>
             </li>
         </ul>
-
         <div class="logout-section">
             <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="logout-btn" title="تسجيل الخروج">

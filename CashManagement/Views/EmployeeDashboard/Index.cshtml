@@ -1,0 +1,463 @@
+﻿@model CashManagement.Controllers.EmployeeDashboardViewModel
+@{
+    ViewData["Title"] = "نظرة عامه لليوم للموظف";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* الألوان المخصصة */
+    :root {
+        --primary-color: #1E3A8A;
+        --secondary-color: #3B82F6;
+        --background-color: #1F2937;
+        --accent-color: #34D399;
+        --error-color: #F87171;
+        --text-color: #F3F4F6;
+        --card-bg: #374151;
+        --border-color: #4B5563;
+    }
+
+    .dashboard-container {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        padding: 20px;
+        direction: rtl;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .dashboard-header h2 {
+        color: white;
+        font-size: 2.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .dashboard-header p {
+        color: #E5E7EB;
+        font-size: 1.1rem;
+        margin: 10px 0 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .stats-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats-card h3 {
+        color: var(--secondary-color);
+        font-size: 1.4rem;
+        margin: 0 0 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .stats-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .stats-item:last-child {
+        border-bottom: none;
+    }
+
+    .stats-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .stats-value {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: var(--accent-color);
+    }
+
+    .balance-card {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+    }
+
+    .balance-card h3 {
+        color: white;
+        border-bottom-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .balance-card .stats-value {
+        color: white;
+        font-size: 1.3rem;
+    }
+
+    .table-container {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+    }
+
+    .table-header {
+        background: var(--primary-color);
+        padding: 20px 25px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card-bg);
+        color: var(--text-color);
+    }
+
+    .custom-table thead th {
+        background: var(--primary-color);
+        color: white;
+        padding: 15px;
+        text-align: right;
+        font-weight: bold;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .custom-table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+    }
+
+    .custom-table tbody tr:hover {
+        background: rgba(59, 130, 246, 0.1);
+    }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .status-success {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    .status-pending {
+        background: #F59E0B;
+        color: white;
+    }
+
+    .status-failed {
+        background: var(--error-color);
+        color: white;
+    }
+
+    .percentage-bar {
+        width: 100px;
+        height: 8px;
+        background: var(--border-color);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-left: 10px;
+    }
+
+    .percentage-fill {
+        height: 100%;
+        background: var(--accent-color);
+        transition: width 0.3s ease;
+    }
+
+    @@media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .custom-table {
+            font-size: 0.9rem;
+        }
+        
+        .custom-table thead th,
+        .custom-table tbody td {
+            padding: 10px 8px;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h2>
+            <i class="fas fa-user-tie"></i>
+            لوحة تحكم الموظف - @Model.UserFullName
+        </h2>
+        <p>
+            <i class="fas fa-calendar-day"></i>
+            التاريخ: @Model.TodayDate.ToString("dd/MM/yyyy")
+        </p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <!-- Cash Operations Summary -->
+        <div class="stats-card">
+            <h3>
+                <i class="fas fa-money-bill-wave"></i>
+                ملخص العمليات النقدية اليوم
+            </h3>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-chart-line"></i>
+                    إجمالي العمليات
+                </span>
+                <span class="stats-value">@Model.TotalCashTransactionsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-arrow-down text-red-400"></i>
+                    السحب
+                </span>
+                <span class="stats-value">@Model.TotalCashWithdrawalsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-arrow-up text-green-400"></i>
+                    الإيداع
+                </span>
+                <span class="stats-value">@Model.TotalCashDepositsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-percentage"></i>
+                    الرسوم
+                </span>
+                <span class="stats-value">@Model.TotalCashFeesToday</span>
+            </div>
+        </div>
+
+        <!-- InstaPay Operations Summary -->
+        <div class="stats-card">
+            <h3>
+                <i class="fas fa-mobile-alt"></i>
+                ملخص عمليات إنستا باي اليوم
+            </h3>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-chart-line"></i>
+                    إجمالي العمليات
+                </span>
+                <span class="stats-value">@Model.TotalInstaPayTransactionsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-arrow-down text-red-400"></i>
+                    السحب
+                </span>
+                <span class="stats-value">@Model.TotalInstaPayWithdrawalsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-arrow-up text-green-400"></i>
+                    الإيداع
+                </span>
+                <span class="stats-value">@Model.TotalInstaPayDepositsToday</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-percentage"></i>
+                    الرسوم
+                </span>
+                <span class="stats-value">@Model.TotalInstaPayFeesToday</span>
+            </div>
+        </div>
+
+        <!-- Balance Summary -->
+        <div class="stats-card balance-card">
+            <h3>
+                <i class="fas fa-wallet"></i>
+                ملخص الأرصدة
+            </h3>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-coins"></i>
+                    الرصيد النقدي
+                </span>
+                <span class="stats-value">@Model.TotalPhysicalCashBalance</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-credit-card"></i>
+                    رصيد إنستا باي
+                </span>
+                <span class="stats-value">@Model.TotalInstaPayBalance</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">
+                    <i class="fas fa-calculator"></i>
+                    إجمالي رصيد النظام
+                </span>
+                <span class="stats-value">@Model.TotalSystemBalance</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Cash Transactions -->
+    <div class="table-container">
+        <div class="table-header">
+            <i class="fas fa-history"></i>
+            أحدث العمليات النقدية
+        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-phone"></i> رقم الخط</th>
+                    <th><i class="fas fa-dollar-sign"></i> المبلغ</th>
+                    <th><i class="fas fa-percentage"></i> الرسوم</th>
+                    <th><i class="fas fa-calculator"></i> الصافي</th>
+                    <th><i class="fas fa-exchange-alt"></i> النوع</th>
+                    <th><i class="fas fa-info-circle"></i> الحالة</th>
+                    <th><i class="fas fa-clock"></i> التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model.RecentCashTransactions)
+                {
+                    <tr>
+                        <td>@transaction.CashLinePhoneNumber</td>
+                        <td>@transaction.Amount</td>
+                        <td>@transaction.Fees</td>
+                        <td>@transaction.NetAmount</td>
+                        <td>@transaction.TransactionType</td>
+                        <td>
+                            <span class="status-badge status-success">@transaction.Status</span>
+                        </td>
+                        <td>@transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Recent InstaPay Transactions -->
+    <div class="table-container">
+        <div class="table-header">
+            <i class="fas fa-mobile-alt"></i>
+            أحدث عمليات إنستا باي
+        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-phone"></i> رقم الهاتف</th>
+                    <th><i class="fas fa-dollar-sign"></i> المبلغ</th>
+                    <th><i class="fas fa-percentage"></i> الرسوم</th>
+                    <th><i class="fas fa-calculator"></i> الصافي</th>
+                    <th><i class="fas fa-exchange-alt"></i> النوع</th>
+                    <th><i class="fas fa-info-circle"></i> الحالة</th>
+                    <th><i class="fas fa-clock"></i> التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model.RecentInstaPayTransactions)
+                {
+                    <tr>
+                        <td>@transaction.PhoneNumber</td>
+                        <td>@transaction.Amount</td>
+                        <td>@transaction.FeesAmount</td>
+                        <td>-</td>
+                        <td>@transaction.TransactionType</td>
+                        <td>
+                            <span class="status-badge status-success">@transaction.Status</span>
+                        </td>
+                        <td>@transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Active Cash Lines -->
+    <div class="table-container">
+        <div class="table-header">
+            <i class="fas fa-signal"></i>
+            الخطوط النقدية النشطة
+        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-phone"></i> رقم الخط</th>
+                    <th><i class="fas fa-user"></i> المالك</th>
+                    <th><i class="fas fa-wallet"></i> الرصيد الحالي</th>
+                    <th><i class="fas fa-calendar-day"></i> الحد اليومي</th>
+                    <th><i class="fas fa-calendar"></i> الحد الشهري</th>
+                    <th><i class="fas fa-chart-pie"></i> نسبة الاستخدام اليومي</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cashLine in Model.CashLines)
+                {
+                    <tr>
+                        <td>@cashLine.PhoneNumber</td>
+                        <td>@cashLine.OwnerName</td>
+                        <td>@cashLine.CurrentBalance</td>
+                        <td>@cashLine.DailyLimit</td>
+                        <td>@cashLine.MonthlyLimit</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                @cashLine.DailyRemainingPercentage.ToString("F2")%
+                                <div class="percentage-bar">
+                                    <div class="percentage-fill" style="width: @(cashLine.DailyRemainingPercentage)%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

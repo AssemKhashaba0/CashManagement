@@ -80,13 +80,13 @@ namespace CashManagement.Services
             }
 
             // التحقق من نسبة الرسوم (يجب أن تكون ضمن القيم المسموحة، مثل 1% أو 2%)
-            if (transaction.FeesPercentage != 1 && transaction.FeesPercentage != 2)
+            if (transaction.FeesAmount != 1 && transaction.FeesAmount != 2)
             {
                 return (false, "نسبة الرسوم غير متاحة، الرجاء اختيار نسبة أخرى (1% أو 2%).", null);
             }
 
             // حساب الرسوم والمبلغ النهائي
-            transaction.FeesAmount = transaction.Amount * (transaction.FeesPercentage / 100);
+            transaction.FeesAmount = transaction.Amount * (transaction.FeesAmount / 100);
             transaction.NetAmount = transaction.TransactionType == TransactionType.Withdraw
                 ? transaction.Amount + transaction.FeesAmount // السحب: المبلغ + الرسوم
                 : transaction.Amount - transaction.FeesAmount; // الإيداع: المبلغ - الرسوم
