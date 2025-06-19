@@ -1,0 +1,667 @@
+﻿@model IEnumerable<CashManagement.Controllers.CashTransactionPhysicalViewModel>
+@{
+    ViewData["Title"] = "سجل العمليات النقدية";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* الألوان المخصصة */
+    :root {
+        --primary-color: #1E3A8A;
+        --secondary-color: #3B82F6;
+        --background-color: #1F2937;
+        --accent-color: #34D399;
+        --error-color: #F87171;
+        --text-color: #F3F4F6;
+        --card-bg: #374151;
+        --input-bg: #4B5563;
+        --border-color: #6B7280;
+        --success-color: #10B981;
+        --warning-color: #F59E0B;
+        --info-color: #0EA5E9;
+    }
+
+    .page-container {
+        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        color: var(--text-color);
+        position: relative;
+    }
+
+    /* خلفية متحركة خفيفة */
+    .page-container::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(30, 58, 138, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: var(--text-color);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        border-radius: 2px;
+    }
+
+    /* رسائل النجاح والخطأ */
+    .alert {
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        animation: slideDown 0.5s ease-out;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid var(--success-color);
+        color: var(--success-color);
+    }
+
+    .alert-success::before {
+        content: '\f058';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        margin-left: 0.75rem;
+    }
+
+    .alert-danger {
+        background: rgba(248, 113, 113, 0.15);
+        border: 1px solid var(--error-color);
+        color: var(--error-color);
+    }
+
+    .alert-danger::before {
+        content: '\f071';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        margin-left: 0.75rem;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* بطاقة الفلترة */
+    .filter-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .filter-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .filter-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-title::before {
+        content: '\f0b0';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 0.75rem;
+        color: var(--secondary-color);
+    }
+
+    /* تنسيق الشبكة */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -0.5rem;
+    }
+
+    .col-md-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+        padding: 0.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .col-md-3 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 992px) and (min-width: 769px) {
+        .col-md-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    /* تنسيق النماذج */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+        text-align: right;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: var(--input-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-color);
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        text-align: right;
+        direction: rtl;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        transform: translateY(-1px);
+    }
+
+    /* الأزرار */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0.25rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--border-color), #4B5563);
+        color: var(--text-color);
+        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success-color), var(--accent-color));
+        color: #065F46;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning-color), #FBBF24);
+        color: #92400E;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info-color), #38BDF8);
+        color: #0C4A6E;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    }
+
+    .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* أيقونات Font Awesome للأزرار */
+    .btn-primary::after {
+        content: '\f002';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.5rem;
+    }
+
+    .btn-secondary::after {
+        content: '\f2f9';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.5rem;
+    }
+
+    .btn-success::after {
+        content: '\f067';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.5rem;
+    }
+
+    .btn-warning::after {
+        content: '\f068';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.5rem;
+    }
+
+    .btn-info::after {
+        content: '\f06e';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.5rem;
+    }
+
+    /* تنسيق الجدول */
+    .table-container {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        overflow-x: auto;
+        position: relative;
+    }
+
+    .table-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        color: var(--text-color);
+        background: transparent;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, var(--primary-color), #1E40AF);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: center;
+        border: none;
+        font-size: 1rem;
+        position: relative;
+    }
+
+    .table thead th::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--accent-color);
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(107, 114, 128, 0.3);
+        vertical-align: middle;
+        transition: background-color 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .table tbody tr:nth-child(even) {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    .table tbody tr:nth-child(even):hover {
+        background: rgba(59, 130, 246, 0.1);
+    }
+
+    /* تنسيق نوع العملية */
+    .transaction-type {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-block;
+    }
+
+    .transaction-deposit {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+    }
+
+    .transaction-withdrawal {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
+    }
+
+    /* بطاقة الإجراءات */
+    .actions-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .actions-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+    }
+
+    .actions-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .actions-title::before {
+        content: '\f0ae';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 0.75rem;
+        color: var(--secondary-color);
+    }
+
+    /* تأثيرات الحركة */
+    .table-container,
+    .filter-card,
+    .actions-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* استجابة للشاشات الصغيرة */
+    @@media (max-width: 768px) {
+        .page-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-card,
+        .table-container,
+        .actions-card {
+            padding: 1.5rem;
+            margin: 0 0.5rem 1.5rem;
+        }
+
+        .table {
+            font-size: 0.875rem;
+        }
+
+        .table thead th,
+        .table tbody td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .btn {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+    }
+
+    /* تحسين عرض المبالغ */
+    .amount-cell {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .amount-positive {
+        color: var(--success-color);
+    }
+
+    .amount-negative {
+        color: var(--warning-color);
+    }
+</style>
+
+<div class="page-container">
+    <div class="content-wrapper">
+        <h1 class="page-title">سجل العمليات النقدية</h1>
+        
+        <!-- رسائل النجاح أو الخطأ -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+        
+        <!-- بطاقة التصفية -->
+        <div class="filter-card">
+            <div class="filter-title">البحث والتصفية</div>
+            <form asp-action="Index" method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>البحث حسب الوصف</label>
+                            <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="ابحث في الوصف..." />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>تاريخ البداية</label>
+                            <input type="date" name="startDate" value="@(ViewBag.StartDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>تاريخ النهاية</label>
+                            <input type="date" name="endDate" value="@(ViewBag.EndDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>نوع العملية</label>
+                            <select name="type" class="form-control">
+                                <option value="">الكل</option>
+                                @if (ViewBag.TransactionType == TransactionType.Deposit)
+                                {
+                                    <option value="Deposit" selected>إيداع</option>
+                                }
+                                else
+                                {
+                                    <option value="Deposit">إيداع</option>
+                                }
+                                @if (ViewBag.TransactionType == TransactionType.Withdraw)
+                                {
+                                    <option value="Withdraw" selected>سحب</option>
+                                }
+                                else
+                                {
+                                    <option value="Withdraw">سحب</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary">بحث</button>
+                    <a asp-action="Index" class="btn btn-secondary">إعادة تعيين</a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- جدول العمليات -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>المبلغ</th>
+                        <th>نوع العملية</th>
+                        <th>الوصف</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>التفاصيل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="amount-cell @(item.TransactionType == TransactionType.Deposit ? "amount-positive" : "amount-negative")">
+                                @(item.TransactionType == TransactionType.Deposit ? "+" : "-")@item.Amount.ToString("N2")
+                            </td>
+                            <td>
+                                <span class="transaction-type @(item.TransactionType == TransactionType.Deposit ? "transaction-deposit" : "transaction-withdrawal")">
+                                    @(item.TransactionType == TransactionType.Deposit ? "إيداع" : "سحب")
+                                </span>
+                            </td>
+                            <td>@(string.IsNullOrEmpty(item.Description) ? "لا يوجد وصف" : item.Description)</td>
+                            <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">عرض التفاصيل</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- بطاقة الإجراءات -->
+        <div class="actions-card">
+            <div class="actions-title">إجراءات سريعة</div>
+            <div>
+                <a asp-action="Deposit" class="btn btn-success">إيداع جديد</a>
+                <a asp-action="Withdraw" class="btn btn-warning">سحب جديد</a>
+            </div>
+        </div>
+    </div>
+</div>

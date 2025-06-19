@@ -1,0 +1,450 @@
+﻿@model CashManagement.Controllers.CashTransactionPhysicalViewModel
+@{
+    ViewData["Title"] = "تفاصيل العملية النقدية";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    :root {
+        --primary-dark-blue: #1E3A8A;
+        --secondary-light-blue: #3B82F6;
+        --background-dark-gray: #1F2937;
+        --accent-mint-green: #34D399;
+        --error-coral-red: #F87171;
+        --text-off-white: #F3F4F6;
+        --card-bg: #374151;
+        --border-gray: #4B5563;
+        --hover-blue: #2563EB;
+    }
+
+    body {
+        background-color: var(--background-dark-gray);
+        color: var(--text-off-white);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-dark-blue), var(--secondary-light-blue));
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .page-title {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        color: var(--text-off-white);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .page-title i {
+        margin-left: 1rem;
+        color: var(--accent-mint-green);
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .transaction-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-gray);
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .transaction-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(90deg, var(--primary-dark-blue), var(--secondary-light-blue));
+        padding: 1.5rem;
+        border-bottom: none;
+        position: relative;
+    }
+
+    .card-header-custom::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--accent-mint-green);
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-off-white);
+        display: flex;
+        align-items: center;
+    }
+
+    .card-title i {
+        margin-left: 0.75rem;
+        color: var(--accent-mint-green);
+        font-size: 1.25rem;
+    }
+
+    .card-body-custom {
+        padding: 2rem;
+        background: var(--card-bg);
+    }
+
+    .info-row {
+        display: flex;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-gray);
+        transition: background-color 0.3s ease;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-row:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .info-label {
+        flex: 0 0 30%;
+        font-weight: 600;
+        color: var(--secondary-light-blue);
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    .info-label i {
+        margin-left: 0.5rem;
+        width: 20px;
+        text-align: center;
+        color: var(--accent-mint-green);
+    }
+
+    .info-value {
+        flex: 1;
+        color: var(--text-off-white);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        padding-right: 1rem;
+    }
+
+    .amount-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--accent-mint-green);
+    }
+
+    .transaction-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .transaction-type.deposit {
+        background: rgba(52, 211, 153, 0.2);
+        color: var(--accent-mint-green);
+        border: 1px solid var(--accent-mint-green);
+    }
+
+    .transaction-type.withdraw {
+        background: rgba(248, 113, 113, 0.2);
+        color: var(--error-coral-red);
+        border: 1px solid var(--error-coral-red);
+    }
+
+    .transaction-type i {
+        margin-left: 0.5rem;
+    }
+
+    .alert-custom {
+        background: rgba(248, 113, 113, 0.1);
+        border: 1px solid var(--error-coral-red);
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: var(--error-coral-red);
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .alert-custom i {
+        font-size: 1.5rem;
+        margin-left: 1rem;
+    }
+
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-dark-blue), var(--secondary-light-blue));
+        color: var(--text-off-white);
+    }
+
+    .btn-primary-custom:hover {
+        background: linear-gradient(135deg, var(--hover-blue), var(--primary-dark-blue));
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        color: var(--text-off-white);
+        text-decoration: none;
+    }
+
+    .btn-secondary-custom {
+        background: transparent;
+        color: var(--text-off-white);
+        border: 2px solid var(--border-gray);
+    }
+
+    .btn-secondary-custom:hover {
+        background: var(--border-gray);
+        border-color: var(--secondary-light-blue);
+        color: var(--text-off-white);
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    .btn-custom i {
+        margin-left: 0.5rem;
+    }
+
+    .container-fluid {
+        padding: 2rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .info-row {
+            flex-direction: column;
+        }
+        
+        .info-label {
+            flex: none;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            padding-right: 0;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-custom {
+            justify-content: center;
+        }
+    }
+
+    /* Animation for page load */
+    .transaction-card {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            تفاصيل العملية النقدية
+            <i class="fas fa-money-bill-wave"></i>
+        </h1>
+    </div>
+
+    @if (Model == null)
+    {
+        <div class="alert-custom">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>لم يتم العثور على العملية المطلوبة.</span>
+        </div>
+    }
+    else
+    {
+        <div class="transaction-card">
+            <div class="card-header-custom">
+                <h3 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    معلومات العملية
+                </h3>
+            </div>
+            <div class="card-body-custom">
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-dollar-sign"></i>
+                        المبلغ
+                    </div>
+                    <div class="info-value amount-value">
+                        @Model.Amount ج.م
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-exchange-alt"></i>
+                        نوع العملية
+                    </div>
+                    <div class="info-value">
+                        @if (Model.TransactionType == TransactionType.Deposit)
+                        {
+                            <span class="transaction-type deposit">
+                                <i class="fas fa-arrow-down"></i>
+                                إيداع
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="transaction-type withdraw">
+                                <i class="fas fa-arrow-up"></i>
+                                سحب
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-align-left"></i>
+                        الوصف
+                    </div>
+                    <div class="info-value">
+                        @Model.Description
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-user"></i>
+                        اسم المستخدم
+                    </div>
+                    <div class="info-value">
+                        @Model.UserName
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        تاريخ الإنشاء
+                    </div>
+                    <div class="info-value">
+                        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a asp-action="Index" class="btn-custom btn-secondary-custom">
+            <i class="fas fa-arrow-right"></i>
+            رجوع إلى السجل
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-custom btn-primary-custom">
+            <i class="fas fa-edit"></i>
+            تعديل العملية
+        </a>
+        <button type="button" class="btn-custom btn-primary-custom" onclick="window.print()">
+            <i class="fas fa-print"></i>
+            طباعة
+        </button>
+    </div>
+</div>
+
+<script>
+    // Add some interactive functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scrolling for better UX
+        const links = document.querySelectorAll('a[href^="#"]');
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add loading state for buttons
+        const buttons = document.querySelectorAll('.btn-custom');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.getAttribute('href') || this.type === 'button') {
+                    const originalContent = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+                    setTimeout(() => {
+                        this.innerHTML = originalContent;
+                    }, 1500);
+                }
+            });
+        });
+    });
+</script>

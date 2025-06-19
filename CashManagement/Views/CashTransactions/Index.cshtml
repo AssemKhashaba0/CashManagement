@@ -1,0 +1,589 @@
+﻿@model IEnumerable<CashManagement.Controllers.CashTransactionViewModel>
+
+@{
+    ViewData["Title"] = "إدارة العمليات النقدية";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* تحسين الألوان الأساسية */
+    :root {
+        --primary-color: #1E3A8A;
+        --secondary-color: #3B82F6;
+        --background-color: #1F2937;
+        --accent-color: #34D399;
+        --error-color: #F87171;
+        --text-color: #F3F4F6;
+        --card-bg: #374151;
+        --border-color: #4B5563;
+    }
+
+    /* تحسين الصفحة العامة */
+    .page-container {
+        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* عنوان الصفحة مع تأثير متحرك */
+    h1 {
+        background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+
+    h1::before {
+        content: '💰';
+        position: absolute;
+        left: -50px;
+        top: 0;
+        font-size: 2rem;
+        animation: bounce 2s infinite;
+    }
+
+    @@keyframes titleGlow {
+        0% { text-shadow: 0 0 20px rgba(52, 211, 153, 0.3); }
+        100% { text-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+    }
+
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    /* بطاقات محسنة */
+    .card {
+        background: rgba(55, 65, 81, 0.8);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @@keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(52, 211, 153, 0.2);
+        border-color: var(--accent-color);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 15px 20px;
+        border-radius: 15px 15px 0 0;
+        position: relative;
+    }
+
+    .card-header h5 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-header h5::before {
+        content: '\f002';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        animation: pulse 2s infinite;
+    }
+
+    /* الأزرار المحسنة */
+    .btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #F59E0B, #EAB308);
+        color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #06B6D4, #0891B2);
+        color: white;
+        box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+
+    .btn-dark {
+        background: linear-gradient(135deg, #374151, #1F2937);
+        color: white;
+        box-shadow: 0 4px 15px rgba(31, 41, 55, 0.3);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6B7280, #4B5563);
+        color: white;
+    }
+
+    /* إضافة أيقونات للأزرار */
+    .btn-primary::after { content: '\f019'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+    .btn-success::after { content: '\f067'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+    .btn-warning::after { content: '\f071'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+    .btn-info::after { content: '\f080'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+    .btn-dark::after { content: '\f1c3'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+
+    /* حقول الإدخال */
+    .form-control {
+        background: rgba(31, 41, 55, 0.8);
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-color);
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background: rgba(31, 41, 55, 0.9);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+        outline: none;
+    }
+
+    .form-group label {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* الجدول المحسن */
+    .table {
+        background: rgba(55, 65, 81, 0.8);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .table tbody td {
+        background: rgba(31, 41, 55, 0.6);
+        border-color: var(--border-color);
+        padding: 12px 15px;
+        color: var(--text-color);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover td {
+        background: rgba(52, 211, 153, 0.1);
+        transform: scale(1.01);
+    }
+
+    /* رسائل التنبيه */
+    .alert {
+        border-radius: 15px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border: none;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+        animation: slideInRight 0.5s ease;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+        color: white;
+        animation: slideInRight 0.5s ease;
+    }
+
+    .alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.5);
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+    }
+
+    /* تحسين التخطيط */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    .export-section {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* تأثيرات خاصة */
+    .loading-spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* استجابة للشاشات الصغيرة */
+    @@media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .table-responsive {
+            border-radius: 15px;
+        }
+    }
+
+    /* تأثيرات إضافية للتفاعل */
+    .form-group {
+        position: relative;
+    }
+
+    .form-group::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .form-group:focus-within::before {
+        transform: scaleX(1);
+    }
+</style>
+
+<div class="page-container">
+    <h1>إدارة العمليات النقدية</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5><i class="fas fa-search"></i> بحث وتصفية</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row">
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-search"></i> البحث (رقم المستلم/الوصف):</label>
+                    <input type="text" name="searchString" class="form-control" value="@ViewBag.SearchString" placeholder="ابحث هنا..." />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-calendar-alt"></i> تاريخ البداية:</label>
+                    <input type="date" name="startDate" class="form-control" value="@(ViewBag.StartDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-calendar-alt"></i> تاريخ النهاية:</label>
+                    <input type="date" name="endDate" class="form-control" value="@(ViewBag.EndDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-list"></i> نوع العملية:</label>
+                    <select name="type" class="form-control" asp-items="Html.GetEnumSelectList<TransactionType>()">
+                        <option value="">الكل</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-info-circle"></i> الحالة:</label>
+                    <select name="status" class="form-control" asp-items="Html.GetEnumSelectList<TransactionStatus>()">
+                        <option value="">الكل</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label><i class="fas fa-phone"></i> رقم الخط:</label>
+                    <select name="cashLineId" class="form-control">
+                        <option value="">الكل</option>
+                        @foreach (var cashLine in ViewBag.CashLines)
+                        {
+                            <option value="@cashLine.Id">@cashLine.PhoneNumber</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <button type="submit" class="btn btn-primary mt-4">
+                        <i class="fas fa-search"></i> بحث
+                        <span class="loading-spinner"></span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary mt-4">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   @*  <div class="action-buttons">
+       
+        <a asp-action="FrozenAmounts" class="btn btn-warning">
+            <i class="fas fa-snowflake"></i> عرض المبالغ المجمدة
+        </a>
+        <a asp-action="TransactionsDashboard" class="btn btn-info">
+            <i class="fas fa-chart-line"></i> لوحة التحكم
+        </a>
+    </div> *@
+
+    <div class="export-section">
+        <form asp-action="ExportTransactions" method="post" class="mb-3">
+            <input type="hidden" name="startDate" value="@ViewBag.StartDate" />
+            <input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+            <input type="hidden" name="cashLineId" value="@ViewBag.CashLineId" />
+            <button type="submit" class="btn btn-dark">
+                <i class="fas fa-file-excel"></i> تصدير إلى Excel
+            </button>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> رقم العملية</th>
+                    <th><i class="fas fa-phone"></i> رقم الخط</th>
+                    <th><i class="fas fa-dollar-sign"></i> المبلغ</th>
+                    <th><i class="fas fa-percentage"></i> الرسوم</th>
+                    <th><i class="fas fa-calculator"></i> المبلغ الصافي</th>
+                    <th><i class="fas fa-exchange-alt"></i> نوع العملية</th>
+                    <th><i class="fas fa-info-circle"></i> الحالة</th>
+                    <th><i class="fas fa-user"></i> المستخدم</th>
+                    <th><i class="fas fa-calendar"></i> تاريخ الإنشاء</th>
+                    <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CashLinePhoneNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Fees)</td>
+                        <td>@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TransactionType)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // تأثير التحميل للأزرار
+            $("form").submit(function () {
+                const submitBtn = $(this).find("button[type='submit']");
+                const spinner = submitBtn.find(".loading-spinner");
+                
+                submitBtn.prop("disabled", true);
+                spinner.show();
+                
+                setTimeout(() => {
+                    submitBtn.text("جاري المعالجة...");
+                }, 100);
+            });
+
+            // تأثير الهوفر للصفوف
+            $(".table tbody tr").hover(
+                function() {
+                    $(this).addClass("table-hover-effect");
+                },
+                function() {
+                    $(this).removeClass("table-hover-effect");
+                }
+            );
+
+            // تأثير النقر على البطاقات
+            $(".card").click(function(e) {
+                if (!$(e.target).is("input, select, button, a")) {
+                    $(this).addClass("card-click-effect");
+                    setTimeout(() => {
+                        $(this).removeClass("card-click-effect");
+                    }, 300);
+                }
+            });
+
+            // تأثير الكتابة في حقول الإدخال
+            $(".form-control").on("focus", function() {
+                $(this).parent().addClass("form-focus");
+            }).on("blur", function() {
+                $(this).parent().removeClass("form-focus");
+            });
+        });
+    </script>
+    
+    <script>
+        // إضافة المزيد من التأثيرات البصرية
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // مراقبة العناصر للرسوم المتحركة
+        document.querySelectorAll('.card, .btn, .table').forEach(el => {
+            observer.observe(el);
+        });
+
+        // إضافة تأثير fadeInUp
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}
+
+<!-- تأكد من إضافة Font Awesome في الـ Layout -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

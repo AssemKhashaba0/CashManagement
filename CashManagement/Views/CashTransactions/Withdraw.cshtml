@@ -1,0 +1,76 @@
+﻿@model CashManagement.Models.CashTransaction
+
+@{
+    ViewData["Title"] = "عملية سحب";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+
+}
+
+<h1>عملية سحب</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>معلومات الخط: @ViewBag.CashLine.PhoneNumber</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>الرصيد الحالي:</strong> @ViewBag.CashLine.CurrentBalance</p>
+        <p><strong>الحد اليومي المتبقي:</strong> @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed)</p>
+        <p><strong>الحد الشهري المتبقي:</strong> @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)</p>
+    </div>
+</div>
+
+<form asp-action="Withdraw" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="CashLineId" />
+    <input type="hidden" asp-for="TransactionType" value="@TransactionType.Withdraw" />
+
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01" placeholder="أدخل المبلغ" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CommissionRate" class="control-label"></label>
+        <input asp-for="CommissionRate" class="form-control" type="number" step="0.01" min="0" max="100" placeholder="أدخل نسبة الرسوم (%)" />
+        <span asp-validation-for="CommissionRate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TransactionReference" class="control-label"></label>
+        <input asp-for="TransactionReference" class="form-control" placeholder="أدخل رقم المرجع" required />
+        <span asp-validation-for="TransactionReference" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RecipientNumber" class="control-label"></label>
+        <input asp-for="RecipientNumber" class="form-control" placeholder="أدخل رقم المستلم (اختياري)" />
+        <span asp-validation-for="RecipientNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control" placeholder="أدخل وصف العملية (اختياري)"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">إجراء السحب</button>
+        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

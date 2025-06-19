@@ -1,0 +1,209 @@
+﻿@model CashManagement.Controllers.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "إضافة مستخدم جديد";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* Custom CSS for the specified color palette and enhanced design */
+    :root {
+        --primary-color: #1E3A8A; /* Dark Blue */
+        --secondary-color: #3B82F6; /* Light Blue */
+        --background-color: #1F2937; /* Dark Gray - Main body background */
+        --card-background-color: #2D3748; /* Slightly lighter dark gray for cards */
+        --accent-color: #34D399; /* Mint Green */
+        --error-color: #F87171; /* Coral Red */
+        --text-color: #F3F4F6; /* Off-white */
+        --muted-text-color: #A0AEC0; /* Light gray for secondary text */
+        --input-background: #374151; /* Darker grey for input fields */
+        --input-border: #4B5563; /* Border for input fields */
+        --focus-ring-color: rgba(59, 130, 246, 0.5); /* Blue focus ring */
+    }
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    h2 {
+        color: var(--text-color);
+        margin-bottom: 25px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    /* Main Form Container Card */
+    .form-container-card {
+        background-color: var(--card-background-color);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        max-width: 600px; /* Limit width for better readability */
+        margin: 50px auto; /* Center the card horizontally and add vertical space */
+    }
+
+    /* Form Labels with Icons */
+    .form-label {
+        color: var(--text-color);
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Space between icon and text */
+        margin-bottom: 8px;
+    }
+
+    /* Form Control Styling */
+    .form-control, .form-select {
+        background-color: var(--input-background);
+        color: var(--text-color);
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        padding: 10px 15px;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-background);
+            color: var(--text-color);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem var(--focus-ring-color);
+            outline: none;
+        }
+
+        /* Placeholder text color */
+        .form-control::placeholder {
+            color: var(--muted-text-color);
+            opacity: 0.7; /* Make placeholder a bit lighter */
+        }
+
+    /* Validation messages */
+    .text-danger {
+        color: var(--error-color) !important; /* Ensure error color is applied */
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+
+    /* Buttons */
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        transition: all 0.3s ease;
+        padding: 10px 25px;
+        font-size: 1.1em;
+        border-radius: 8px;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: #2A52A3;
+            border-color: #2A52A3;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background-color: var(--muted-text-color);
+        border-color: var(--muted-text-color);
+        color: #1F2937; /* Dark text for contrast */
+        transition: all 0.3s ease;
+        padding: 10px 25px;
+        font-size: 1.1em;
+        border-radius: 8px;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            background-color: #C1C6CC;
+            border-color: #C1C6CC;
+            transform: translateY(-2px);
+        }
+
+    h2 {
+        color: var(--text-color);
+        margin-bottom: 25px;
+        text-align: center; /* This might be overridden by flexbox justify-content: center */
+        font-weight: 700;
+        /* Add flexbox to center content and icon */
+        display: flex; /* Makes the h2 a flex container */
+        align-items: center; /* Vertically centers items within the h2 */
+        justify-content: center; /* Horizontally centers items within the h2 */
+        gap: 15px; /* Adds space between the icon and the text */
+    }
+
+        h2 i {
+            font-size: 0.9em; /* Makes the icon slightly smaller than the h2 text */
+            color: var(--secondary-color); /* Gives the icon your secondary blue color */
+        }
+</style>
+
+<div class="form-container-card" dir="rtl">
+    <h2 class="mb-4">
+        <i class="fas fa-user-plus"></i> إضافة مستخدم جديد
+    </h2>
+    <form asp-action="Store" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="FullName" class="form-label">
+                <i class="fas fa-user"></i> الاسم الكامل
+            </label>
+            <input asp-for="FullName" class="form-control" placeholder="أدخل الاسم الكامل للمستخدم" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="UserName" class="form-label">
+                <i class="fas fa-user-tag"></i> اسم المستخدم
+            </label>
+            <input asp-for="UserName" class="form-control" placeholder="أدخل اسم المستخدم (يجب أن يكون فريدًا)" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Email" class="form-label">
+                <i class="fas fa-envelope"></i> البريد الإلكتروني
+            </label>
+            <input asp-for="Email" class="form-control" placeholder="أدخل البريد الإلكتروني" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Password" class="form-label">
+                <i class="fas fa-lock"></i> كلمة المرور
+            </label>
+            <input asp-for="Password" class="form-control" type="password" placeholder="أدخل كلمة المرور" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Role" class="form-label">
+                <i class="fas fa-user-shield"></i> الدور
+            </label>
+            <select asp-for="Role" class="form-control form-select" asp-items="@(new SelectList(Model.AvailableRoles))">
+                <option value="">اختر الدور</option>
+            </select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+            <button type="submit" class="btn btn-primary-custom">
+                <i class="fas fa-plus-circle"></i> إضافة
+            </button>
+            <a asp-action="Index" class="btn btn-secondary-custom">
+                <i class="fas fa-times-circle"></i> إلغاء
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}

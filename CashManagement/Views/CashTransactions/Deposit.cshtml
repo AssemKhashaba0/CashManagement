@@ -1,0 +1,176 @@
+﻿@model CashManagement.Models.CashTransaction
+
+@{
+    ViewData["Title"] = "عملية إيداع";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+
+}
+
+<h1>عملية إيداع</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>معلومات الخط: @ViewBag.CashLine.PhoneNumber</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>الرصيد الحالي:</strong> @ViewBag.CashLine.CurrentBalance</p>
+        <p>
+            <strong>الحد اليومي المتبقي:</strong>
+            <span class="@(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed < 100 ? "text-danger" : "text-success")">
+                @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed)
+            </span>
+        </p>
+        <p>
+            <strong>الحد الشهري المتبقي:</strong>
+            <span class="@(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed < 1000 ? "text-danger" : "text-success")">
+                @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)
+            </span>
+        </p>
+    </div>
+</div>
+
+<div id="freezeWarning" class="alert alert-warning d-none" role="alert">
+    تحذير: المبلغ المدخل سيؤدي إلى تجميد الخط بسبب الوصول إلى الحد الأقصى (اليومي: @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed) أو الشهري: @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)).
+</div>
+
+<div id="errorWarning" class="alert alert-danger d-none" role="alert">
+    <!-- سيتم ملء هذا ديناميكيًا بواسطة جافاسكربت -->
+</div>
+
+<form asp-action="Deposit" method="post" id="depositForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="CashLineId" />
+    <input type="hidden" asp-for="TransactionType" value="@TransactionType.Deposit" />
+
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01"
+               max="@Math.Min(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed, ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)"
+               placeholder="أدخل المبلغ" id="amountInput" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DepositType" class="control-label"></label>
+        <select asp-for="DepositType" class="form-control" asp-items="Html.GetEnumSelectList<DepositType>()" id="depositTypeInput"></select>
+        <span asp-validation-for="DepositType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CommissionRate" class="control-label"></label>
+        <input asp-for="CommissionRate" class="form-control" type="number" step="0.01" min="0" max="100"
+               placeholder="أدخل نسبة الرسوم (%)" id="commissionRateInput" />
+        <span asp-validation-for="CommissionRate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RecipientNumber" class="control-label"></label>
+        <input asp-for="RecipientNumber" class="form-control" placeholder="أدخل رقم المستلم (اختياري)" />
+        <span asp-validation-for="RecipientNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control" placeholder="أدخل وصف العملية (اختياري)"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">إجراء الإيداع</button>
+        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            const dailyRemaining = @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed);
+            const monthlyRemaining = @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed);
+            const amountInput = $("#amountInput");
+            const depositTypeInput = $("#depositTypeInput");
+            const commissionRateInput = $("#commissionRateInput");
+            const freezeWarning = $("#freezeWarning");
+            const errorWarning = $("#errorWarning");
+            const depositForm = $("#depositForm");
+
+            function validateInputs() {
+                const amount = parseFloat(amountInput.val()) || 0;
+                const depositType = depositTypeInput.val();
+                const commissionRate = parseFloat(commissionRateInput.val()) || 0;
+
+                // إخفاء الإشعارات أولاً
+                freezeWarning.addClass("d-none");
+                errorWarning.addClass("d-none");
+
+                // التحقق من المبلغ
+                if (amount <= 0) {
+                    errorWarning.text("المبلغ يجب أن يكون أكبر من صفر.");
+                    errorWarning.removeClass("d-none");
+                    return false;
+                }
+                if (amount > dailyRemaining) {
+                    errorWarning.text(`المبلغ يتجاوز الحد اليومي المتبقي (${dailyRemaining}).`);
+                    errorWarning.removeClass("d-none");
+                    return false;
+                }
+                if (amount > monthlyRemaining) {
+                    errorWarning.text(`المبلغ يتجاوز الحد الشهري المتبقي (${monthlyRemaining}).`);
+                    errorWarning.removeClass("d-none");
+                    return false;
+                }
+                if (amount >= dailyRemaining || amount >= monthlyRemaining) {
+                    freezeWarning.removeClass("d-none");
+                }
+
+                // التحقق من نسبة الرسوم
+                if (depositType !== "NoDeduction" && commissionRate <= 0) {
+                    errorWarning.text("نسبة الرسوم يجب أن تكون أكبر من صفر عند عدم اختيار 'بدون خصم'.");
+                    errorWarning.removeClass("d-none");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // التحقق عند تغيير المدخلات
+            amountInput.on("input", validateInputs);
+            depositTypeInput.on("change", validateInputs);
+            commissionRateInput.on("input", validateInputs);
+
+            // تأكيد عند إرسال النموذج
+            depositForm.on("submit", function (e) {
+                if (!validateInputs()) {
+                    e.preventDefault();
+                    return;
+                }
+                if (!freezeWarning.hasClass("d-none")) {
+                    if (!confirm("هذا المبلغ سيؤدي إلى تجميد الخط. هل تريد المتابعة؟")) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+}

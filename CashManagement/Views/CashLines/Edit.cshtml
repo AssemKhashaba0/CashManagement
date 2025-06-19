@@ -1,0 +1,76 @@
+﻿@model CashManagement.Models.CashLine
+
+@{
+    ViewData["Title"] = "تعديل الخط النقدي";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+
+}
+
+<h1>تعديل الخط النقدي</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" placeholder="أدخل رقم الهاتف" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OwnerName" class="control-label"></label>
+        <input asp-for="OwnerName" class="form-control" placeholder="أدخل اسم المالك" />
+        <span asp-validation-for="OwnerName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NetworkType" class="control-label"></label>
+        <select asp-for="NetworkType" class="form-control" asp-items="Html.GetEnumSelectList<NetworkType>()"></select>
+        <span asp-validation-for="NetworkType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CurrentBalance" class="control-label"></label>
+        <input asp-for="CurrentBalance" class="form-control" type="number" step="0.01" min="0" placeholder="أدخل الرصيد الحالي" />
+        <span asp-validation-for="CurrentBalance" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DailyLimit" class="control-label"></label>
+        <input asp-for="DailyLimit" class="form-control" type="number" step="0.01" min="0" placeholder="أدخل الحد اليومي" />
+        <span asp-validation-for="DailyLimit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MonthlyLimit" class="control-label"></label>
+        <input asp-for="MonthlyLimit" class="form-control" type="number" step="0.01" min="0" placeholder="أدخل الحد الشهري" />
+        <span asp-validation-for="MonthlyLimit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status" class="control-label"></label>
+        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<AccountStatus>()"></select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

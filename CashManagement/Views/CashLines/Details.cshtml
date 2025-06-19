@@ -1,0 +1,529 @@
+﻿@model CashManagement.Controllers.CashLineViewModel
+
+@{
+    ViewData["Title"] = "تفاصيل الخط النقدي";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* Custom CSS for Professional Dark Theme */
+    .page-header {
+        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3);
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .page-title {
+        color: #F3F4F6;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #34D399, #10B981);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, #F87171, #EF4444);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .info-card {
+        background: #1F2937;
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #1E3A8A, #3B82F6, #34D399);
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #374151, #4B5563);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .card-header-custom h4 {
+        color: #F3F4F6;
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-header-custom h4::before {
+        content: '💳';
+        margin-left: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .card-body-custom {
+        padding: 2rem;
+        background: #1F2937;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .info-row:hover {
+        background: rgba(59, 130, 246, 0.05);
+        border-radius: 8px;
+        margin: 0 -1rem;
+        padding: 1rem;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #3B82F6;
+        min-width: 150px;
+        margin-left: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-value {
+        color: #F3F4F6;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .progress-container {
+        background: rgba(31, 41, 55, 0.8);
+        border-radius: 12px;
+        padding: 0.3rem;
+        margin-top: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-bar-custom {
+        height: 12px;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.8s ease;
+        animation: progressGlow 2s ease-in-out infinite alternate;
+    }
+
+    .progress-daily {
+        background: linear-gradient(90deg, #34D399, #10B981);
+        box-shadow: 0 0 15px rgba(52, 211, 153, 0.5);
+    }
+
+    .progress-monthly {
+        background: linear-gradient(90deg, #3B82F6, #1E3A8A);
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+
+    @@keyframes progressGlow {
+        0% { box-shadow: 0 0 15px rgba(52, 211, 153, 0.3); }
+        100% { box-shadow: 0 0 25px rgba(52, 211, 153, 0.6); }
+    }
+
+    .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .transactions-section {
+        margin-top: 3rem;
+    }
+
+    .section-title {
+        color: #F3F4F6;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #3B82F6;
+    }
+
+    .section-title::before {
+        content: '📊';
+        margin-left: 0.5rem;
+        font-size: 1.5rem;
+    }
+
+    .table-container {
+        background: #1F2937;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .table-custom {
+        margin: 0;
+        color: #F3F4F6;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+    }
+
+    .table-custom thead th {
+        color: white;
+        font-weight: 600;
+        padding: 1.2rem 1rem;
+        border: none;
+        text-align: center;
+        position: relative;
+    }
+
+    .table-custom tbody tr {
+        border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: rgba(59, 130, 246, 0.1);
+        transform: scale(1.01);
+    }
+
+    .table-custom tbody td {
+        padding: 1rem;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #34D399, #10B981);
+        color: white;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #F87171, #EF4444);
+        color: white;
+    }
+
+    .no-transactions {
+        text-align: center;
+        padding: 3rem;
+        color: #9CA3AF;
+        font-style: italic;
+        background: #1F2937;
+        border-radius: 16px;
+        border: 2px dashed rgba(156, 163, 175, 0.3);
+    }
+
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #4B5563, #6B7280);
+        color: white;
+        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
+        color: white;
+    }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-warning-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        color: white;
+    }
+
+    .btn-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-custom:hover::before {
+        left: 100%;
+    }
+
+    /* Icons for info labels */
+    .info-label[data-icon="phone"]::before { content: '📱'; margin-left: 0.5rem; }
+    .info-label[data-icon="user"]::before { content: '👤'; margin-left: 0.5rem; }
+    .info-label[data-icon="network"]::before { content: '🌐'; margin-left: 0.5rem; }
+    .info-label[data-icon="balance"]::before { content: '💰'; margin-left: 0.5rem; }
+    .info-label[data-icon="limit"]::before { content: '⏰'; margin-left: 0.5rem; }
+    .info-label[data-icon="status"]::before { content: '📊'; margin-left: 0.5rem; }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .page-title { font-size: 1.8rem; }
+        .info-row { flex-direction: column; align-items: flex-start; }
+        .info-label { min-width: auto; margin-bottom: 0.5rem; }
+        .action-buttons { justify-content: center; }
+        .table-container { overflow-x: auto; }
+    }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">تفاصيل الخط النقدي</h1>
+</div>
+
+<!-- Success/Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert-success-custom">
+        <i class="fas fa-check-circle"></i>
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert-danger-custom">
+        <i class="fas fa-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<!-- Cash Line Information Card -->
+<div class="info-card">
+    <div class="card-header-custom">
+        <h4>معلومات الخط</h4>
+    </div>
+    <div class="card-body-custom">
+        <div class="info-row">
+            <div class="info-label" data-icon="phone">رقم الهاتف</div>
+            <div class="info-value">@Html.DisplayFor(model => model.PhoneNumber)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="user">اسم المالك</div>
+            <div class="info-value">@Html.DisplayFor(model => model.OwnerName)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="network">نوع الشبكة</div>
+            <div class="info-value">@Html.DisplayFor(model => model.NetworkType)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="balance">الرصيد الحالي</div>
+            <div class="info-value">@Html.DisplayFor(model => model.CurrentBalance)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="limit">الحد اليومي</div>
+            <div class="info-value">@Html.DisplayFor(model => model.DailyLimit)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="limit">الحد الشهري</div>
+            <div class="info-value">@Html.DisplayFor(model => model.MonthlyLimit)</div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label" data-icon="status">الحالة</div>
+            <div class="info-value">
+              
+                    <span class="status-badge status-active">نشط</span>
+               
+                    @Html.DisplayFor(model => model.Status)
+                </span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">النسبة المتبقية يوميًا</div>
+            <div class="info-value">
+                <div class="progress-container">
+                    <div class="progress-bar-custom progress-daily" style="width: @Model.DailyRemainingPercentage%;">
+                        <div class="progress-text">@Model.DailyRemainingPercentage.ToString("F2")%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">النسبة المتبقية شهريًا</div>
+            <div class="info-value">
+                <div class="progress-container">
+                    <div class="progress-bar-custom progress-monthly" style="width: @Model.MonthlyRemainingPercentage%;">
+                        <div class="progress-text">@Model.MonthlyRemainingPercentage.ToString("F2")%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transactions Section -->
+<div class="transactions-section">
+    <h3 class="section-title">العمليات المرتبطة</h3>
+    
+    @if (Model.Transactions != null && Model.Transactions.Any())
+    {
+        <div class="table-container">
+            <table class="table table-custom">
+                <thead>
+                    <tr>
+                        <th>رقم العملية</th>
+                        <th>المبلغ</th>
+                        <th>الرسوم</th>
+                        <th>المبلغ الصافي</th>
+                        <th>نوع العملية</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإنشاء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model.Transactions)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => transaction.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => transaction.Amount)</td>
+                            <td>@Html.DisplayFor(modelItem => transaction.Fees)</td>
+                            <td>@Html.DisplayFor(modelItem => transaction.NetAmount)</td>
+                            <td>@Html.DisplayFor(modelItem => transaction.TransactionType)</td>
+                            <td>
+                              
+                                    <span class="status-badge status-active">مكتمل</span>
+                               
+
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => transaction.CreatedAt)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="no-transactions">
+            <i class="fas fa-inbox fa-3x mb-3" style="color: #4B5563;"></i>
+            <p>لا توجد عمليات مرتبطة بهذا الخط.</p>
+        </div>
+    }
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+    <a asp-action="Index" class="btn-custom btn-secondary-custom">
+        <i class="fas fa-arrow-right"></i>
+        رجوع
+    </a>
+    @if (User.IsInRole("Manager"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-custom btn-warning-custom">
+            <i class="fas fa-edit"></i>
+            تعديل
+        </a>
+    }
+</div>

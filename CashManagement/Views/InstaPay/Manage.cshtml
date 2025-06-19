@@ -1,0 +1,81 @@
+﻿@model IEnumerable<CashManagement.Models.InstaPay>
+
+@{
+    ViewData["Title"] = "إدارة حسابات إنستا باي";
+}
+
+<div class="card fade-in">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="fas fa-wallet me-2"></i>إدارة حسابات إنستا باي</h3>
+    </div>
+    <div class="card-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="mb-3">
+            <a asp-action="AddInstaPayAccount" class="btn btn-primary"><i class="fas fa-plus me-2"></i>إضافة حساب جديد</a>
+            <a asp-action="ProcessTransaction" class="btn btn-tamam"><i class="fas fa-exchange-alt me-2"></i>تنفيذ عملية</a>
+        </div>
+
+        <table id="instaPayTable" class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>رقم الهاتف</th>
+                    <th>رقم الحساب البنكي</th>
+                    <th>اسم البنك</th>
+                    <th>الرصيد الحالي</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var account in Model)
+                    {
+                        <tr>
+                            <td>@account.PhoneNumber</td>
+                            <td>@account.BankAccountNumber</td>
+                            <td>@account.BankName</td>
+                            <td>@account.CurrentBalance.ToString("N2")</td>
+                            <td>
+                                <span class="badge bg-@(account.Status == AccountStatus.Active ? "success" : account.Status == AccountStatus.Frozen ? "warning" : "danger")">
+                                    @account.Status
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@account.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> تعديل</a>
+                                <a asp-action="Delete" asp-route-id="@account.Id" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')"><i class="fas fa-trash"></i> حذف</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">لا توجد حسابات إنستا باي مسجلة.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#instaPayTable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/Arabic.json'
+                },
+                pageLength: 10,
+                order: [[3, 'desc']] // ترتيب حسب الرصيد
+            });
+        });
+    </script>
+}

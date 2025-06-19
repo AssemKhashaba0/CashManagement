@@ -1,0 +1,516 @@
+﻿@model CashManagement.Controllers.CashTransactionViewModel
+@{
+    ViewData["Title"] = "تفاصيل العملية";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* الألوان الأساسية */
+    :root {
+        --primary-color: #1E3A8A;
+        --secondary-color: #3B82F6;
+        --background-color: #1F2937;
+        --accent-color: #34D399;
+        --error-color: #F87171;
+        --text-color: #F3F4F6;
+        --card-bg: #374151;
+        --border-color: #4B5563;
+        --success-color: #10B981;
+        --warning-color: #F59E0B;
+    }
+
+    /* تحسين الصفحة العامة */
+    .details-container {
+        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        min-height: 100vh;
+        padding: 30px;
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+    }
+
+    /* عنوان الصفحة */
+    .page-title {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .page-title h1 {
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.2); /* تأثير خفيف */
+        }
+
+    /* رسائل التنبيه */
+    .alert {
+        border-radius: 15px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border: none;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        transition: transform 0.3s ease-out; /* انتقال بسيط عند الظهور */
+    }
+
+        .alert:hover {
+            transform: translateY(-3px);
+        }
+
+    .alert-success {
+        background: linear-gradient(135deg, var(--success-color), var(--accent-color));
+        color: white;
+    }
+
+        .alert-success::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+        color: white;
+    }
+
+        .alert-danger::after {
+            content: '\f071';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+    /* البطاقة الرئيسية */
+    .details-card {
+        background: rgba(55, 65, 81, 0.95);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        backdrop-filter: blur(10px); /* تأثير ضبابي أخف */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.5s ease-out, box-shadow 0.5s ease-out; /* انتقال بسيط عند الظهور */
+    }
+
+        .details-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+    /* رأس البطاقة */
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 20px 25px;
+        border-radius: 20px 20px 0 0;
+        position: relative;
+    }
+
+        .card-header h4 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .card-header h4::before {
+                content: '\f0f6';
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900;
+                font-size: 1.3rem;
+                color: var(--accent-color);
+            }
+
+    /* محتوى البطاقة */
+    .card-body {
+        padding: 30px 25px;
+        position: relative;
+    }
+
+    /* تحسين قائمة التفاصيل */
+    .details-list {
+        margin: 0;
+        padding: 0;
+    }
+
+        .details-list .row {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease; /* انتقال أسرع وأبسط */
+            position: relative;
+        }
+
+            .details-list .row:hover {
+                background: rgba(52, 211, 153, 0.1);
+                border-color: var(--accent-color);
+                transform: translateX(5px); /* حركة بسيطة عند الهوفر */
+                box-shadow: 0 5px 15px rgba(52, 211, 153, 0.1);
+            }
+
+        .details-list dt {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .details-list dd {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+
+        /* أيقونات مخصصة لكل نوع (احتفظ بها لتعزيز المعنى) */
+        .details-list .row:nth-child(1) dt::before {
+            content: '\f292';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(2) dt::before {
+            content: '\f095';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(3) dt::before {
+            content: '\f155';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(4) dt::before {
+            content: '\f3d1';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(5) dt::before {
+            content: '\f0d6';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(6) dt::before {
+            content: '\f201';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(7) dt::before {
+            content: '\f0ec';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(8) dt::before {
+            content: '\f3ed';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(9) dt::before {
+            content: '\f2bb';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(10) dt::before {
+            content: '\f036';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(11) dt::before {
+            content: '\f05a';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(12) dt::before {
+            content: '\f007';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .details-list .row:nth-child(13) dt::before {
+            content: '\f017';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+    /* زر الرجوع */
+    .back-button-container {
+        text-align: center;
+        margin-top: 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6B7280, #4B5563);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease; /* انتقال بسيط */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+        .btn-back:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #4B5563, #374151);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-back::after {
+            content: '\f060';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-back:hover::after {
+            transform: translateX(-3px);
+        }
+
+    /* تحسين الاستجابة للشاشات الصغيرة */
+    @@media (max-width: 768px) {
+        .details-container {
+            padding: 15px;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+        }
+
+        .details-list .row {
+            padding: 8px 12px;
+            margin-bottom: 10px;
+        }
+
+        .details-list dt {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .details-list dd {
+            font-size: 0.9rem;
+        }
+
+        .card-header {
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 20px 15px;
+        }
+
+        .btn-back {
+            padding: 10px 25px;
+            font-size: 1rem;
+        }
+    }
+
+    /* تأثيرات خاصة للحالات المختلفة (احتفظ بها لأنها مفيدة ومرتبطة بالبيانات) */
+    .status-success {
+        color: var(--success-color) !important;
+        background: rgba(16, 185, 129, 0.1) !important;
+        border-color: var(--success-color) !important;
+    }
+
+    .status-error {
+        color: var(--error-color) !important;
+        background: rgba(248, 113, 113, 0.1) !important;
+        border-color: var(--error-color) !important;
+    }
+
+    .status-warning {
+        color: var(--warning-color) !important;
+        background: rgba(245, 158, 11, 0.1) !important;
+        border-color: var(--warning-color) !important;
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-title">
+        <h1>تفاصيل العملية</h1>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card details-card">
+        <div class="card-header">
+            <h4> معلومات العملية</h4>
+        </div>
+        <div class="card-body">
+            <dl class="details-list">
+                <div class="row">
+                    <dt class="col-sm-4">
+                        رقم العملية
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Id)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        رقم الخط
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CashLinePhoneNumber)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        المبلغ
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Amount)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        الرسوم
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Fees)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        المبلغ الصافي
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.NetAmount)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        نسبة الرسوم
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CommissionRate)%</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        نوع العملية
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TransactionType)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        نوع الإيداع
+                    </dt>
+                    <dd class="col-sm-8">@(Model.DepositType?.ToString() ?? "غير محدد")</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        رقم المستلم
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.RecipientNumber)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        الوصف
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        الحالة
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        المستخدم
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.UserName)</dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-4">
+                        تاريخ الإنشاء
+                    </dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <div class="back-button-container">
+        <a asp-action="Index" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+            رجوع للقائمة
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // إظهار tooltip للبيانات الطويلة
+            $('.details-list dd').each(function () {
+                if ($(this).text().length > 50) {
+                    $(this).attr('title', $(this).text());
+                }
+            });
+        });
+    </script>
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

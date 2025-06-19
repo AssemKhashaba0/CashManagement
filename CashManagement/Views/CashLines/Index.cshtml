@@ -1,0 +1,124 @@
+﻿@model IEnumerable<CashManagement.Controllers.CashLineViewModel>
+
+@{
+    ViewData["Title"] = "إدارة الخطوط النقدية";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+
+}
+
+<h1>إدارة الخطوط الكاش</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (User.IsInRole("Manager"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">إضافة خط جديد</a>
+        <a asp-action="ResetDailyLimits" class="btn btn-info" onclick="return confirm('هل أنت متأكد من إعادة تعيين الحدود اليومية؟')">إعادة تعيين الحدود اليومية</a>
+    </p>
+}
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <form asp-action="SearchAvailableLines" method="post">
+            <div class="input-group">
+                <input type="number" name="amount" class="form-control" placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة" step="0.01" min="0" required />
+                <button type="submit" class="btn btn-primary">بحث</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>رقم الهاتف</th>
+            <th>اسم المالك</th>
+            <th>نوع الشبكة</th>
+            <th>الرصيد الحالي</th>
+            <th>الحد اليومي</th>
+            <th>الحد الشهري</th>
+            <th>الحالة</th>
+            <th>النسبة المتبقية يوميًا</th>
+            <th>النسبة المتبقية شهريًا</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.OwnerName)</td>
+                <td>@Html.DisplayFor(modelItem => item.NetworkType)</td>
+                <td>@Html.DisplayFor(modelItem => item.CurrentBalance)</td>
+                <td>@Html.DisplayFor(modelItem => item.DailyLimit)</td>
+                <td>@Html.DisplayFor(modelItem => item.MonthlyLimit)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @item.DailyRemainingPercentage%;" aria-valuenow="@item.DailyRemainingPercentage" aria-valuemin="0" aria-valuemax="100">
+                            @item.DailyRemainingPercentage.ToString("F2")%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @item.MonthlyRemainingPercentage%;" aria-valuenow="@item.MonthlyRemainingPercentage" aria-valuemin="0" aria-valuemax="100">
+                            @item.MonthlyRemainingPercentage.ToString("F2")%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    /cashLines/Details/
+                    <a asp-action="Withdraw" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="btn btn-info btn-sm">سحب</a>
+                    <a asp-action="Deposit" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="btn btn-info btn-sm">إيداع</a>
+                    <a asp-action="Details" asp-controller="cashLines" asp-route-id="@item.Id" class="btn btn-info btn-sm">التفاصيل</a>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">تعديل</a>
+                        if (item.Status != CashManagement.Models.AccountStatus.Deleted)
+                        {
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخط؟');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                            </form>
+                        }
+                        if (item.Status == CashManagement.Models.AccountStatus.Active)
+                        {
+                            <form asp-action="Freeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من تجميد هذا الخط؟');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-secondary btn-sm">تجميد</button>
+                            </form>
+                        }
+                        else if (item.Status == CashManagement.Models.AccountStatus.Frozen)
+                        {
+                            <form asp-action="Unfreeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من فك تجميد هذا الخط؟');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">فك التجميد</button>
+                            </form>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        // إضافة تأثير بصري للأزرار
+        $(document).ready(function () {
+            $("form").submit(function () {
+                $(this).find("button[type='submit']").prop("disabled", true).text("جاري...");
+            });
+        });
+    </script>
+}

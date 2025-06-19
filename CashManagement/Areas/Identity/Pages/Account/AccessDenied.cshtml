@@ -1,0 +1,60 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "تم رفض الوصول";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+<style>
+    .access-denied-container {
+        background-color: #1F2937;
+        color: #F3F4F6;
+        padding: 40px 20px;
+        text-align: center;
+        border-radius: 12px;
+        max-width: 600px;
+        margin: 40px auto;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .access-denied-icon {
+        font-size: 60px;
+        color: #F87171;
+        margin-bottom: 20px;
+    }
+
+    .access-denied-title {
+        font-size: 32px;
+        color: #F87171;
+        margin-bottom: 15px;
+    }
+
+    .access-denied-message {
+        font-size: 18px;
+        color: #F3F4F6;
+        margin-bottom: 30px;
+    }
+
+    .access-denied-home-link {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #1E3A8A;
+        color: #F3F4F6;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+    }
+
+        .access-denied-home-link:hover {
+            background-color: #3B82F6;
+        }
+</style>
+
+<div class="access-denied-container">
+    <i class="fas fa-ban access-denied-icon"></i>
+    <h1 class="access-denied-title">@ViewData["Title"]</h1>
+    <p class="access-denied-message">عذرًا، ليس لديك الصلاحية للوصول إلى هذا المورد.</p>
+    <a href="/" class="access-denied-home-link">
+        <i class="fas fa-home me-2"></i> العودة إلى الصفحة الرئيسية
+    </a>
+</div>
