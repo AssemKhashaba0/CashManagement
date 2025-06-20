@@ -1,0 +1,119 @@
+﻿@model IEnumerable<CashManagement.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "سجل التدقيق";
+    // Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+
+
+<div class="container">
+    <h1 class="my-4"><i class="fas fa-clipboard-list me-2"></i>سجل التدقيق</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="البحث باسم المستخدم أو التفاصيل" />
+            </div>
+            <div class="col-md-2">
+                <select name="actionType" class="form-control">
+                    <option value="">كل الإجراءات</option>
+                    @foreach (var type in ViewBag.ActionTypes)
+                    {
+                        <option value="@type" selected="@(ViewBag.ActionType == type ? "selected" : "")">@type</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="entityType" class="form-control">
+                    <option value="">كل الكيانات</option>
+                    @foreach (var type in ViewBag.EntityTypes)
+                    {
+                        <option value="@type" selected="@(ViewBag.EntityType == type ? "selected" : "")">@type</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control" placeholder="تاريخ البداية" />
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control" placeholder="تاريخ النهاية" />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>بحث</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Audit Logs Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user me-1"></i>المستخدم</th>
+                    <th><i class="fas fa-bolt me-1"></i>نوع الإجراء</th>
+                    <th><i class="fas fa-cube me-1"></i>نوع الكيان</th>
+                    <th><i class="fas fa-id-badge me-1"></i>معرف الكيان</th>
+                    <th><i class="fas fa-info-circle me-1"></i>التفاصيل</th>
+                    <th><i class="fas fa-clock me-1"></i>تاريخ الإجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@(log.User?.UserName ?? "غير معروف")</td>
+                        <td>@log.ActionType</td>
+                        <td>@log.EntityType</td>
+                        <td>@(log.EntityId?.ToString() ?? "-")</td>
+                        <td>@log.Details</td>
+                        <td>@log.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-actionType="@ViewBag.ActionType" asp-route-entityType="@ViewBag.EntityType" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}

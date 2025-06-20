@@ -1,0 +1,49 @@
+﻿@model CashManagement.Models.SupplierTransaction
+@{
+    ViewData["Title"] = "تعديل معاملة";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">تعديل معاملة لـ: @ViewBag.SupplierName</h1>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="EditTransaction" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="SupplierId" />
+        <div class="form-group mb-3">
+            <label asp-for="Amount" class="form-label">المبلغ</label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="DebitCreditType" class="form-label">نوع المعاملة</label>
+            <select asp-for="DebitCreditType" class="form-select">
+                <option value="@CashManagement.Models.DebitCreditType.Credit">له</option>
+                <option value="@CashManagement.Models.DebitCreditType.Debit">عليه</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="TransactionDate" class="form-label">تاريخ المعاملة</label>
+            <input asp-for="TransactionDate" class="form-control" type="datetime-local" value="@Model.TransactionDate.ToString("yyyy-MM-ddTHH:mm")" />
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Description" class="form-label">الوصف</label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+        <a asp-action="Details" asp-route-id="@Model.SupplierId" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

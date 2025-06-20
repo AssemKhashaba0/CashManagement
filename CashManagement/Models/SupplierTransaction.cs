@@ -18,7 +18,7 @@ namespace CashManagement.Models
 
         [Required]
         public DebitCreditType DebitCreditType { get; set; }
-
+        public ApplicationUser User { get; set; }
         [StringLength(500)]
         public string Description { get; set; }
 

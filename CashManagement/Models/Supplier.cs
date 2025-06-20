@@ -21,7 +21,7 @@ namespace CashManagement.Models
 
         [StringLength(100)]
         [EmailAddress(ErrorMessage = "البريد الإلكتروني غير صحيح")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal OpeningBalance { get; set; } = 0;

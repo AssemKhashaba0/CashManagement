@@ -688,7 +688,7 @@
             </li>
 
             <!-- إدارة المستخدمين -->
-            <li class="nav-header">إدارة المستخدمين</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة المستخدمين</li>
             <li class="nav-item">
                 <a href="/EmployeeDashboard/index" class="nav-link" title="نظرة عامة على الموظفين">
                     <i class="fas fa-user-tie"></i>
@@ -712,7 +712,7 @@
             </li>
 
             <!-- إدارة الخطوط -->
-            <li class="nav-header">إدارة الخطوط</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة الخطوط</li>
             <li class="nav-item">
                 <a href="/cashLines/index" class="nav-link" title="عرض جميع الخطوط">
                     <i class="fas fa-phone-square"></i>
@@ -729,7 +729,7 @@
             </li>
 
             <!-- إدارة الكاش -->
-            <li class="nav-header">إدارة الكاش</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة الكاش</li>
             <li class="nav-item">
                 <a href="/CashTransactions/TransactionsDashboard" class="nav-link" title="لوحة تحكم الكاش">
                     <i class="fas fa-tachometer-alt"></i>
@@ -746,7 +746,7 @@
             </li>
 
             <!-- العمليات النقدية -->
-            <li class="nav-header">العمليات النقدية</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">العمليات النقدية</li>
             <li class="nav-item">
                 <a href="/PhysicalCash/index" class="nav-link" title="جميع العمليات النقدية">
                     <i class="fas fa-wallet"></i>
@@ -770,7 +770,7 @@
             </li>
 
             <!-- إدارة إنستا باي -->
-            <li class="nav-header">إدارة إنستا باي</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة إنستا باي</li>
             <li class="nav-item">
                 <a href="/InstaPay/SearchAccounts" class="nav-link" title="البحث عن حسابات إنستا باي">
                     <i class="fas fa-search"></i>
@@ -792,7 +792,37 @@
                     <div class="tooltip">عمليات إنستا باي</div>
                 </a>
             </li>
-        </ul>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+                إدارة دفتر الحسابات
+            </li>
+
+                <li class="nav-item">
+                    <a href="/Suppliers/Index" class="nav-link" title="دفتر الحسابات">
+                        <i class="fas fa-book fa-fw me-2"></i>
+                        <span>دفتر الحسابات</span>
+                        <div class="tooltip">دفتر الحسابات</div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Suppliers/Create" class="nav-link" title="إضافة مورد أو عميل">
+                        <i class="fas fa-user-plus fa-fw me-2"></i>
+                        <span>إضافة مورد أو عميل</span>
+                        <div class="tooltip">إضافة مورد أو عميل</div>
+                    </a>
+                </li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+                سجل التدقيق
+            </li>
+
+            <li class="nav-item">
+                <a href="/AuditLogs/index" class="nav-link" title="سجل التدقيق">
+                    <i class="fas fa-shield-alt fa-fw me-2"></i>
+                    <span>سجل التدقيق</span>
+                    <div class="tooltip">سجل التدقيق</div>
+                </a>
+            </li>
+
+            </ul>
         <div class="logout-section">
             <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="logout-btn" title="تسجيل الخروج">
