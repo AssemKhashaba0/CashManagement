@@ -25,7 +25,62 @@ namespace CashManagement.Controllers
             _context = context;
             _userManager = userManager;
         }
+        // **عرض داش بورد احترافي للموردين/العملاء**
+        public async Task<IActionResult> Dashboard(SupplierType? type)
+        {
+            var suppliersQuery = _context.Suppliers
+                .Include(s => s.SupplierTransactions)
+                .AsQueryable();
 
+            // تصفية حسب النوع (مورد/عميل) إذا تم تحديده
+            if (type.HasValue)
+            {
+                suppliersQuery = suppliersQuery.Where(s => s.Type == type.Value);
+            }
+
+            // جمع البيانات للإحصائيات
+            var suppliers = await suppliersQuery.ToListAsync();
+            var totalSuppliers = suppliers.Count;
+            var totalCredit = suppliers.Where(s => s.CurrentBalance > 0).Sum(s => s.CurrentBalance);
+            var totalDebit = suppliers.Where(s => s.CurrentBalance < 0).Sum(s => Math.Abs(s.CurrentBalance));
+            var latestTransactions = await _context.SupplierTransactions
+                .Include(t => t.Supplier)
+                .Include(t => t.User)
+                .OrderByDescending(t => t.TransactionDate)
+                .Take(5)
+                .Select(t => new SupplierTransactionViewModel
+                {
+                    Id = t.Id,
+                    SupplierName = t.Supplier.Name,
+                    Amount = t.Amount,
+                    DebitCreditType = t.DebitCreditType,
+                    TransactionDate = t.TransactionDate,
+                    Description = t.Description,
+                    UserName = t.User.UserName
+                })
+                .ToListAsync();
+
+            // إعداد البيانات للمخططات
+            var creditSuppliers = suppliers.Count(s => s.CurrentBalance > 0);
+            var debitSuppliers = suppliers.Count(s => s.CurrentBalance < 0);
+            var zeroBalanceSuppliers = suppliers.Count(s => s.CurrentBalance == 0);
+
+            // إعداد ViewModel
+            var model = new SupplierDashboardViewModel
+            {
+                TotalSuppliers = totalSuppliers,
+                TotalCredit = totalCredit,
+                TotalDebit = totalDebit,
+                CreditSuppliersCount = creditSuppliers,
+                DebitSuppliersCount = debitSuppliers,
+                ZeroBalanceSuppliersCount = zeroBalanceSuppliers,
+                LatestTransactions = latestTransactions,
+                SupplierType = type
+            };
+
+            ViewBag.SupplierType = type;
+            return View(model);
+        }
         // **عرض قائمة الموردين/العملاء مع ترقيم الصفحات**
         public async Task<IActionResult> Index(string searchString, SupplierType? type, int page = 1, int pageSize = 10)
         {

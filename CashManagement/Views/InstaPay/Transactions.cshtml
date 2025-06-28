@@ -3,58 +3,331 @@
 @{
     ViewData["Title"] = "عمليات إنستا باي";
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">عمليات إنستا باي</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    /* Light Color Palette Variables (يفضل أن تكون هذه المتغيرات في ملف CSS عام يتم تضمينه في _LayoutDashbord.cshtml) */
+    :root {
+        --background-color: #FDFDFD; /* Off-white */
+        --primary-color: #1D4ED8; /* Indigo blue */
+        --secondary-color: #FACC15; /* Soft gold */
+        --text-color: #111827; /* Soft black for text */
+        --card-bg: #FFFFFF; /* White for card backgrounds */
+        --header-sidebar-bg: #F3F4F6; /* Very light gray for header/sidebar type elements */
+        --success-color: #10B981; /* Tailwind green-500 */
+        --error-color: #EF4444; /* Tailwind red-500 */
+        --info-color: #3B82F6; /* Tailwind blue-500 */
+        --warning-color: #F59E0B; /* Tailwind amber-500 */
+        --border-color: rgba(0, 0, 0, 0.1); /* Lighter muted border color */
+        --light-text-color: #6B7280; /* Gray for titles/subtitles */
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
 
-    <!-- عرض رسائل النجاح -->
+    body {
+        background-color: var(--background-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        direction: rtl;
+        margin: 0;
+        padding: 0;
+        font-size: 0.875rem; /* Base font size reduced slightly */
+    }
+
+    /* Custom Page Container Styling */
+    .custom-page-container {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem; /* Slightly smaller radius */
+        box-shadow: var(--shadow-light); /* Lighter shadow */
+        margin: 2rem auto; /* Reduced margin */
+        max-width: 1200px; /* Slightly narrower max-width */
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden;
+        padding: 1.5rem; /* Reduced padding for the container */
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 1rem 1.5rem; /* Reduced padding */
+        font-size: 1.3rem; /* Reduced font size */
+        font-weight: 700;
+        border-radius: 1rem 1rem 0 0; /* Slightly smaller radius */
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Reduced gap */
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem; /* Adjusted negative margins */
+        box-shadow: var(--shadow-light);
+    }
+
+    /* Alerts Styling */
+    .custom-alert {
+        padding: 0.75rem 1rem; /* Reduced padding */
+        border-radius: 0.5rem; /* Reduced radius */
+        margin-bottom: 1rem; /* Reduced margin */
+        gap: 0.75rem; /* Reduced gap */
+        font-weight: 500; /* Slightly lighter font weight */
+        font-size: 0.9rem; /* Reduced font size */
+    }
+    .custom-alert .fas {
+        font-size: 1.2rem; /* Reduced icon size */
+    }
+    .custom-alert .btn-close {
+        padding: 0.3rem; /* Reduced padding */
+        margin: -0.3rem;
+    }
+
+    /* Filter Form Styling */
+    .filter-section {
+        padding: 1.2rem; /* Reduced padding */
+        border-radius: 0.75rem; /* Reduced radius */
+        margin-bottom: 1.5rem; /* Reduced margin */
+    }
+    .filter-section .form-label {
+        font-weight: 500; /* Slightly lighter font weight */
+        margin-bottom: 0.3rem; /* Reduced margin */
+        font-size: 0.85rem; /* Reduced font size */
+    }
+    .filter-section .form-control, .filter-section .form-select {
+        border-radius: 0.4rem; /* Reduced radius */
+        padding: 0.65rem 0.8rem; /* Reduced padding */
+        font-size: 0.85rem; /* Reduced font size */
+    }
+
+    /* General Button Styling */
+    .btn-custom {
+        gap: 0.5rem; /* Reduced gap */
+        padding: 0.75rem 1.5rem; /* Reduced padding */
+        border-radius: 0.6rem; /* Reduced radius */
+        font-weight: 500; /* Slightly lighter font weight */
+        font-size: 0.9rem; /* Reduced font size */
+    }
+
+    /* Table Styling */
+    .custom-table-container {
+        margin-top: 1.5rem; /* Reduced margin */
+        border-radius: 0.75rem; /* Reduced radius */
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 0.7rem 0.9rem; /* Reduced padding */
+        font-size: 0.85rem; /* Reduced font size */
+    }
+
+    .custom-table thead th {
+        font-weight: 600; /* Slightly lighter font weight */
+        font-size: 0.9rem; /* Reduced font size */
+    }
+    /* Rounded corners for first/last header cells */
+    .custom-table thead tr:first-child th:first-child {
+        border-top-right-radius: 0.75rem; /* RTL - Reduced radius */
+    }
+    .custom-table thead tr:first-child th:last-child {
+        border-top-left-radius: 0.75rem; /* RTL - Reduced radius */
+    }
+
+    /* Status Badges within table if applicable */
+    .badge-transaction-status {
+        padding: 0.4em 0.8em; /* Reduced padding */
+        border-radius: 0.6rem; /* Reduced radius */
+        font-size: 0.8em; /* Reduced font size */
+        min-width: 75px; /* Reduced min-width */
+    }
+
+    /* Pagination Styling */
+    .custom-pagination-container {
+        margin-top: 1.5rem; /* Reduced margin */
+        gap: 0.75rem; /* Reduced gap */
+    }
+    .pagination-summary {
+        font-size: 0.8rem; /* Reduced font size */
+        margin-bottom: 0.4rem; /* Reduced margin */
+    }
+    .custom-pagination .page-item .page-link {
+        border-radius: 0.4rem; /* Reduced radius */
+        margin: 0 0.2rem; /* Reduced margin */
+        padding: 0.5rem 0.75rem; /* Reduced padding */
+        font-size: 0.85rem; /* Reduced font size */
+    }
+
+    /* Empty State */
+    .alert-empty-state {
+        padding: 1.5rem; /* Reduced padding */
+        border-radius: 0.75rem; /* Reduced radius */
+        margin: 1rem 0; /* Reduced margin */
+        font-size: 1rem; /* Reduced font size */
+    }
+    .alert-empty-state i {
+        font-size: 2rem; /* Reduced icon size */
+        margin-bottom: 0.8rem; /* Reduced margin */
+    }
+
+    /* Responsive Adjustments (Further adjustments for smaller screens) */
+    @@media (max-width: 1200px) {
+        .custom-page-container {
+            max-width: 98%; /* Slightly more width on larger screens */
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .custom-page-container {
+            padding: 1.2rem;
+        }
+        .page-header {
+            font-size: 1.2rem;
+            padding: 1rem 1rem;
+            margin: -1.2rem -1.2rem 1.2rem -1.2rem;
+        }
+        .filter-section {
+            padding: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .filter-section .btn-custom {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+        }
+        .custom-table th, .custom-table td {
+            padding: 0.7rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        .custom-pagination .page-item .page-link {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .custom-page-container {
+            margin: 1rem auto;
+            padding: 1rem;
+        }
+        .page-header {
+            font-size: 1.1rem;
+            padding: 0.8rem 0.8rem;
+            margin: -1rem -1rem 1rem -1rem;
+        }
+        .filter-section {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .filter-section .row.g-3 > div {
+            margin-bottom: 0.8rem;
+        }
+        .filter-section .d-flex.align-items-end {
+            gap: 0.5rem;
+        }
+        .custom-table thead th {
+            font-size: 0.75rem;
+        }
+        .custom-table th, .custom-table td {
+            font-size: 0.7rem;
+            padding: 0.5rem 0.6rem;
+        }
+        .custom-pagination-container {
+            gap: 0.5rem;
+        }
+        .pagination-summary {
+            font-size: 0.75rem;
+            margin-bottom: 0.6rem;
+        }
+        .custom-pagination .page-item .page-link {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        .badge-transaction-status {
+            padding: 0.3em 0.6em;
+            font-size: 0.7em;
+            min-width: 60px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .page-header {
+            font-size: 1rem;
+            padding: 0.7rem 0.6rem;
+        }
+        .filter-section .form-control, .filter-section .form-select {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.6rem;
+        }
+        .filter-section .btn-custom {
+            font-size: 0.8rem;
+            padding: 0.6rem 1rem;
+        }
+        .custom-table th, .custom-table td {
+            font-size: 0.65rem;
+            padding: 0.4rem 0.5rem;
+        }
+    }
+</style>
+
+<div class="custom-page-container fade-in">
+    <div class="page-header">
+        <h2 class="mb-0"><i class="fas fa-history me-2"></i>سجل عمليات إنستا باي</h2>
+    </div>
+
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
+        <div class="custom-alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <div>@TempData["Success"]</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
         </div>
     }
 
-    <!-- نموذج التصفية -->
-    <div class="filter-form">
+    <div class="filter-section">
+        <h5 class="mb-3 text-primary"><i class="fas fa-filter me-2"></i> تصفية العمليات</h5> @* Reduced mb-4 to mb-3 *@
         <form asp-action="Transactions" method="get">
-            <div class="row g-3">
-                <div class="col-md-4">
+            <div class="row g-2 align-items-end"> @* Reduced g-3 to g-2 for smaller gaps *@
+                <div class="col-md-4 col-sm-6">
                     <label for="transactionType" class="form-label">نوع العملية</label>
-                    <select name="transactionType" class="form-control" asp-items="Html.GetEnumSelectList<TransactionType>()">
+                    <select name="transactionType" id="transactionType" class="form-select">
                         <option value="">الكل</option>
+                        @foreach (var type in Html.GetEnumSelectList<CashManagement.Models.TransactionType>())
+                        {
+                            @if (Model.FilterTransactionType?.ToString() == type.Value)
+                            {
+                                <option value="@type.Value" selected>@type.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@type.Value">@type.Text</option>
+                            }
+                        }
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <label for="filterDate" class="form-label">التاريخ</label>
-                    <input type="date" name="filterDate" class="form-control" value="@(Model.FilterDate?.ToString("yyyy-MM-dd"))" />
+                <div class="col-md-4 col-sm-6">
+                    <label for="filterDate" class="form-label">تاريخ العملية</label>
+                    <input type="date" name="filterDate" id="filterDate" class="form-control" value="@(Model.FilterDate?.ToString("yyyy-MM-dd"))" />
                 </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">تصفية</button>
-                    <a href="@Url.Action("Transactions")" class="btn btn-secondary">إعادة تعيين</a>
+                <div class="col-md-4 col-sm-12 d-flex justify-content-start gap-2"> @* Reduced gap-3 to gap-2 *@
+                    <button type="submit" class="btn-custom btn-primary-custom flex-grow-1">
+                        <i class="fas fa-search me-1"></i> تصفية @* Reduced me-2 to me-1 *@
+                    </button>
+                    <a href="@Url.Action("Transactions")" class="btn-custom btn-action-clear flex-grow-1">
+                        <i class="fas fa-times-circle me-1"></i> إعادة تعيين @* Reduced me-2 to me-1 *@
+                    </a>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- جدول العمليات -->
-    @if (Model.Transactions.Any())
+    @if (Model.Transactions != null && Model.Transactions.Any())
     {
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+        <div class="custom-table-container">
+            <table class="custom-table">
                 <thead class="table-dark">
                     <tr>
-                        <th>رقم الهاتف</th>
-                        <th>نوع العملية</th>
-                        <th>المبلغ</th>
-                        <th>الرسوم</th>
-                        <th>المبلغ النهائي</th>
-                        <th>الحالة</th>
-                        <th>الوصف</th>
-                        <th>تاريخ العملية</th>
+                        <th><i class="fas fa-phone-alt"></i> رقم الهاتف</th>
+                        <th><i class="fas fa-cash-register"></i> نوع العملية</th>
+                        <th><i class="fas fa-money-bill-wave"></i> المبلغ</th>
+                        <th><i class="fas fa-percentage"></i> الرسوم</th>
+                        <th><i class="fas fa-hand-holding-usd"></i> المبلغ النهائي</th>
+                        <th><i class="fas fa-info-circle"></i> الحالة</th>
+                        <th><i class="fas fa-comment-alt"></i> الوصف</th>
+                        <th><i class="fas fa-calendar-alt"></i> تاريخ العملية</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,112 +339,108 @@
                             <td>@transaction.Amount.ToString("N2")</td>
                             <td>@transaction.FeesAmount.ToString("N2")</td>
                             <td>@transaction.NetAmount.ToString("N2")</td>
-                            <td>@transaction.Status</td>
-                            <td>@(transaction.Description ?? "-")</td>
-                            <td>@transaction.CreatedAt.ToString("g")</td>
+                            <td>
+                                <span class="badge-transaction-status @(transaction.Status.ToString().ToLower())">
+                                    @transaction.Status
+                                </span>
+                            </td>
+                            <td>@(string.IsNullOrEmpty(transaction.Description) ? "-" : transaction.Description)</td>
+                            <td>@transaction.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
 
-        <!-- التصفح -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <!-- زر السابق -->
-                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" href="@(Model.CurrentPage == 1 ? "#" : Url.Action("Transactions", new { page = Model.CurrentPage - 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") }))" aria-label="السابق">
-                        <span aria-hidden="true">«</span>
-                    </a>
-                </li>
-
-                <!-- أرقام الصفحات -->
-                @{
-                    int startPage = Math.Max(1, Model.CurrentPage - 2);
-                    int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
-                    if (startPage > 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Transactions", new { page = 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">1</a>
-                        </li>
-                        if (startPage > 2)
-                        {
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        }
-                    }
-                }
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Transactions", new { page = i, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">@i</a>
+        <div class="custom-pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination custom-pagination mb-0">
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@(Model.CurrentPage == 1 ? "#" : Url.Action("Transactions", new { page = Model.CurrentPage - 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") }))" aria-label="السابق">
+                            <span aria-hidden="true">«</span>
+                        </a>
                     </li>
-                }
-                @{
-                    if (endPage < Model.TotalPages)
-                    {
-                        if (endPage < Model.TotalPages - 1)
+
+                    @{
+                        int startPage = Math.Max(1, Model.CurrentPage - 2);
+                        int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+
+                        if (startPage > 1)
                         {
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Transactions", new { page = 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
                         }
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Transactions", new { page = Model.TotalPages, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">@Model.TotalPages</a>
+                    }
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Transactions", new { page = i, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">@i</a>
                         </li>
                     }
-                }
+                    @{
+                        if (endPage < Model.TotalPages)
+                        {
+                            if (endPage < Model.TotalPages - 1)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Transactions", new { page = Model.TotalPages, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") })">@Model.TotalPages</a>
+                            </li>
+                        }
+                    }
 
-                <!-- زر التالي -->
-                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-                    <a class="page-link" href="@(Model.CurrentPage == Model.TotalPages ? "#" : Url.Action("Transactions", new { page = Model.CurrentPage + 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") }))" aria-label="التالي">
-                        <span aria-hidden="true">»</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="@(Model.CurrentPage == Model.TotalPages ? "#" : Url.Action("Transactions", new { page = Model.CurrentPage + 1, pageSize = Model.PageSize, transactionType = Model.FilterTransactionType, filterDate = Model.FilterDate?.ToString("yyyy-MM-dd") }))" aria-label="التالي">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-        <!-- ملخص التصفح -->
-        <div class="text-center mt-3 text-muted">
-            <p>عرض @(Model.Transactions.Count) من أصل @Model.TotalItems عملية (الصفحة @Model.CurrentPage من @Model.TotalPages)</p>
+            <div class="pagination-summary">
+                <p>عرض @(Model.Transactions.Count) من أصل @Model.TotalItems عملية (الصفحة @Model.CurrentPage من @Model.TotalPages)</p>
+            </div>
         </div>
     }
     else
     {
-        <div class="alert alert-warning text-center" role="alert">
-            لا توجد عمليات مطابقة لمعايير البحث.
+        <div class="alert-empty-state">
+            <i class="fas fa-search-minus"></i>
+            <p>لا توجد عمليات إنستا باي مطابقة لمعايير البحث المحددة.</p>
+            <p class="text-muted">حاول إعادة تعيين الفلاتر أو تغيير معايير البحث.</p>
         </div>
     }
 
-    <!-- زر الرجوع -->
-    <div class="text-center mt-4">
-        <a asp-action="Index" class="btn btn-secondary">رجوع إلى حسابات إنستا باي</a>
+    <div class="text-center mt-4"> @* Reduced mt-5 to mt-4 *@
+        <a asp-action="Index" class="btn-custom btn-secondary-custom">
+            <i class="fas fa-arrow-right me-1"></i> رجوع إلى حسابات إنستا باي @* Reduced me-2 to me-1 *@
+        </a>
     </div>
 </div>
 
-    <style>
-        .filter-form {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        .pagination {
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-            .pagination .page-item.active .page-link {
-                background-color: #007bff;
-                border-color: #007bff;
-                color: white;
+    <script>
+        $(document).ready(function () {
+            // Auto-hide success alert after a few seconds
+            if ($(".custom-alert.alert-success").length) {
+                setTimeout(function() {
+                    $(".custom-alert.alert-success").alert('close');
+                }, 5000); // Close after 5 seconds
             }
 
-            .pagination .page-link {
-                margin: 0 5px;
-                border-radius: 5px;
+            // Ensure filter values are preserved after page load
+            var currentTransactionType = "@Model.FilterTransactionType";
+            if (currentTransactionType) {
+                $('#transactionType').val(currentTransactionType);
             }
-
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: right;
-        }
-    </style>
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-using CashManagement.Models;
+﻿using CashManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -15,13 +15,15 @@ namespace CashManagement.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                // Redirect to Login or custom page
+                return Redirect("/Identity/Account/Login"); // أو أي صفحة تانية انت عايزها
+            }
+
+            return View(); // لو مسجل دخوله يعرض الصفحة عادي
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,16 +1,16 @@
 ﻿@model Supplier
 @{
     ViewData["Title"] = "إضافة مورد/عميل جديد";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
 <div class="container mt-4">
     <h1 class="text-center mb-4">إضافة مورد/عميل جديد</h1>
 
-    <!-- رسائل التنبيه -->
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
+            <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
@@ -19,29 +19,45 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label">الاسم</label>
-                <input asp-for="Name" class="form-control" />
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input asp-for="Name" class="form-control" />
+                </div>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="Type" class="form-label">النوع</label>
-                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<SupplierType>()">
-                    <option value="">اختر النوع</option>
-                </select>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-handshake"></i></span>
+                    <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<SupplierType>()">
+                        <option value="">اختر النوع</option>
+                    </select>
+                </div>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="PhoneNumber" class="form-label">رقم الهاتف (اختياري)</label>
-                <input asp-for="PhoneNumber" class="form-control" />
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="OpeningBalance" class="form-label">الرصيد الافتتاحي</label>
-                <input asp-for="OpeningBalance" class="form-control" type="number" step="0.01" value="0" />
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                    <input asp-for="OpeningBalance" class="form-control" type="number" step="0.01" value="0" />
+                </div>
                 <span asp-validation-for="OpeningBalance" class="text-danger"></span>
             </div>
-            <div class="col-12 mt-4">
-                <button type="submit" class="btn btn-primary">حفظ</button>
-                <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+            <div class="col-12 mt-4 button-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times-circle"></i> إلغاء
+                </a>
             </div>
         </div>
     </form>
@@ -52,3 +68,242 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 }
+
+<style>
+    /* تحديد متغيرات الألوان لسهولة التعديل */
+    :root {
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --text-color: #111827; /* أسود ناعم */
+        --header-sidebar-color: #F3F4F6; /* رمادي فاتح جدًا */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --error-color: #dc3545; /* Bootstrap's default danger color, or your preferred red */
+    }
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        background-color: #FFFFFF; /* ناصع البياض لخلفية الكونتينر */
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* ظل أخف للضوء */
+        padding: 30px;
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
+        border: 1px solid var(--header-sidebar-color); /* حدود خفيفة */
+    }
+
+    h1 {
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* ظل أخف */
+    }
+
+    /* تنسيق حقول النموذج */
+    .form-label {
+        color: var(--text-color);
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control,
+    .form-select {
+        background-color: #FFFFFF; /* خلفية بيضاء للحقول */
+        border: 1px solid #D1D5DB; /* حدود رمادية فاتحة */
+        color: var(--text-color);
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #FFFFFF;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(29, 78, 216, 0.25); /* ظل لوني من Primary Color */
+            outline: none;
+        }
+
+        /* لون النص داخل الـ select عند اختيار placeholder */
+        .form-select option[value=""] {
+            color: #6B7280; /* لون رمادي متوسط للنص Placeholder */
+        }
+
+    /* Input Group for icons */
+    .input-group {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+        .input-group > .form-control,
+        .input-group > .form-select,
+        .input-group > .form-floating {
+            position: relative;
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+
+    .input-group-text {
+        display: flex;
+        align-items: center;
+        padding: 0.625rem 0.9375rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #6B7280; /* لون الأيقونة */
+        text-align: center;
+        white-space: nowrap;
+        background-color: var(--header-sidebar-color); /* لون خلفية الأيقونة */
+        border: 1px solid #D1D5DB; /* حدود تتناسب مع الحقول */
+        border-radius: 6px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.invalid-tooltip) {
+        margin-left: -1px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    /* Alert Messages */
+    .alert {
+        border-radius: 6px;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .alert-danger {
+        background-color: rgba(220, 53, 69, 0.1); /* خلفية خفيفة من Error Color */
+        color: var(--error-color);
+        border: 1px solid var(--error-color);
+    }
+
+        .alert-danger .btn-close {
+            background: transparent;
+            border: 0;
+            opacity: 0.8;
+            font-size: 1.2rem;
+            color: var(--error-color);
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+            .alert-danger .btn-close:hover {
+                opacity: 1;
+            }
+
+    /* Buttons */
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 10px 25px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #1A3EAE; /* درجة أغمق للـ hover */
+            border-color: #1A3EAE;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* ظل أخف للضوء */
+        }
+
+    .btn-secondary {
+        background-color: var(--header-sidebar-color); /* لون رمادي فاتح جدًا */
+        border-color: var(--header-sidebar-color);
+        color: var(--text-color); /* لون النص أسود ناعم */
+    }
+
+        .btn-secondary:hover {
+            background-color: #E5E7EB; /* درجة أغمق للرمادي الفاتح */
+            border-color: #E5E7EB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    /* أيقونات بجانب نوع المورد/العميل */
+    .form-select option[value="Supplier"] {
+        color: var(--primary-color); /* يمكن استخدام الأساسي للمورد */
+    }
+
+        .form-select option[value="Supplier"]::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f2b9"; /* fa-truck-moving */
+            display: inline-block;
+            margin-right: 8px;
+            color: var(--primary-color);
+            font-weight: 900;
+        }
+
+    .form-select option[value="Customer"] {
+        color: var(--secondary-color); /* يمكن استخدام الثانوي للعميل */
+    }
+
+        .form-select option[value="Customer"]::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f007"; /* fa-user */
+            display: inline-block;
+            margin-right: 8px;
+            color: var(--secondary-color);
+            font-weight: 900;
+        }
+
+    /* تنسيق رسائل الـ Validation */
+    .text-danger {
+        color: var(--error-color) !important;
+        font-size: 0.875em;
+        margin-top: 5px;
+        display: block;
+        padding-left: 5px;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 20px;
+            margin-top: 20px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

@@ -5,43 +5,52 @@
 }
 
 <style>
+    /* Custom Colors - Professional Palette */
     :root {
-        --primary-dark-blue: #1E3A8A;
-        --secondary-light-blue: #3B82F6;
-        --background-dark-gray: #1F2937;
-        --accent-mint-green: #34D399;
-        --error-coral-red: #F87171;
-        --text-off-white: #F3F4F6;
-        --card-bg: #374151;
-        --border-gray: #4B5563;
-        --hover-blue: #2563EB;
+        --background-color: #FDFDFD; /* Light Ivory */
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray - Used for card background */
+        --secondary-color: #FACC15; /* Soft Gold - Used for success/accent */
+        --error-color: #F87171; /* Red for errors */
+        --input-bg: #EBECED; /* Slightly darker light ivory (for consistency, not directly used here) */
+        --border-color: #D1D5DB; /* Light gray for borders */
+        --card-bg: var(--header-sidebar-bg); /* Using header/sidebar color for cards */
+        --hover-effect-color: rgba(29, 78, 216, 0.05); /* Lighter primary for hover effects */
     }
 
     body {
-        background-color: var(--background-dark-gray);
-        color: var(--text-off-white);
+        background-color: var(--background-color);
+        color: var(--text-color);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    .container-fluid {
+        padding: 2rem;
+        max-width: 900px; /* Constrain width for better readability */
+        margin: 0 auto; /* Center the container */
+    }
+
     .page-header {
-        background: linear-gradient(135deg, var(--primary-dark-blue), var(--secondary-light-blue));
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Primary to secondary gradient */
         padding: 2rem 0;
         margin-bottom: 2rem;
         border-radius: 12px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Subtle shadow for depth */
     }
 
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-        opacity: 0.3;
-    }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>'); /* Slightly stronger grid pattern */
+            opacity: 0.5; /* Increased opacity for the pattern */
+        }
 
     .page-title {
         position: relative;
@@ -50,67 +59,77 @@
         font-size: 2.5rem;
         font-weight: 700;
         text-align: center;
-        color: var(--text-off-white);
+        color: #FFFFFF; /* White text for contrast on header */
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .page-title i {
-        margin-left: 1rem;
-        color: var(--accent-mint-green);
-        animation: pulse 2s infinite;
-    }
+        .page-title i {
+            margin-left: 1rem;
+            color: var(--text-color); /* Soft Black for icon on primary background */
+            animation: pulse 2s infinite ease-in-out; /* Smoother pulse animation */
+        }
 
     @@keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+        /* More subtle pulse */
     }
 
     .transaction-card {
         background: var(--card-bg);
-        border: 1px solid var(--border-gray);
+        border: 1px solid var(--border-color);
         border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Lighter shadow for cards */
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
+        margin-bottom: 2rem; /* Space below the card */
     }
 
-    .transaction-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+        .transaction-card:hover {
+            transform: translateY(-3px); /* Less aggressive lift */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15); /* Slightly increased shadow on hover */
+        }
 
     .card-header-custom {
-        background: linear-gradient(90deg, var(--primary-dark-blue), var(--secondary-light-blue));
+        background: linear-gradient(90deg, var(--primary-color), #2B65EC); /* Slightly different gradient for card header */
         padding: 1.5rem;
         border-bottom: none;
         position: relative;
+        color: #FFFFFF; /* White text for card header */
     }
 
-    .card-header-custom::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: var(--accent-mint-green);
-    }
+        .card-header-custom::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--secondary-color); /* Accent line from secondary color */
+        }
 
     .card-title {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 600;
-        color: var(--text-off-white);
+        color: inherit; /* Inherit color from card-header-custom */
         display: flex;
         align-items: center;
     }
 
-    .card-title i {
-        margin-left: 0.75rem;
-        color: var(--accent-mint-green);
-        font-size: 1.25rem;
-    }
+        .card-title i {
+            margin-left: 0.75rem;
+            color: var(--secondary-color); /* Icon color from secondary */
+            font-size: 1.25rem;
+        }
 
     .card-body-custom {
         padding: 2rem;
@@ -120,42 +139,43 @@
     .info-row {
         display: flex;
         padding: 1rem 0;
-        border-bottom: 1px solid var(--border-gray);
-        transition: background-color 0.3s ease;
+        border-bottom: 1px dashed var(--border-color); /* Dashed border for softer look */
+        transition: background-color 0.3s ease, padding 0.3s ease;
         border-radius: 8px;
         margin-bottom: 0.5rem;
+        align-items: center; /* Align items vertically */
     }
 
-    .info-row:hover {
-        background-color: rgba(59, 130, 246, 0.1);
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+        .info-row:hover {
+            background-color: var(--hover-effect-color); /* Light hover effect */
+            padding-left: 1.5rem; /* More distinct padding on hover */
+            padding-right: 1.5rem;
+        }
 
-    .info-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
 
     .info-label {
-        flex: 0 0 30%;
+        flex: 0 0 35%; /* Slightly more space for labels */
         font-weight: 600;
-        color: var(--secondary-light-blue);
+        color: var(--primary-color); /* Labels use primary color */
         display: flex;
         align-items: center;
         font-size: 1rem;
     }
 
-    .info-label i {
-        margin-left: 0.5rem;
-        width: 20px;
-        text-align: center;
-        color: var(--accent-mint-green);
-    }
+        .info-label i {
+            margin-left: 0.5rem;
+            width: 20px;
+            text-align: center;
+            color: var(--secondary-color); /* Label icon color from secondary */
+        }
 
     .info-value {
         flex: 1;
-        color: var(--text-off-white);
+        color: var(--text-color);
         font-size: 1rem;
         display: flex;
         align-items: center;
@@ -163,9 +183,9 @@
     }
 
     .amount-value {
-        font-size: 1.5rem;
+        font-size: 1.6rem; /* Slightly larger amount */
         font-weight: 700;
-        color: var(--accent-mint-green);
+        color: var(--secondary-color); /* Amount from secondary color */
     }
 
     .transaction-type {
@@ -175,119 +195,129 @@
         border-radius: 25px;
         font-weight: 600;
         font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow for tags */
     }
 
-    .transaction-type.deposit {
-        background: rgba(52, 211, 153, 0.2);
-        color: var(--accent-mint-green);
-        border: 1px solid var(--accent-mint-green);
-    }
+        .transaction-type.deposit {
+            background: rgba(250, 204, 21, 0.15); /* Soft gold background */
+            color: var(--secondary-color); /* Soft gold text */
+            border: 1px solid var(--secondary-color);
+        }
 
-    .transaction-type.withdraw {
-        background: rgba(248, 113, 113, 0.2);
-        color: var(--error-coral-red);
-        border: 1px solid var(--error-coral-red);
-    }
+        .transaction-type.withdraw {
+            background: rgba(248, 113, 113, 0.15); /* Soft red background */
+            color: var(--error-color); /* Red text */
+            border: 1px solid var(--error-color);
+        }
 
-    .transaction-type i {
-        margin-left: 0.5rem;
-    }
+        .transaction-type i {
+            margin-left: 0.5rem;
+        }
 
     .alert-custom {
         background: rgba(248, 113, 113, 0.1);
-        border: 1px solid var(--error-coral-red);
+        border: 1px solid var(--error-color);
         border-radius: 12px;
         padding: 1.5rem;
-        color: var(--error-coral-red);
+        color: var(--error-color);
         display: flex;
         align-items: center;
         margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Better shadow for alerts */
     }
 
-    .alert-custom i {
-        font-size: 1.5rem;
-        margin-left: 1rem;
-    }
+        .alert-custom i {
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
 
     .action-buttons {
-        margin-top: 2rem;
+        margin-top: 2.5rem; /* Increased margin */
         display: flex;
-        gap: 1rem;
+        gap: 1.2rem; /* Slightly increased gap */
         flex-wrap: wrap;
+        justify-content: center; /* Center buttons */
     }
 
     .btn-custom {
-        padding: 0.75rem 2rem;
+        padding: 0.85rem 2.2rem; /* Slightly larger padding */
         border: none;
-        border-radius: 25px;
+        border-radius: 30px; /* More rounded buttons */
         font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
+        justify-content: center; /* Center content in buttons */
         transition: all 0.3s ease;
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 1.05rem; /* Slightly larger font */
+        min-width: 160px; /* Minimum width for consistency */
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, var(--primary-dark-blue), var(--secondary-light-blue));
-        color: var(--text-off-white);
+        background: var(--primary-color);
+        color: #FFFFFF;
+        box-shadow: 0 4px 15px rgba(29, 78, 216, 0.25);
     }
 
-    .btn-primary-custom:hover {
-        background: linear-gradient(135deg, var(--hover-blue), var(--primary-dark-blue));
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-        color: var(--text-off-white);
-        text-decoration: none;
-    }
+        .btn-primary-custom:hover {
+            background: #103CA6; /* Darker primary on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+            color: #FFFFFF;
+            text-decoration: none;
+        }
 
     .btn-secondary-custom {
         background: transparent;
-        color: var(--text-off-white);
-        border: 2px solid var(--border-gray);
+        color: var(--text-color); /* Text color for secondary button */
+        border: 2px solid var(--border-color);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Subtle shadow */
     }
 
-    .btn-secondary-custom:hover {
-        background: var(--border-gray);
-        border-color: var(--secondary-light-blue);
-        color: var(--text-off-white);
-        text-decoration: none;
-        transform: translateY(-2px);
-    }
+        .btn-secondary-custom:hover {
+            background: var(--border-color);
+            border-color: var(--primary-color); /* Border changes to primary on hover */
+            color: var(--text-color);
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
 
     .btn-custom i {
-        margin-left: 0.5rem;
-    }
-
-    .container-fluid {
-        padding: 2rem;
+        margin-left: 0.75rem; /* Increased icon margin */
     }
 
     /* Responsive Design */
     @@media (max-width: 768px) {
         .info-row {
             flex-direction: column;
+            align-items: flex-end; /* Align to right for Arabic */
         }
-        
+
         .info-label {
             flex: none;
             margin-bottom: 0.5rem;
+            align-self: flex-end; /* Align label to the right */
         }
-        
+
         .info-value {
             padding-right: 0;
+            text-align: right; /* Ensure text aligns right */
+            width: 100%;
         }
-        
+
         .page-title {
             font-size: 2rem;
         }
-        
+
         .action-buttons {
             flex-direction: column;
+            gap: 0.8rem; /* Smaller gap for mobile */
         }
-        
+
         .btn-custom {
+            width: 100%;
             justify-content: center;
         }
     }
@@ -302,15 +332,20 @@
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
+
+    /* Script related styles for loading state */
+    .btn-custom .fa-spinner {
+        margin-left: 0.5rem;
+    }
 </style>
 
 <div class="container-fluid">
-    <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">
             تفاصيل العملية النقدية
@@ -401,7 +436,6 @@
         </div>
     }
 
-    <!-- Action Buttons -->
     <div class="action-buttons">
         <a asp-action="Index" class="btn-custom btn-secondary-custom">
             <i class="fas fa-arrow-right"></i>
@@ -419,32 +453,35 @@
 </div>
 
 <script>
-    // Add some interactive functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add smooth scrolling for better UX
-        const links = document.querySelectorAll('a[href^="#"]');
-        links.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Smooth scrolling is not applicable for this page's layout without anchor links
+        // So I'm removing the smooth scrolling script for this specific page.
 
         // Add loading state for buttons
         const buttons = document.querySelectorAll('.btn-custom');
         buttons.forEach(button => {
-            button.addEventListener('click', function() {
-                if (this.getAttribute('href') || this.type === 'button') {
+            button.addEventListener('click', function () {
+                // Check if the button has an href (for anchor tags) or is a submit/button type
+                if (this.tagName === 'A' || this.type === 'button') {
+                    // Only apply loading state if it's not a print button (print handled by browser)
+                    if (this.onclick && this.onclick.toString().includes('window.print()')) {
+                        return; // Do not apply loading state for print button
+                    }
+
                     const originalContent = this.innerHTML;
                     this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+                    this.disabled = true; // Disable button to prevent multiple clicks
+
+                    // Re-enable button after a short delay (simulating async operation)
                     setTimeout(() => {
                         this.innerHTML = originalContent;
+                        this.disabled = false;
                     }, 1500);
                 }
             });
         });
     });
 </script>
+
+@section Scripts {
+}

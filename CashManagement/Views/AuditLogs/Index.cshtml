@@ -2,99 +2,293 @@
 
 @{
     ViewData["Title"] = "سجل التدقيق";
-    // Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
+<style>
+    /* Custom styles for the Audit Log page */
+    .audit-card {
+        background-color: var(--surface-color); /* Lighter surface for cards */
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 20px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
 
+        .audit-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+
+    .audit-card-title {
+        color: var(--primary-text-color);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--primary-color); /* Primary color for title underline */
+        padding-bottom: 10px;
+    }
+
+    .audit-card-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Space between items */
+        margin-bottom: 15px;
+    }
+
+        .audit-card-info div {
+            background-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.05); /* Light primary background for info tags */
+            color: var(--primary-text-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+    .audit-card-details-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-weight: 500;
+    }
+
+        .audit-card-details-btn:hover {
+            background-color: #1A44B0; /* Slightly darker primary on hover */
+            transform: translateY(-1px);
+        }
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--surface-color);
+        color: var(--primary-text-color);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+        background-color: var(--header-footer-color);
+        border-bottom: 1px solid var(--border-color);
+        color: var(--primary-text-color);
+        border-top-left-radius: var(--border-radius);
+        border-top-right-radius: var(--border-radius);
+    }
+
+    .modal-title {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+        .modal-body p {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        .modal-body strong {
+            color: var(--primary-color);
+        }
+
+    .modal-footer {
+        background-color: var(--header-footer-color);
+        border-top: 1px solid var(--border-color);
+        border-bottom-left-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
+    }
+
+    .btn-close {
+        filter: invert(10%) sepia(0%) saturate(7%) hue-rotate(244deg) brightness(98%) contrast(90%); /* Darkens default close button */
+    }
+
+    .filter-form-card {
+        background-color: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+
+    .form-control, .form-select {
+        border-color: var(--border-color);
+        background-color: var(--background-color);
+        color: var(--primary-text-color);
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb, 29, 78, 216), 0.25);
+        }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #1A44B0; /* Darker primary on hover */
+            border-color: #1A44B0;
+            transform: translateY(-1px);
+        }
+
+    /* Convert primary color HEX to RGB for rgba usage */
+    :root {
+        --primary-color-rgb: 29, 78, 216; /* RGB values for #1D4ED8 */
+    }
+
+</style>
 
 <div class="container">
-    <h1 class="my-4"><i class="fas fa-clipboard-list me-2"></i>سجل التدقيق</h1>
+    <h1 class="my-4" style="color: var(--primary-text-color);"><i class="fas fa-clipboard-list me-2" style="color: var(--primary-color);"></i>سجل التدقيق</h1>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: #D4EDDA; color: #155724; border-color: #C3E6CB;">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: #F8D7DA; color: #721C24; border-color: #F5C6CB;">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
 
-    <!-- Filter Form -->
-    <form asp-action="Index" method="get" class="mb-3">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="البحث باسم المستخدم أو التفاصيل" />
+    <div class="filter-form-card mb-4">
+        <h4 class="mb-3" style="color: var(--primary-color);"><i class="fas fa-filter me-2"></i>فلترة السجل</h4>
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="البحث باسم المستخدم أو التفاصيل" />
+                </div>
+                <div class="col-md-3">
+                    <select name="actionType" class="form-select">
+                        <option value="">كل الإجراءات</option>
+                        @foreach (var type in ViewBag.ActionTypes)
+                        {
+                            <option value="@type" selected="@(ViewBag.ActionType == type ? "selected" : "")">@type</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="entityType" class="form-select">
+                        <option value="">كل الكيانات</option>
+                        @foreach (var type in ViewBag.EntityTypes)
+                        {
+                            <option value="@type" selected="@(ViewBag.EntityType == type ? "selected" : "")">@type</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>بحث</button>
+                </div>
             </div>
-            <div class="col-md-2">
-                <select name="actionType" class="form-control">
-                    <option value="">كل الإجراءات</option>
-                    @foreach (var type in ViewBag.ActionTypes)
-                    {
-                        <option value="@type" selected="@(ViewBag.ActionType == type ? "selected" : "")">@type</option>
-                    }
-                </select>
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <label for="startDate" class="form-label" style="color: var(--text-secondary);">تاريخ البداية:</label>
+                    <input type="date" id="startDate" name="startDate" value="@ViewBag.StartDate" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="endDate" class="form-label" style="color: var(--text-secondary);">تاريخ النهاية:</label>
+                    <input type="date" id="endDate" name="endDate" value="@ViewBag.EndDate" class="form-control" />
+                </div>
             </div>
-            <div class="col-md-2">
-                <select name="entityType" class="form-control">
-                    <option value="">كل الكيانات</option>
-                    @foreach (var type in ViewBag.EntityTypes)
-                    {
-                        <option value="@type" selected="@(ViewBag.EntityType == type ? "selected" : "")">@type</option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control" placeholder="تاريخ البداية" />
-            </div>
-            <div class="col-md-2">
-                <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control" placeholder="تاريخ النهاية" />
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>بحث</button>
-            </div>
-        </div>
-    </form>
-
-    <!-- Audit Logs Table -->
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th><i class="fas fa-user me-1"></i>المستخدم</th>
-                    <th><i class="fas fa-bolt me-1"></i>نوع الإجراء</th>
-                    <th><i class="fas fa-cube me-1"></i>نوع الكيان</th>
-                    <th><i class="fas fa-id-badge me-1"></i>معرف الكيان</th>
-                    <th><i class="fas fa-info-circle me-1"></i>التفاصيل</th>
-                    <th><i class="fas fa-clock me-1"></i>تاريخ الإجراء</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var log in Model)
-                {
-                    <tr>
-                        <td>@(log.User?.UserName ?? "غير معروف")</td>
-                        <td>@log.ActionType</td>
-                        <td>@log.EntityType</td>
-                        <td>@(log.EntityId?.ToString() ?? "-")</td>
-                        <td>@log.Details</td>
-                        <td>@log.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        </form>
     </div>
 
-    <!-- Pagination -->
-    <nav aria-label="Page navigation">
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var log in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="audit-card">
+                        <h5 class="audit-card-title">سجل التدقيق لـ: @(log.User?.UserName ?? "غير معروف")</h5>
+                        <div class="audit-card-info">
+                            <div><i class="fas fa-bolt me-1"></i>**الإجراء:** @log.ActionType</div>
+                            <div><i class="fas fa-cube me-1"></i>**الكيان:** @log.EntityType</div>
+                            <div><i class="fas fa-id-badge me-1"></i>**معرف الكيان:** @(log.EntityId?.ToString() ?? "-")</div>
+                            <div><i class="fas fa-clock me-1"></i>**التاريخ:** @log.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                        <button type="button" class="audit-card-details-btn" data-bs-toggle="modal" data-bs-target="#auditLogModal"
+                                data-user="@(log.User?.UserName ?? "غير معروف")"
+                                data-action="@log.ActionType"
+                                data-entity="@log.EntityType"
+                                data-entityid="@(log.EntityId?.ToString() ?? "-")"
+                                data-details="@log.Details"
+                                data-createdat="@log.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")">
+                            عرض التفاصيل
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" style="background-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.1); color: var(--primary-color); border-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.2);">
+                    <i class="fas fa-info-circle me-2"></i> لا توجد سجلات تدقيق لعرضها.
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.Page ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-actionType="@ViewBag.ActionType" asp-route-entityType="@ViewBag.EntityType" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate">@i</a>
+                    <a class="page-link"
+                       style="background-color: @(i == ViewBag.Page ? "var(--primary-color)" : "var(--surface-color)");
+                              color: @(i == ViewBag.Page ? "white" : "var(--primary-text-color)");
+                              border-color: var(--border-color);"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-searchString="@ViewBag.SearchString"
+                       asp-route-actionType="@ViewBag.ActionType"
+                       asp-route-entityType="@ViewBag.EntityType"
+                       asp-route-startDate="@ViewBag.StartDate"
+                       asp-route-endDate="@ViewBag.EndDate">@i</a>
                 </li>
             }
         </ul>
     </nav>
+</div>
+
+<div class="modal fade" id="auditLogModal" tabindex="-1" aria-labelledby="auditLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="auditLogModalLabel">تفاصيل سجل التدقيق</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>المستخدم:</strong> <span id="modalUser"></span></p>
+                <p><strong>نوع الإجراء:</strong> <span id="modalActionType"></span></p>
+                <p><strong>نوع الكيان:</strong> <span id="modalEntityType"></span></p>
+                <p><strong>معرف الكيان:</strong> <span id="modalEntityId"></span></p>
+                <p><strong>تاريخ الإجراء:</strong> <span id="modalCreatedAt"></span></p>
+                <p><strong>التفاصيل:</strong> <pre><code id="modalDetails" style="white-space: pre-wrap; word-break: break-all; color: var(--text-color);"></code></pre></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" style="background-color: var(--secondary-color); color: var(--primary-text-color); border-color: var(--secondary-color);" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -115,5 +309,51 @@
                 }, false);
             });
         })();
+
+        // Handle Audit Log Details Modal
+        var auditLogModal = document.getElementById('auditLogModal');
+        auditLogModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget;
+
+            // Extract info from data-bs-* attributes
+            var user = button.getAttribute('data-user');
+            var action = button.getAttribute('data-action');
+            var entity = button.getAttribute('data-entity');
+            var entityId = button.getAttribute('data-entityid');
+            var details = button.getAttribute('data-details');
+            var createdAt = button.getAttribute('data-createdat');
+
+            // Update the modal's content.
+            var modalUser = auditLogModal.querySelector('#modalUser');
+            var modalActionType = auditLogModal.querySelector('#modalActionType');
+            var modalEntityType = auditLogModal.querySelector('#modalEntityType');
+            var modalEntityId = auditLogModal.querySelector('#modalEntityId');
+            var modalDetails = auditLogModal.querySelector('#modalDetails');
+            var modalCreatedAt = auditLogModal.querySelector('#modalCreatedAt');
+
+            modalUser.textContent = user;
+            modalActionType.textContent = action;
+            modalEntityType.textContent = entity;
+            modalEntityId.textContent = entityId;
+            modalDetails.textContent = details; // Use textContent for raw text
+            modalCreatedAt.textContent = createdAt;
+        });
+
+        // Add a primary-color-rgb variable for rgba usage in CSS
+        // This is a workaround if you can't dynamically generate this from a CSS preprocessor
+        // In a real application, you might use a CSS preprocessor (Sass/Less) or JavaScript to convert HEX to RGB
+        document.documentElement.style.setProperty('--primary-color-rgb', hexToRgb(getComputedStyle(document.documentElement).getPropertyValue('--primary-color')));
+
+        function hexToRgb(hex) {
+            var r = 0, g = 0, b = 0;
+            // Handle #RRGGBB format
+            if (hex.length === 7) {
+                r = parseInt(hex.substring(1, 3), 16);
+                g = parseInt(hex.substring(3, 5), 16);
+                b = parseInt(hex.substring(5, 7), 16);
+            }
+            return `${r}, ${g}, ${b}`;
+        }
     </script>
 }

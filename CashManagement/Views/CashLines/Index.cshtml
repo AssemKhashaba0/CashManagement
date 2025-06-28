@@ -6,18 +6,19 @@
 }
 
 <style>
-    /* الألوان المخصصة */
+    /* Custom Colors - Updated based on your request */
     :root {
-        --primary-color: #1E3A8A;
-        --secondary-color: #3B82F6;
-        --background-color: #1F2937;
-        --accent-color: #34D399;
-        --error-color: #F87171;
-        --text-color: #F3F4F6;
-        --card-bg: #374151;
-        --border-color: #4B5563;
-        --warning-color: #F59E0B;
-        --info-color: #06B6D4;
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --accent-color: #34D399; /* Green for success/active, can be adjusted if needed */
+        --error-color: #F87171; /* Red for errors */
+        --text-color: #111827; /* Soft Black */
+        --card-bg: #FFFFFF; /* White for cards on light ivory background */
+        --border-color: #E5E7EB; /* Light grey border */
+        --warning-color: #F59E0B; /* Orange for warnings */
+        --info-color: #06B6D4; /* Cyan for info */
+        --header-bg: #F3F4F6; /* Light Grey for header/sidebar as per request */
     }
 
     .management-container {
@@ -30,21 +31,21 @@
     }
 
     .page-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Updated to use primary and secondary */
         padding: 30px;
         border-radius: 15px;
         margin-bottom: 30px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Adjusted shadow for lighter theme */
     }
 
-    .page-header h1 {
-        color: white;
-        font-size: 2.5rem;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
+        .page-header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
     /* Alert Styles */
     .alert {
@@ -56,39 +57,40 @@
         align-items: center;
         gap: 10px;
         font-weight: 500;
+        color: var(--text-color); /* Ensure text is readable */
     }
 
     .alert-success {
-        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        background: var(--accent-color); /* Simplified to solid color for alerts */
         color: white;
     }
 
-    .alert-success::before {
-        content: '\f058';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 1.2rem;
-    }
+        .alert-success::before {
+            content: '\f058';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
 
     .alert-danger {
-        background: linear-gradient(135deg, var(--error-color), #EF4444);
+        background: var(--error-color); /* Simplified to solid color for alerts */
         color: white;
     }
 
-    .alert-danger::before {
-        content: '\f057';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 1.2rem;
-    }
+        .alert-danger::before {
+            content: '\f057';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
 
     /* Action Buttons */
     .action-bar {
-        background: var(--card-bg);
+        background: var(--card-bg); /* Using card background for consistency */
         padding: 25px;
         border-radius: 15px;
         margin-bottom: 25px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Adjusted shadow for lighter theme */
         border: 1px solid var(--border-color);
         display: flex;
         flex-wrap: wrap;
@@ -111,28 +113,28 @@
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: var(--primary-color); /* Use primary color */
         color: white;
     }
 
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(30, 58, 138, 0.4);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(29, 78, 216, 0.4);
+            color: white;
+            text-decoration: none;
+        }
 
     .btn-info-custom {
-        background: linear-gradient(135deg, var(--info-color), #0891B2);
+        background: var(--info-color);
         color: white;
     }
 
-    .btn-info-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-info-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+            color: white;
+            text-decoration: none;
+        }
 
     /* Search Form */
     .search-container {
@@ -140,7 +142,7 @@
         padding: 25px;
         border-radius: 15px;
         margin-bottom: 25px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
         border: 1px solid var(--border-color);
     }
 
@@ -171,21 +173,21 @@
         padding: 12px 15px;
         border: 2px solid var(--border-color);
         border-radius: 8px;
-        background: var(--background-color);
+        background: var(--background-color); /* Input background matching page background */
         color: var(--text-color);
         font-size: 1rem;
         transition: all 0.3s ease;
     }
 
-    .form-control-custom:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Focus border using primary color */
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
 
-    .form-control-custom::placeholder {
-        color: #9CA3AF;
-    }
+        .form-control-custom::placeholder {
+            color: #9CA3AF;
+        }
 
     /* Cards Container */
     .cards-container {
@@ -200,37 +202,37 @@
         background: var(--card-bg);
         border-radius: 15px;
         border: 1px solid var(--border-color);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Adjusted shadow for lighter theme */
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
     }
 
-    .cash-line-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        border-color: var(--secondary-color);
-    }
+        .cash-line-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color); /* Hover border using primary color */
+        }
 
     .card-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Primary to Secondary gradient */
         color: white;
         padding: 20px;
         position: relative;
         overflow: hidden;
     }
 
-    .card-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        transform: rotate(45deg);
-        transition: all 0.3s ease;
-    }
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+        }
 
     .cash-line-card:hover .card-header::before {
         right: -30%;
@@ -274,7 +276,7 @@
 
     .info-label {
         font-size: 0.85rem;
-        color: #9CA3AF;
+        color: #6B7280; /* Darker grey for labels */
         display: flex;
         align-items: center;
         gap: 5px;
@@ -286,10 +288,10 @@
         color: var(--text-color);
     }
 
-    .info-value.balance {
-        font-size: 1.1rem;
-        color: var(--accent-color);
-    }
+        .info-value.balance {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
 
     /* Status Badge */
     .status-badge {
@@ -302,21 +304,19 @@
         align-items: center;
         gap: 5px;
         margin-bottom: 15px;
+        color: white; /* Text color for badges */
     }
 
     .status-active {
         background: var(--accent-color);
-        color: white;
     }
 
     .status-frozen {
         background: var(--info-color);
-        color: white;
     }
 
     .status-deleted {
         background: var(--error-color);
-        color: white;
     }
 
     /* Network Type Indicator */
@@ -328,8 +328,8 @@
         border-radius: 15px;
         font-size: 0.85rem;
         font-weight: 500;
-        background: rgba(59, 130, 246, 0.2);
-        color: var(--secondary-color);
+        background: rgba(29, 78, 216, 0.1); /* Lighter background for network type using primary color */
+        color: var(--primary-color); /* Text color using primary color */
         margin-bottom: 15px;
     }
 
@@ -351,7 +351,7 @@
     .progress-container {
         width: 100%;
         height: 25px;
-        background: var(--border-color);
+        background: var(--border-color); /* Use border color for empty progress bar */
         border-radius: 12px;
         overflow: hidden;
         position: relative;
@@ -361,7 +361,7 @@
 
     .progress-bar-custom {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent-color), #10B981);
+        background: var(--accent-color); /* Use accent color for default progress */
         border-radius: 12px;
         transition: width 0.3s ease;
         display: flex;
@@ -375,18 +375,18 @@
     }
 
     .progress-warning {
-        background: linear-gradient(90deg, var(--warning-color), #F59E0B);
+        background: var(--warning-color);
     }
 
     .progress-danger {
-        background: linear-gradient(90deg, var(--error-color), #EF4444);
+        background: var(--error-color);
     }
 
     /* Action Buttons in Cards */
     .card-actions {
         border-top: 1px solid var(--border-color);
         padding: 15px 20px;
-        background: rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.03); /* Slightly lighter background for actions */
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
@@ -408,36 +408,33 @@
         flex: 1;
         justify-content: center;
         min-width: 80px;
+        color: white; /* Default text color for small buttons */
     }
 
     .btn-info-sm {
         background: var(--info-color);
-        color: white;
     }
 
     .btn-warning-sm {
         background: var(--warning-color);
-        color: white;
     }
 
     .btn-danger-sm {
         background: var(--error-color);
-        color: white;
     }
 
     .btn-success-sm {
         background: var(--accent-color);
-        color: white;
     }
 
     .btn-secondary-sm {
-        background: var(--border-color);
-        color: var(--text-color);
+        background: var(--border-color); /* Use border-color for a more subdued "secondary" look */
+        color: var(--text-color); /* Text color for the subdued button */
     }
 
     .btn-sm-custom:hover {
         transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
         color: white;
         text-decoration: none;
     }
@@ -447,37 +444,37 @@
         .management-container {
             padding: 15px;
         }
-        
+
         .page-header h1 {
             font-size: 2rem;
         }
-        
+
         .action-bar {
             flex-direction: column;
             align-items: stretch;
         }
-        
+
         .search-form {
             flex-direction: column;
         }
-        
+
         .form-group-custom {
             min-width: 100%;
         }
-        
+
         .cards-container {
             grid-template-columns: 1fr;
             gap: 20px;
         }
-        
+
         .card-info-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .card-actions {
             flex-direction: column;
         }
-        
+
         .btn-sm-custom {
             width: 100%;
             flex: none;
@@ -496,24 +493,29 @@
         color: transparent !important;
     }
 
-    .btn-loading::after {
-        content: '';
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid transparent;
-        border-top-color: #ffffff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
     @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     /* Card Animation */
@@ -523,13 +525,13 @@
         transform: translateY(20px);
     }
 
-    .cash-line-card:nth-child(odd) {
-        animation-delay: 0.1s;
-    }
+        .cash-line-card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
 
-    .cash-line-card:nth-child(even) {
-        animation-delay: 0.2s;
-    }
+        .cash-line-card:nth-child(even) {
+            animation-delay: 0.2s;
+        }
 
     @@keyframes fadeInUp {
         to {
@@ -540,7 +542,6 @@
 </style>
 
 <div class="management-container">
-    <!-- Page Header -->
     <div class="page-header">
         <h1>
             <i class="fas fa-phone-alt"></i>
@@ -548,7 +549,6 @@
         </h1>
     </div>
 
-    <!-- Alert Messages -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -562,7 +562,6 @@
         </div>
     }
 
-    <!-- Action Buttons -->
     @if (User.IsInRole("Admin"))
     {
         <div class="action-bar">
@@ -577,7 +576,6 @@
         </div>
     }
 
-    <!-- Search Form -->
     <div class="search-container">
         <form asp-action="SearchAvailableLines" method="post" class="search-form">
             <div class="form-group-custom">
@@ -585,8 +583,8 @@
                     <i class="fas fa-search"></i>
                     البحث عن الخطوط المتاحة
                 </label>
-                <input type="number" name="amount" class="form-control-custom" 
-                       placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة" 
+                <input type="number" name="amount" class="form-control-custom"
+                       placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة"
                        step="0.01" min="0" required />
             </div>
             <button type="submit" class="btn-custom btn-primary-custom">
@@ -596,12 +594,10 @@
         </form>
     </div>
 
-    <!-- Cash Lines Cards -->
     <div class="cards-container">
         @foreach (var item in Model)
         {
             <div class="cash-line-card">
-                <!-- Card Header -->
                 <div class="card-header">
                     <h3 class="card-phone-number">
                         <i class="fas fa-phone"></i>
@@ -613,28 +609,25 @@
                     </p>
                 </div>
 
-                <!-- Card Body -->
                 <div class="card-body">
-                    <!-- Status and Network -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         @{
-                            var statusClass = item.Status.ToString() == "Active" ? "status-active" : 
-                                             item.Status.ToString() == "Frozen" ? "status-frozen" : "status-deleted";
-                            var statusIcon = item.Status.ToString() == "Active" ? "fas fa-check-circle" : 
-                                            item.Status.ToString() == "Frozen" ? "fas fa-snowflake" : "fas fa-times-circle";
+                            var statusClass = item.Status.ToString() == "Active" ? "status-active" :
+                            item.Status.ToString() == "Frozen" ? "status-frozen" : "status-deleted";
+                            var statusIcon = item.Status.ToString() == "Active" ? "fas fa-check-circle" :
+                            item.Status.ToString() == "Frozen" ? "fas fa-snowflake" : "fas fa-times-circle";
                         }
                         <span class="status-badge @statusClass">
                             <i class="@statusIcon"></i>
                             @Html.DisplayFor(modelItem => item.Status)
                         </span>
-                        
+
                         <span class="network-type">
                             <i class="fas fa-signal"></i>
                             @Html.DisplayFor(modelItem => item.NetworkType)
                         </span>
                     </div>
 
-                    <!-- Info Grid -->
                     <div class="card-info-grid">
                         <div class="info-item">
                             <span class="info-label">
@@ -643,7 +636,7 @@
                             </span>
                             <span class="info-value balance">@Html.DisplayFor(modelItem => item.CurrentBalance)</span>
                         </div>
-                        
+
                         <div class="info-item">
                             <span class="info-label">
                                 <i class="fas fa-calendar-day"></i>
@@ -651,7 +644,7 @@
                             </span>
                             <span class="info-value">@Html.DisplayFor(modelItem => item.DailyLimit)</span>
                         </div>
-                        
+
                         <div class="info-item">
                             <span class="info-label">
                                 <i class="fas fa-calendar"></i>
@@ -661,15 +654,14 @@
                         </div>
                     </div>
 
-                    <!-- Progress Bars -->
                     <div class="progress-section">
                         <div class="progress-title">
                             <i class="fas fa-chart-pie"></i>
                             النسبة المتبقية يوميًا
                         </div>
                         @{
-                            var dailyClass = item.DailyRemainingPercentage > 50 ? "" : 
-                                            item.DailyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                            var dailyClass = item.DailyRemainingPercentage > 50 ? "" :
+                            item.DailyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
                         }
                         <div class="progress-container">
                             <div class="progress-bar-custom @dailyClass" style="width: @item.DailyRemainingPercentage%;">
@@ -684,8 +676,8 @@
                             النسبة المتبقية شهريًا
                         </div>
                         @{
-                            var monthlyClass = item.MonthlyRemainingPercentage > 50 ? "" : 
-                                              item.MonthlyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                            var monthlyClass = item.MonthlyRemainingPercentage > 50 ? "" :
+                            item.MonthlyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
                         }
                         <div class="progress-container">
                             <div class="progress-bar-custom @monthlyClass" style="width: @item.MonthlyRemainingPercentage%;">
@@ -695,7 +687,6 @@
                     </div>
                 </div>
 
-                <!-- Card Actions -->
                 <div class="card-actions">
                     <a asp-action="Withdraw" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="btn-sm-custom btn-info-sm">
                         <i class="fas fa-arrow-down"></i>
@@ -711,43 +702,44 @@
                     </a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-sm-custom btn-warning-sm">
+                        <a asp-action="Edit" asp-controller="cashLines" asp-route-id="@item.Id" class="btn-sm-custom btn-warning-sm">
                             <i class="fas fa-edit"></i>
                             تعديل
                         </a>
-                        if (item.Status != CashManagement.Models.AccountStatus.Deleted)
-                        {
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخط؟');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-sm-custom btn-danger-sm">
-                                    <i class="fas fa-trash"></i>
-                                    حذف
-                                </button>
-                            </form>
-                        }
-                        if (item.Status == CashManagement.Models.AccountStatus.Active)
-                        {
-                            <form asp-action="Freeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من تجميد هذا الخط؟');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-sm-custom btn-secondary-sm">
-                                    <i class="fas fa-snowflake"></i>
-                                    تجميد
-                                </button>
-                            </form>
-                        }
-                        else if (item.Status == CashManagement.Models.AccountStatus.Frozen)
-                        {
-                            <form asp-action="Unfreeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من فك تجميد هذا الخط؟');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-sm-custom btn-success-sm">
-                                    <i class="fas fa-unlock"></i>
-                                    فك التجميد
-                                </button>
-                            </form>
-                        }
+                       
+                    if (item.Status != CashManagement.Models.AccountStatus.Deleted)
+                    {
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخط؟');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-sm-custom btn-danger-sm">
+                        <i class="fas fa-trash"></i>
+                        حذف
+                    </button>
+                </form>
+    }
+                    if (item.Status == CashManagement.Models.AccountStatus.Active)
+                    {
+                <form asp-action="Freeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من تجميد هذا الخط؟');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-sm-custom btn-secondary-sm">
+                        <i class="fas fa-snowflake"></i>
+                        تجميد
+                    </button>
+                </form>
+}
+                    else if (item.Status == CashManagement.Models.AccountStatus.Frozen)
+{
+                <form asp-action="Unfreeze" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من فك تجميد هذا الخط؟');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-sm-custom btn-success-sm">
+                        <i class="fas fa-unlock"></i>
+                        فك التجميد
+                    </button>
+                </form>
+}
                     }
-                </div>
             </div>
+        </div>
         }
     </div>
 </div>
@@ -755,34 +747,34 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // إضافة تأثير بصري للأزرار عند الإرسال
+            // Add visual effect to buttons on submission
             $("form").submit(function () {
                 var submitBtn = $(this).find("button[type='submit']");
                 var originalText = submitBtn.html();
-                
+
                 submitBtn.addClass("btn-loading");
                 submitBtn.prop("disabled", true);
-                
-                // إعادة تفعيل الزر بعد 3 ثواني في حالة عدم الانتقال
-                setTimeout(function() {
+
+                // Re-enable button after 3 seconds if no navigation occurs
+                setTimeout(function () {
                     submitBtn.removeClass("btn-loading");
                     submitBtn.prop("disabled", false);
                     submitBtn.html(originalText);
                 }, 3000);
             });
 
-            // تحسين تجربة المستخدم للكروت
+            // Enhance user experience for cards
             $('.cash-line-card').hover(
-                function() {
+                function () {
                     $(this).addClass('card-hover-effect');
                 },
-                function() {
+                function () {
                     $(this).removeClass('card-hover-effect');
                 }
             );
 
-            // إضافة تأثيرات التحريك للكروت عند التحميل
-            $('.cash-line-card').each(function(index) {
+            // Add animation effects to cards on load
+            $('.cash-line-card').each(function (index) {
                 $(this).css('animation-delay', (index * 0.1) + 's');
             });
         });

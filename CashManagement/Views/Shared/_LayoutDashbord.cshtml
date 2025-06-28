@@ -13,30 +13,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1E3A8A;
-            --secondary-color: #3B82F6;
-            --background-color: #0F172A;
-            --surface-color: #1E293B;
-            --accent-color: #34D399;
-            --error-color: #F87171;
-            --warning-color: #FBBF24;
-            --success-color: #10B981;
-            --text-color: #F8FAFC;
-            --text-secondary: #CBD5E1;
-            --border-color: rgba(59, 130, 246, 0.2);
+            --base-background-color: #FDFDFD; /* عاجي فاتح */
+            --primary-element-color: #1D4ED8; /* أزرق نيلي */
+            --primary-text-color: #111827; /* أسود ناعم */
+            --secondary-element-color: #FACC15; /* ذهبي ناعم */
+            --header-footer-color: #F3F4F6; /* رمادي فاتح جدًا */
+            /* Re-mapping to existing variable names for easier integration */
+            --primary-color: var(--primary-element-color);
+            --secondary-color: var(--secondary-element-color);
+            --background-color: var(--base-background-color);
+            --surface-color: #FDFDFD; /* لون قريب من الخلفية لكن أغمق قليلاً للأسطح - تم تعديله للعاجي الفاتح */
+            --accent-color: #FACC15; /* استخدام الذهبي الناعم كـ accent */
+            --error-color: #EF4444; /* أحمر للأخطاء (لم يتغير) */
+            --warning-color: #FBBF24; /* ذهبي ناعم للتحذيرات (لم يتغير) */
+            --text-color: var(--primary-text-color);
+            --text-secondary: #4B5563; /* رمادي أغمق قليلاً للنصوص الثانوية */
+            --border-color: rgba(29, 78, 216, 0.2); /* استخدام primary-element-color لشفافية الحدود */
+
             --sidebar-width: 280px;
             --sidebar-collapsed-width: 70px;
             --header-height: 80px;
             --border-radius: 16px;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
-            --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.35);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.2);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            --gradient-surface: linear-gradient(135deg, var(--surface-color) 0%, #334155 100%);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #3B82F6 100%); /* تدرج لوني يعتمد على الأزرق النيلي */
+            --gradient-surface: linear-gradient(135deg, var(--background-color) 0%, var(--surface-color) 100%); /* تدرج لوني للخلفية */
+            --glass-bg: rgba(253, 253, 253, 0.6); /* تأثير زجاجي فاتح - تم تعديله للعاجي الفاتح */
+            --glass-border: rgba(29, 78, 216, 0.3); /* حدود بتأثير زجاجي باستخدام الأزرق النيلي */
         }
 
         * {
@@ -49,7 +55,7 @@
             height: 100vh;
             overflow-x: hidden;
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, var(--background-color) 0%, #1E293B 50%, #334155 100%);
+            background: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
             direction: rtl;
@@ -62,8 +68,8 @@
             right: 0;
             left: 0;
             height: var(--header-height);
-            background: #1E3A8A;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            background: var(--header-footer-color);
+            box-shadow: var(--shadow-md);
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
         }
@@ -97,8 +103,8 @@
 
         .sidebar-toggle {
             background: transparent;
-            border: 1px solid rgba(243, 244, 246, 0.2);
-            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text-color);
             border-radius: 12px;
             padding: 12px;
             cursor: pointer;
@@ -112,7 +118,7 @@
         }
 
             .sidebar-toggle:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(29, 78, 216, 0.1); /* hover effect using primary color */
                 transform: scale(1.05);
             }
 
@@ -127,12 +133,12 @@
             font-family: 'Cairo', sans-serif;
             font-size: 1.4rem;
             font-weight: 700;
-            color: #F3F4F6;
+            color: var(--primary-text-color);
             letter-spacing: 0.5px;
             padding: 5px 10px;
             border-radius: 8px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: relative;
             display: inline-block;
         }
@@ -144,7 +150,7 @@
                 left: 0;
                 width: 100%;
                 height: 3px;
-                background: linear-gradient(90deg, #34D399 0%, #3B82F6 100%);
+                background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
                 transform: scaleX(1);
                 transform-origin: left;
                 transition: transform 0.3s ease;
@@ -160,8 +166,8 @@
         .notification-bell {
             position: relative;
             background: transparent;
-            border: 1px solid rgba(243, 244, 246, 0.2);
-            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text-color);
             border-radius: 12px;
             padding: 12px;
             cursor: pointer;
@@ -175,7 +181,7 @@
         }
 
             .notification-bell:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(29, 78, 216, 0.1); /* hover effect using primary color */
                 transform: scale(1.05);
             }
 
@@ -208,8 +214,8 @@
 
             .user-identity-links .nav-item .nav-link {
                 background: transparent;
-                border: 1px solid rgba(243, 244, 246, 0.2);
-                color: var(--text-color);
+                border: 1px solid var(--border-color);
+                color: var(--primary-text-color);
                 border-radius: 12px;
                 padding: 8px 16px;
                 transition: var(--transition);
@@ -222,7 +228,7 @@
             }
 
                 .user-identity-links .nav-item .nav-link:hover {
-                    background: rgba(255, 255, 255, 0.1);
+                    background: rgba(29, 78, 216, 0.1); /* hover effect using primary color */
                     transform: translateY(-2px);
                     box-shadow: var(--shadow-sm);
                 }
@@ -234,7 +240,7 @@
                 .user-identity-links .nav-item form .btn {
                     background: none;
                     border: none;
-                    color: var(--text-color);
+                    color: var(--primary-text-color);
                     padding: 0;
                     font-weight: 500;
                     font-size: 0.95rem;
@@ -247,7 +253,7 @@
                 }
 
                     .user-identity-links .nav-item form .btn:hover {
-                        color: var(--accent-color);
+                        color: var(--primary-color);
                         transform: translateY(-2px);
                     }
 
@@ -279,7 +285,7 @@
             }
 
             .sidebar::-webkit-scrollbar-thumb {
-                background: var(--secondary-color);
+                background: var(--primary-color);
                 border-radius: 3px;
             }
 
@@ -298,7 +304,7 @@
         .sidebar-title {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--secondary-color);
+            color: var(--primary-color);
             margin: 0;
             letter-spacing: 1px;
             transition: var(--transition);
@@ -328,7 +334,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            color: var(--text-color);
+            color: var(--primary-text-color);
             text-decoration: none;
             padding: 16px 20px;
             border-radius: var(--border-radius);
@@ -337,6 +343,17 @@
             position: relative;
             overflow: hidden;
         }
+        /* Sidebar nav-header (category titles) */
+        .sidebar-menu .nav-header {
+            color: var(--text-secondary) !important;
+            border-bottom-color: rgba(17, 24, 39, 0.2) !important; /* using primary text for border with transparency */
+            padding: 0 16px;
+        }
+
+        .sidebar.collapsed .sidebar-menu .nav-header {
+            display: none;
+        }
+
 
         .sidebar.collapsed .sidebar-menu a {
             padding: 16px 12px;
@@ -350,7 +367,7 @@
             top: 0;
             height: 100%;
             width: 4px;
-            background: var(--accent-color);
+            background: var(--primary-color);
             transform: scaleY(0);
             transition: var(--transition);
         }
@@ -362,13 +379,19 @@
 
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            background: rgba(29, 78, 216, 0.1); /* Using primary color with transparency for hover/active */
+            backdrop-filter: blur(5px);
             border: 1px solid var(--glass-border);
-            color: #ffffff;
+            color: var(--primary-text-color);
             transform: translateX(-8px);
             box-shadow: var(--shadow-md);
         }
+
+        .sidebar-menu a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
 
         .sidebar.collapsed .sidebar-menu a:hover,
         .sidebar.collapsed .sidebar-menu a.active {
@@ -386,7 +409,7 @@
         .sidebar-menu a:hover i,
         .sidebar-menu a.active i {
             opacity: 1;
-            color: var(--accent-color);
+            color: var(--primary-color);
             transform: scale(1.1);
         }
 
@@ -405,9 +428,10 @@
             width: var(--sidebar-width);
             padding: 20px 16px;
             border-top: 1px solid var(--border-color);
-            background: var(--glass-bg);
+            background: var(--header-footer-color);
             backdrop-filter: blur(10px);
             transition: var(--transition);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
         }
 
         .sidebar.collapsed .logout-section {
@@ -418,7 +442,7 @@
         .logout-btn {
             width: 100%;
             padding: 14px 20px;
-            background: linear-gradient(135deg, var(--error-color), #EF4444);
+            background: var(--gradient-primary); /* Using primary gradient for logout */
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -444,7 +468,7 @@
         .logout-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
-            background: linear-gradient(135deg, #EF4444, #DC2626);
+            background: linear-gradient(135deg, #1A44B0, #1D4ED8); /* Darker shade of primary blue on hover */
         }
 
         /* Main Content Styling */
@@ -453,7 +477,7 @@
             margin-top: var(--header-height);
             min-height: calc(100vh - var(--header-height));
             padding: 32px;
-            background: rgba(15, 23, 42, 0.3);
+            background: var(--background-color);
             transition: var(--transition);
         }
 
@@ -492,6 +516,8 @@
             .logout-section {
                 position: absolute;
                 width: 100%;
+                bottom: 0;
+                left: 0;
             }
         }
 
@@ -523,8 +549,8 @@
             right: 100%;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--surface-color);
-            color: var(--text-color);
+            background: var(--primary-element-color);
+            color: white;
             padding: 8px 12px;
             border-radius: 8px;
             font-size: 0.85rem;
@@ -534,7 +560,7 @@
             transition: var(--transition);
             z-index: 1000;
             box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255,255,255,0.2);
             margin-right: 10px;
         }
 
@@ -678,7 +704,6 @@
         </div>
 
         <ul class="sidebar-menu">
-            <!-- الصفحة الرئيسية -->
             <li class="nav-item">
                 <a href="/home/index" class="nav-link active" title="الصفحة الرئيسية">
                     <i class="fas fa-home"></i>
@@ -687,8 +712,7 @@
                 </a>
             </li>
 
-            <!-- إدارة المستخدمين -->
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة المستخدمين</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">إدارة المستخدمين</li>
             <li class="nav-item">
                 <a href="/EmployeeDashboard/index" class="nav-link" title="نظرة عامة على الموظفين">
                     <i class="fas fa-user-tie"></i>
@@ -711,8 +735,7 @@
                 </a>
             </li>
 
-            <!-- إدارة الخطوط -->
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة الخطوط</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">إدارة الخطوط</li>
             <li class="nav-item">
                 <a href="/cashLines/index" class="nav-link" title="عرض جميع الخطوط">
                     <i class="fas fa-phone-square"></i>
@@ -728,8 +751,7 @@
                 </a>
             </li>
 
-            <!-- إدارة الكاش -->
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة الكاش</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">إدارة الكاش</li>
             <li class="nav-item">
                 <a href="/CashTransactions/TransactionsDashboard" class="nav-link" title="لوحة تحكم الكاش">
                     <i class="fas fa-tachometer-alt"></i>
@@ -745,8 +767,7 @@
                 </a>
             </li>
 
-            <!-- العمليات النقدية -->
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">العمليات النقدية</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">العمليات النقدية</li>
             <li class="nav-item">
                 <a href="/PhysicalCash/index" class="nav-link" title="جميع العمليات النقدية">
                     <i class="fas fa-wallet"></i>
@@ -769,8 +790,7 @@
                 </a>
             </li>
 
-            <!-- إدارة إنستا باي -->
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">إدارة إنستا باي</li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">إدارة إنستا باي</li>
             <li class="nav-item">
                 <a href="/InstaPay/SearchAccounts" class="nav-link" title="البحث عن حسابات إنستا باي">
                     <i class="fas fa-search"></i>
@@ -792,25 +812,25 @@
                     <div class="tooltip">عمليات إنستا باي</div>
                 </a>
             </li>
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">
                 إدارة دفتر الحسابات
             </li>
 
-                <li class="nav-item">
-                    <a href="/Suppliers/Index" class="nav-link" title="دفتر الحسابات">
-                        <i class="fas fa-book fa-fw me-2"></i>
-                        <span>دفتر الحسابات</span>
-                        <div class="tooltip">دفتر الحسابات</div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/Suppliers/Create" class="nav-link" title="إضافة مورد أو عميل">
-                        <i class="fas fa-user-plus fa-fw me-2"></i>
-                        <span>إضافة مورد أو عميل</span>
-                        <div class="tooltip">إضافة مورد أو عميل</div>
-                    </a>
-                </li>
-            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+            <li class="nav-item">
+                <a href="/Suppliers/Index" class="nav-link" title="دفتر الحسابات">
+                    <i class="fas fa-book fa-fw me-2"></i>
+                    <span>دفتر الحسابات</span>
+                    <div class="tooltip">دفتر الحسابات</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Suppliers/Create" class="nav-link" title="إضافة مورد أو عميل">
+                    <i class="fas fa-user-plus fa-fw me-2"></i>
+                    <span>إضافة مورد أو عميل</span>
+                    <div class="tooltip">إضافة مورد أو عميل</div>
+                </a>
+            </li>
+            <li class="nav-header text-uppercase text-muted font-weight-bold mt-4 mb-2" style="font-size: 14px; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">
                 سجل التدقيق
             </li>
 
@@ -822,7 +842,7 @@
                 </a>
             </li>
 
-            </ul>
+        </ul>
         <div class="logout-section">
             <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="logout-btn" title="تسجيل الخروج">
@@ -919,54 +939,6 @@
                 }
             });
 
-            // --- Search Functionality ---
-            if (searchForm && searchInput) {
-                searchForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    const query = searchInput.value.trim();
-                    if (query) {
-                        // Apply fade-out transition before redirect
-                        document.body.style.opacity = '0';
-                        setTimeout(() => {
-                            // Redirect to search results page with query parameter
-                            window.location.href = `/search?query=${encodeURIComponent(query)}`;
-                        }, 300);
-                    }
-                });
-
-                // Optional: Clear active link when search is active
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('query')) {
-                    sidebarLinks.forEach(l => l.classList.remove('active'));
-                }
-            }
-
-            // --- Page transition effect ---
-            const navLinks = document.querySelectorAll('a[href^="/"]:not([data-no-transition])');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    if (!this.getAttribute('href').startsWith('#') && !this.closest('form')) {
-                        e.preventDefault();
-                        document.body.style.opacity = '0';
-                        setTimeout(() => {
-                            window.location.href = this.getAttribute('href');
-                        }, 300);
-                    }
-                });
-            });
-
-            // Restore opacity on page load
-            window.addEventListener('load', () => {
-                document.body.style.transition = 'opacity 0.3s ease-in-out';
-                document.body.style.opacity = '1';
-            });
-
-            // Initialize sidebar state on page load
-            if (isMobile) {
-                sidebar.classList.remove('collapsed');
-                mainContent.classList.remove('sidebar-collapsed');
-            }
-        });
     </script>
 </body>
 </html>

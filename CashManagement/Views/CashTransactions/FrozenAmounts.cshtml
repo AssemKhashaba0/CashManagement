@@ -3,58 +3,409 @@
 @{
     ViewData["Title"] = "المبالغ المجمدة";
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<h1>المبالغ المجمدة</h1>
+<style>
+    /* Custom Colors - As per the specified theme */
+    :root {
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray */
+        --accent-color: #059669; /* A nice green for success/deposit */
+        --error-color: #DC2626; /* A strong red for errors */
+        --info-color: #2563EB; /* A standard blue for info/withdraw */
+        --border-color: #D1D5DB; /* Lighter gray for borders */
+        --card-bg: #FFFFFF; /* White for cards */
+        --muted-color: #6B7280; /* Muted gray for secondary text */
+        --warning-color: #D97706; /* Orange for warnings */
+    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl; /* Ensure Right-to-Left for Arabic */
+    }
 
-<p>
-    <a asp-action="ResetMonthlyLimits" class="btn btn-info" onclick="return confirm('هل أنت متأكد من إعادة تعيين الحدود الشهرية وفك تجميد المبالغ؟')">إعادة تعيين الحدود الشهرية</a>
-</p>
+    /* Page Title */
+    h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>رقم العملية</th>
-            <th>رقم الخط</th>
-            <th>المبلغ</th>
-            <th>الرسوم</th>
-            <th>المبلغ الصافي</th>
-            <th>نوع العملية</th>
-            <th>الحالة</th>
-            <th>تاريخ الإنشاء</th>
-            <th>الإجراءات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                <td>@Html.DisplayFor(modelItem => item.CashLinePhoneNumber)</td>
-                <td>@Html.DisplayFor(modelItem => item.Amount)</td>
-                <td>@Html.DisplayFor(modelItem => item.Fees)</td>
-                <td>@Html.DisplayFor(modelItem => item.NetAmount)</td>
-                <td>@Html.DisplayFor(modelItem => item.TransactionType)</td>
-                <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">التفاصيل</a>
-                </td>
-            </tr>
+        h1::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
         }
-    </tbody>
-</table>
 
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+    /* Alert Styles */
+    .alert {
+        border-radius: 12px;
+        padding: 18px 24px;
+        margin-bottom: 25px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        color: white; /* Ensure text is white for contrast */
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, var(--accent-color), #16A34A);
+    }
+
+        .alert-success .fa-check-circle {
+            font-size: 1.3rem;
+        }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+    }
+
+        .alert-danger .fa-exclamation-triangle {
+            font-size: 1.3rem;
+        }
+
+    /* Buttons */
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: white; /* Default to white text for contrast on gradients */
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info-color), #3B82F6); /* Using info color for the primary action button */
+    }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            color: white; /* Keep text white on hover */
+        }
+
+    .btn-secondary {
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+
+        .btn-secondary:hover {
+            background: var(--muted-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
+        }
+
+    .btn-sm {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+
+    /* Table Styling */
+    .table {
+        width: 100%;
+        margin-top: 25px;
+        border-collapse: separate; /* Allows for border-radius on cells */
+        border-spacing: 0; /* Remove default spacing */
+        border-radius: 15px; /* Overall table border radius */
+        overflow: hidden; /* Ensures content respects border-radius */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+        .table th,
+        .table td {
+            padding: 15px 20px;
+            text-align: right; /* RTL alignment */
+            border: 1px solid var(--border-color);
+        }
+
+        .table thead th {
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color)); /* Gradient header */
+            color: white;
+            font-weight: 600;
+            font-size: 1.05rem;
+            vertical-align: middle;
+        }
+
+        /* Rounded corners for table header (top only) */
+        .table thead tr:first-child th:first-child {
+            border-top-right-radius: 15px;
+        }
+
+        .table thead tr:first-child th:last-child {
+            border-top-left-radius: 15px;
+        }
+
+
+        .table tbody tr {
+            background-color: var(--card-bg); /* White background for rows */
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+            .table tbody tr:hover {
+                background-color: var(--header-sidebar-bg); /* Light hover effect */
+                transform: translateY(-2px);
+            }
+
+        .table tbody td {
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+    /* Status specific styling (ensure these match your model's actual status values if different from the example below) */
+    .status-frozen { /* Assuming a status like 'Frozen' for these amounts */
+        color: var(--error-color);
+        font-weight: bold;
+    }
+
+    .status-unfrozen {
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+
+    /* Font Awesome Icons for table headers */
+    .table th:nth-child(1)::before {
+        content: '\f02b';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* ID */
+    .table th:nth-child(2)::before {
+        content: '\f095';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Phone */
+    .table th:nth-child(3)::before {
+        content: '\f155';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Amount */
+    .table th:nth-child(4)::before {
+        content: '\f53a';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Fees */
+    .table th:nth-child(5)::before {
+        content: '\f53b';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Net Amount */
+    .table th:nth-child(6)::before {
+        content: '\f0ec';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Transaction Type */
+    .table th:nth-child(7)::before {
+        content: '\f05a';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Status */
+    .table th:nth-child(8)::before {
+        content: '\f073';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Created At */
+    .table th:nth-child(9)::before {
+        content: '\f0ae';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-left: 8px;
+    }
+    /* Actions */
+
+
+    /* Responsive Table */
+    @@media (max-width: 992px) {
+        .table thead {
+            display: none; /* Hide table header on small screens */
+        }
+
+        .table, .table tbody, .table tr, .table td {
+            display: block; /* Make table elements behave like blocks */
+            width: 100%;
+        }
+
+            .table tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 15px;
+                overflow: hidden;
+            }
+
+            .table td {
+                text-align: right;
+                border: none;
+                position: relative;
+                padding-right: 50%; /* Space for pseudo-element label */
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+                .table td::before {
+                    content: attr(data-label); /* Use data-label for content */
+                    position: absolute;
+                    right: 15px;
+                    width: 45%;
+                    padding-left: 10px;
+                    font-weight: 600;
+                    color: var(--primary-color);
+                    text-align: right;
+                    white-space: nowrap;
+                }
+        /* Specific data-labels for responsive table */
+        td:nth-of-type(1)::before {
+            content: "رقم العملية:";
+        }
+
+        td:nth-of-type(2)::before {
+            content: "رقم الخط:";
+        }
+
+        td:nth-of-type(3)::before {
+            content: "المبلغ:";
+        }
+
+        td:nth-of-type(4)::before {
+            content: "الرسوم:";
+        }
+
+        td:nth-of-type(5)::before {
+            content: "المبلغ الصافي:";
+        }
+
+        td:nth-of-type(6)::before {
+            content: "نوع العملية:";
+        }
+
+        td:nth-of-type(7)::before {
+            content: "الحالة:";
+        }
+
+        td:nth-of-type(8)::before {
+            content: "تاريخ الإنشاء:";
+        }
+
+        td:nth-of-type(9)::before {
+            content: "الإجراءات:";
+        }
+        /* Actions column adjustment for small screens */
+        .table td:last-child {
+            text-align: center;
+            padding-right: 15px; /* Reset padding for action buttons */
+        }
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-lock"></i> المبالغ المجمدة</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <p>
+        <a asp-action="ResetMonthlyLimits" class="btn btn-info" onclick="return confirm('هل أنت متأكد من إعادة تعيين الحدود الشهرية وفك تجميد المبالغ؟')">
+            <i class="fas fa-redo"></i> إعادة تعيين الحدود الشهرية
+        </a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>رقم العملية</th>
+                    <th>رقم الخط</th>
+                    <th>المبلغ</th>
+                    <th>الرسوم</th>
+                    <th>المبلغ الصافي</th>
+                    <th>نوع العملية</th>
+                    <th>الحالة</th>
+                    <th>تاريخ الإنشاء</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="رقم العملية">@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td data-label="رقم الخط">@Html.DisplayFor(modelItem => item.CashLinePhoneNumber)</td>
+                        <td data-label="المبلغ">@Html.DisplayFor(modelItem => item.Amount)</td>
+                        <td data-label="الرسوم">@Html.DisplayFor(modelItem => item.Fees)</td>
+                        <td data-label="المبلغ الصافي">@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                        <td data-label="نوع العملية">@Html.DisplayFor(modelItem => item.TransactionType)</td>
+                        <td data-label="الحالة">
+                            <span class="status-@(item.Status.ToString().ToLower())">
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </span>
+                        </td>
+                        <td data-label="تاريخ الإنشاء">@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                        <td data-label="الإجراءات">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                <i class="fas fa-info-circle"></i> التفاصيل
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3 text-center">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> رجوع
+        </a>
+    </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

@@ -5,150 +5,129 @@
 }
 
 <style>
-    /* الألوان الأساسية */
+    /* Custom Colors - As per the specified theme */
     :root {
-        --primary-color: #1E3A8A;
-        --secondary-color: #3B82F6;
-        --background-color: #1F2937;
-        --accent-color: #34D399;
-        --error-color: #F87171;
-        --text-color: #F3F4F6;
-        --card-bg: #374151;
-        --border-color: #4B5563;
-        --success-color: #10B981;
-        --warning-color: #F59E0B;
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray */
+        --accent-color: #059669; /* A nice green for success/deposit */
+        --error-color: #DC2626; /* A strong red for errors */
+        --info-color: #2563EB; /* A standard blue for info/withdraw */
+        --border-color: #D1D5DB; /* Lighter gray for borders */
+        --card-bg: #FFFFFF; /* White for cards */
+        --muted-color: #6B7280; /* Muted gray for secondary text */
+        --warning-color: #D97706; /* Orange for warnings */
     }
 
-    /* تحسين الصفحة العامة */
+    /* General Page Styling */
     .details-container {
-        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        background-color: var(--background-color);
         min-height: 100vh;
         padding: 30px;
         color: var(--text-color);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        position: relative;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl; /* Ensure Right-to-Left for Arabic */
     }
 
-    /* عنوان الصفحة */
+    /* Page Title */
     .page-title {
         text-align: center;
         margin-bottom: 40px;
-        position: relative;
-        z-index: 1;
     }
 
         .page-title h1 {
-            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color), var(--primary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 3rem;
+            color: var(--primary-color);
+            font-size: 2.5rem;
             font-weight: bold;
             margin: 0;
-            text-shadow: 0 0 15px rgba(52, 211, 153, 0.2); /* تأثير خفيف */
+            position: relative;
+            padding-bottom: 10px;
         }
 
-    /* رسائل التنبيه */
+            .page-title h1::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                bottom: 0;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+                border-radius: 2px;
+            }
+
+    /* Alert Messages */
     .alert {
-        border-radius: 15px;
-        padding: 15px 20px;
+        border-radius: 12px;
+        padding: 18px 24px;
         margin-bottom: 25px;
         border: none;
-        font-weight: 600;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        transition: transform 0.3s ease-out; /* انتقال بسيط عند الظهور */
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        color: white; /* Ensure text is white for contrast */
     }
-
-        .alert:hover {
-            transform: translateY(-3px);
-        }
 
     .alert-success {
-        background: linear-gradient(135deg, var(--success-color), var(--accent-color));
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color), #16A34A);
     }
 
-        .alert-success::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
+        .alert-success .fa-check-circle { /* Target icon within alert */
+            font-size: 1.3rem;
         }
 
     .alert-danger {
         background: linear-gradient(135deg, var(--error-color), #EF4444);
-        color: white;
     }
 
-        .alert-danger::after {
-            content: '\f071';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
+        .alert-danger .fa-exclamation-triangle { /* Target icon within alert */
+            font-size: 1.3rem;
         }
 
-    /* البطاقة الرئيسية */
+    /* Main Details Card */
     .details-card {
-        background: rgba(55, 65, 81, 0.95);
+        background-color: var(--card-bg);
         border: 1px solid var(--border-color);
-        border-radius: 20px;
-        backdrop-filter: blur(10px); /* تأثير ضبابي أخف */
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         overflow: hidden;
-        position: relative;
-        z-index: 1;
-        transition: transform 0.5s ease-out, box-shadow 0.5s ease-out; /* انتقال بسيط عند الظهور */
     }
 
-        .details-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-    /* رأس البطاقة */
-    .card-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        padding: 20px 25px;
-        border-radius: 20px 20px 0 0;
-        position: relative;
-    }
-
-        .card-header h4 {
-            margin: 0;
-            font-size: 1.6rem;
-            font-weight: 700;
+        .details-card .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color)); /* Using info-color for a nice gradient */
+            color: white;
+            padding: 20px 25px;
+            border-bottom: none;
+            font-size: 1.3rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-            .card-header h4::before {
-                content: '\f0f6';
-                font-family: 'Font Awesome 5 Free';
-                font-weight: 900;
-                font-size: 1.3rem;
-                color: var(--accent-color);
+            .details-card .card-header h4 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
-    /* محتوى البطاقة */
-    .card-body {
-        padding: 30px 25px;
-        position: relative;
-    }
+            .details-card .card-header .fa-file-alt { /* Icon for card header */
+                color: var(--secondary-color); /* Soft Gold for contrast */
+                font-size: 1.5rem;
+            }
 
-    /* تحسين قائمة التفاصيل */
+        .details-card .card-body {
+            padding: 25px;
+        }
+
+    /* Details List Styling */
     .details-list {
         margin: 0;
         padding: 0;
@@ -157,23 +136,20 @@
         .details-list .row {
             margin-bottom: 15px;
             padding: 12px 18px;
-            border-radius: 12px;
-            background: rgba(31, 41, 55, 0.6);
+            border-radius: 10px;
+            background-color: var(--header-sidebar-bg); /* Use very light gray for row background */
             border: 1px solid var(--border-color);
-            transition: all 0.2s ease; /* انتقال أسرع وأبسط */
-            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
             .details-list .row:hover {
-                background: rgba(52, 211, 153, 0.1);
-                border-color: var(--accent-color);
-                transform: translateX(5px); /* حركة بسيطة عند الهوفر */
-                box-shadow: 0 5px 15px rgba(52, 211, 153, 0.1);
+                background-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.05); /* Slight tint on hover */
+                border-color: var(--primary-color);
             }
 
         .details-list dt {
-            color: var(--accent-color);
-            font-weight: 700;
+            color: var(--primary-color); /* Use primary color for labels */
+            font-weight: 600;
             font-size: 1rem;
             display: flex;
             align-items: center;
@@ -186,135 +162,130 @@
             font-size: 1rem;
             font-weight: 500;
             margin-bottom: 0;
-            background: rgba(15, 23, 42, 0.5);
             padding: 6px 12px;
+            background-color: var(--card-bg); /* Use card background for data values */
             border-radius: 8px;
-            border: 1px solid rgba(75, 85, 99, 0.3);
+            border: 1px solid var(--border-color);
         }
 
-        /* أيقونات مخصصة لكل نوع (احتفظ بها لتعزيز المعنى) */
+        /* Specific Icons for each detail row */
         .details-list .row:nth-child(1) dt::before {
-            content: '\f292';
+            content: '\f02b';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Tag for ID */
         .details-list .row:nth-child(2) dt::before {
             content: '\f095';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Phone for Cash Line */
         .details-list .row:nth-child(3) dt::before {
             content: '\f155';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Dollar sign for Amount */
         .details-list .row:nth-child(4) dt::before {
-            content: '\f3d1';
+            content: '\f53a';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Sack dollar for Fees */
         .details-list .row:nth-child(5) dt::before {
-            content: '\f0d6';
+            content: '\f53b';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Hand holding dollar for Net Amount */
         .details-list .row:nth-child(6) dt::before {
-            content: '\f201';
+            content: '\f295';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Percent for Commission Rate */
         .details-list .row:nth-child(7) dt::before {
             content: '\f0ec';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Exchange alt for Transaction Type */
         .details-list .row:nth-child(8) dt::before {
-            content: '\f3ed';
+            content: '\f51e';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Cash register for Deposit Type */
         .details-list .row:nth-child(9) dt::before {
-            content: '\f2bb';
+            content: '\f007';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* User for Recipient Number */
         .details-list .row:nth-child(10) dt::before {
-            content: '\f036';
+            content: '\f075';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Comment for Description */
         .details-list .row:nth-child(11) dt::before {
             content: '\f05a';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Info circle for Status */
         .details-list .row:nth-child(12) dt::before {
-            content: '\f007';
+            content: '\f0c0';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
-
+        /* Users for User Name */
         .details-list .row:nth-child(13) dt::before {
-            content: '\f017';
+            content: '\f073';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
         }
+    /* Calendar alt for Created At */
 
-    /* زر الرجوع */
+    /* Back Button */
     .back-button-container {
         text-align: center;
-        margin-top: 30px;
-        position: relative;
-        z-index: 1;
+        margin-top: 40px;
     }
 
     .btn-back {
-        background: linear-gradient(135deg, #6B7280, #4B5563);
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 20px;
-        font-size: 1.1rem;
+        background: var(--header-sidebar-bg); /* Use header/sidebar background */
+        color: var(--text-color); /* Soft Black text */
+        border: 1px solid var(--border-color);
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 1rem;
         font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        transition: all 0.2s ease; /* انتقال بسيط */
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        gap: 8px;
+        transition: all 0.3s ease;
     }
 
         .btn-back:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(135deg, #4B5563, #374151);
-            color: white;
-            text-decoration: none;
+            background-color: var(--muted-color); /* Muted gray on hover */
+            color: white; /* White text on hover for better contrast */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
+            text-decoration: none; /* Ensure no underline on hover */
         }
 
-        .btn-back::after {
-            content: '\f060';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
+        .btn-back .fa-arrow-left {
             transition: transform 0.2s ease;
         }
 
-        .btn-back:hover::after {
+        .btn-back:hover .fa-arrow-left {
             transform: translateX(-3px);
         }
 
-    /* تحسين الاستجابة للشاشات الصغيرة */
+    /* Responsive Adjustments */
     @@media (max-width: 768px) {
         .details-container {
             padding: 15px;
@@ -338,36 +309,36 @@
             font-size: 0.9rem;
         }
 
-        .card-header {
+        .details-card .card-header {
             padding: 15px;
         }
 
-        .card-body {
+        .details-card .card-body {
             padding: 20px 15px;
         }
 
         .btn-back {
-            padding: 10px 25px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            font-size: 0.95rem;
         }
     }
 
-    /* تأثيرات خاصة للحالات المختلفة (احتفظ بها لأنها مفيدة ومرتبطة بالبيانات) */
+    /* Status-specific styling (retained and adjusted to new palette) */
     .status-success {
-        color: var(--success-color) !important;
-        background: rgba(16, 185, 129, 0.1) !important;
-        border-color: var(--success-color) !important;
+        color: var(--accent-color) !important;
+        background-color: rgba(5, 150, 105, 0.1) !important;
+        border-color: var(--accent-color) !important;
     }
 
     .status-error {
         color: var(--error-color) !important;
-        background: rgba(248, 113, 113, 0.1) !important;
+        background-color: rgba(220, 38, 38, 0.1) !important;
         border-color: var(--error-color) !important;
     }
 
     .status-warning {
         color: var(--warning-color) !important;
-        background: rgba(245, 158, 11, 0.1) !important;
+        background-color: rgba(217, 119, 6, 0.1) !important;
         border-color: var(--warning-color) !important;
     }
 </style>
@@ -394,7 +365,7 @@
 
     <div class="card details-card">
         <div class="card-header">
-            <h4> معلومات العملية</h4>
+            <h4><i class="fas fa-file-alt"></i> معلومات العملية</h4>
         </div>
         <div class="card-body">
             <dl class="details-list">
@@ -503,7 +474,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // إظهار tooltip للبيانات الطويلة
+            // Show tooltip for long data
             $('.details-list dd').each(function () {
                 if ($(this).text().length > 50) {
                     $(this).attr('title', $(this).text());

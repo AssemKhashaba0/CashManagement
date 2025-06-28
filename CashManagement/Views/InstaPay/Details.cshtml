@@ -2,74 +2,351 @@
 
 @{
     ViewData["Title"] = "تفاصيل حساب إنستا باي";
+    // Ensure your _LayoutDashbord.cshtml already includes shared CSS variables and Font Awesome
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-4">
-        <h2 class="text-center mb-4">تفاصيل حساب إنستا باي</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>معلومات الحساب</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>رقم الهاتف:</strong> @Model.PhoneNumber</p>
-                <p><strong>اسم البنك:</strong> @Model.BankName</p>
-                <p><strong>رقم الحساب البنكي:</strong> @Model.BankAccountNumber</p>
-                <p><strong>الرصيد الحالي:</strong> @Model.CurrentBalance.ToString("N2")</p>
-                <p><strong>الحالة:</strong> @Model.Status</p>
-                <p><strong>تاريخ الإنشاء:</strong> @Model.CreatedAt.ToString("g")</p>
-                <p><strong>تاريخ آخر تحديث:</strong> @Model.UpdatedAt.ToString("g")</p>
+<style>
+    /* Light Color Palette Variables */
+    :root {
+        --background-color: #FDFDFD; /* Off-white */
+        --primary-color: #1D4ED8; /* Indigo blue */
+        --secondary-color: #FACC15; /* Soft gold */
+        --text-color: #111827; /* Soft black for text */
+        --card-bg: #FFFFFF; /* White for card backgrounds */
+        --header-sidebar-bg: #F3F4F6; /* Very light gray for header/sidebar type elements */
+        --success-color: #10B981; /* Tailwind green-500 */
+        --error-color: #EF4444; /* Tailwind red-500 */
+        --info-color: #3B82F6; /* Tailwind blue-500 */
+        --warning-color: #F59E0B; /* Tailwind amber-500 */
+        --border-color: rgba(0, 0, 0, 0.1); /* Lighter muted border color */
+        --light-text-color: #6B7280; /* Gray for titles/subtitles */
+    }
+
+    /* General Styling */
+    body {
+        background-color: var(--background-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        direction: rtl; /* Ensure Right-to-Left for Arabic */
+        margin: 0; /* Reset default body margin */
+        padding: 0; /* Reset default body padding */
+    }
+
+    /* Custom Card Styling */
+    .custom-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        margin: 3rem auto; /* Center the card and add vertical space */
+        max-width: 800px; /* Wider card for details page */
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden; /* Ensures inner elements respect border-radius */
+    }
+
+    .custom-card .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .custom-card .card-body {
+        padding: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+
+    .info-item strong {
+        color: var(--light-text-color);
+        min-width: 150px; /* Align labels */
+        display: inline-block;
+        font-weight: 600;
+    }
+
+    .info-item i {
+        color: var(--primary-color);
+        margin-left: 10px; /* Space from text for RTL */
+        font-size: 1.1em;
+        width: 25px; /* Fixed width for icon alignment */
+        text-align: center;
+    }
+
+    /* Table Styling */
+    .custom-table-container {
+        overflow-x: auto; /* Enable horizontal scrolling for small screens */
+        margin-top: 2rem;
+        border-radius: 1rem; /* Rounded corners for the container */
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0; /* Remove default table margin */
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 1rem 1.2rem;
+        text-align: right; /* RTL */
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+        white-space: nowrap; /* Prevent text wrapping in table headers/cells */
+    }
+
+    .custom-table thead {
+        background-color: var(--primary-color); /* Dark header background */
+        color: white;
+    }
+
+    .custom-table thead th {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+        background-color: var(--header-sidebar-bg); /* Zebra striping */
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.1); /* Light hover effect */
+        cursor: pointer;
+    }
+
+    /* Status Badges */
+    .badge-status {
+        display: inline-block;
+        padding: 0.4em 0.8em;
+        border-radius: 0.5rem;
+        font-size: 0.85em;
+        font-weight: 600;
+        color: white;
+    }
+
+    .badge-status.active {
+        background-color: var(--success-color);
+    }
+
+    .badge-status.inactive {
+        background-color: var(--error-color);
+    }
+
+    .badge-status.pending {
+        background-color: var(--warning-color);
+    }
+
+    /* Buttons Styling */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary-custom {
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        margin-top: 2rem; /* Spacing from the table */
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        background-color: #E5E7EB; /* Slightly darker on hover */
+        color: var(--text-color);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .custom-card {
+            margin: 1.5rem auto;
+            border-radius: 0; /* Full width on smaller screens, no rounded corners */
+            box-shadow: none; /* No shadow on full width */
+        }
+        .custom-card .card-header {
+            font-size: 1.3rem;
+            padding: 1.2rem 1rem;
+            border-radius: 0; /* Match card */
+            justify-content: center; /* Center header text and icon */
+            text-align: center;
+        }
+        .custom-card .card-body {
+            padding: 1.5rem 1rem;
+        }
+        .info-item {
+            flex-direction: column; /* Stack label and value */
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .info-item strong {
+            min-width: unset;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .info-item i {
+            margin-left: 0;
+            margin-bottom: 0.25rem; /* Space between icon and text */
+            align-self: flex-start;
+        }
+        .custom-table-container {
+            border-radius: 0; /* No rounding for full width */
+            box-shadow: none;
+        }
+        .custom-table th, .custom-table td {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+        .btn {
+            width: 100%;
+            margin-left: 0; /* Remove margin for stacking */
+            margin-bottom: 0.75rem; /* Add margin between stacked buttons */
+            justify-content: center;
+        }
+        .btn:last-child {
+            margin-bottom: 0; /* No bottom margin for the last button */
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .custom-card .card-header {
+            font-size: 1.1rem;
+        }
+        .custom-card .card-body {
+            padding: 1rem 0.8rem;
+        }
+        .info-item {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="custom-card">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="fas fa-info-circle"></i>تفاصيل حساب إنستا باي</h3>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h5 class="mb-3 text-primary"><i class="fas fa-id-card-alt me-2"></i>معلومات الحساب الأساسية</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-phone-alt"></i> <strong>رقم الهاتف:</strong> @Model.PhoneNumber
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-building"></i> <strong>اسم البنك:</strong> @Model.BankName
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-university"></i> <strong>رقم الحساب البنكي:</strong> @Model.BankAccountNumber
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-money-bill-wave"></i> <strong>الرصيد الحالي:</strong> @Model.CurrentBalance.ToString("N2") جنيه
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-toggle-on"></i> <strong>الحالة:</strong>
+                        <span class="badge-status @(Model.Status.ToString().ToLower())">
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-calendar-alt"></i> <strong>تاريخ الإنشاء:</strong> @Model.CreatedAt.ToString("g")
+                    </div>
+                </div>
+                 <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-edit"></i> <strong>تاريخ آخر تحديث:</strong> @Model.UpdatedAt.ToString("g")
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h4 class="mb-3">العمليات المرتبطة</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>نوع العملية</th>
-                    <th>المبلغ</th>
-                    <th>الرسوم</th>
-                    <th>المبلغ النهائي</th>
-                    <th>الحالة</th>
-                    <th>الوصف</th>
-                    <th>تاريخ العملية</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var transaction in Model.InstaPayTransactions)
-                {
-                    <tr>
-                        <td>@transaction.TransactionType</td>
-                        <td>@transaction.Amount.ToString("N2")</td>
-                        <td>@transaction.FeesAmount.ToString("N2")</td>
-                        <td>@transaction.NetAmount.ToString("N2")</td>
-                        <td>@transaction.Status</td>
-                        <td>@transaction.Description</td>
-                        <td>@transaction.CreatedAt.ToString("g")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <h5 class="mb-3 text-primary"><i class="fas fa-exchange-alt me-2"></i>العمليات المرتبطة</h5>
+        <div class="custom-table-container">
+            @if (Model.InstaPayTransactions != null && Model.InstaPayTransactions.Any())
+            {
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tags"></i> نوع العملية</th>
+                            <th><i class="fas fa-money-check-alt"></i> المبلغ</th>
+                            <th><i class="fas fa-percent"></i> الرسوم</th>
+                            <th><i class="fas fa-hand-holding-usd"></i> المبلغ النهائي</th>
+                            <th><i class="fas fa-info-circle"></i> الحالة</th>
+                            <th><i class="fas fa-comment-dots"></i> الوصف</th>
+                            <th><i class="fas fa-calendar-alt"></i> تاريخ العملية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model.InstaPayTransactions.OrderByDescending(t => t.CreatedAt))
+                        {
+                            <tr>
+                                <td>@transaction.TransactionType</td>
+                                <td>@transaction.Amount.ToString("N2")</td>
+                                <td>@transaction.FeesAmount.ToString("N2")</td>
+                                <td>@transaction.NetAmount.ToString("N2")</td>
+                                <td>
+                                    <span class="badge-status @(transaction.Status.ToString().ToLower())">
+                                        @transaction.Status
+                                    </span>
+                                </td>
+                                <td>@transaction.Description</td>
+                                <td>@transaction.CreatedAt.ToString("g")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info text-center p-4 m-0" role="alert">
+                    <i class="fas fa-info-circle me-2"></i> لا توجد عمليات مرتبطة بهذا الحساب حالياً.
+                </div>
+            }
+        </div>
 
-        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+        <div class="text-center">
+            <a asp-action="Index" class="btn btn-secondary-custom">
+                <i class="fas fa-arrow-right"></i> رجوع لإدارة الحسابات
+            </a>
+        </div>
     </div>
+</div>
 
+@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    @* No specific client-side validation needed for a details page *@
+}

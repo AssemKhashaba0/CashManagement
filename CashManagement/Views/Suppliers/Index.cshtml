@@ -2,6 +2,8 @@
 @model IEnumerable<SupplierViewModel>
 @{
     ViewData["Title"] = "دفتر الحسابات";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+
     var searchString = ViewBag.SearchString ?? "";
     var supplierType = ViewBag.SupplierType as SupplierType?;
     var page = ViewBag.Page as int? ?? 1;
@@ -10,128 +12,762 @@
     var totalCredit = ViewBag.TotalCredit as decimal? ?? 0;
     var totalDebit = ViewBag.TotalDebit as decimal? ?? 0;
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<div class="container mt-4" dir="rtl">
-    <h1 class="text-center mb-4">دفتر الحسابات</h1>
-
-    <!-- عرض إجمالي لي بره وعليا -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">إجمالي لي بره</h5>
-                    <p class="card-text fs-4 text-success">@totalCredit.ToString("N2")</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">إجمالي عليا</h5>
-                    <p class="card-text fs-4 text-danger">@totalDebit.ToString("N2")</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- رسائل التنبيه -->
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+<style>
+    /* تحديد متغيرات الألوان لسهولة التعديل */
+    :root {
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --text-color: #111827; /* أسود ناعم */
+        --header-sidebar-bg: #F3F4F6; /* رمادي فاتح جدًا */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --card-bg: #FFFFFF; /* لون أبيض نقي للخلفيات الداخلية */
+        --field-bg: #E5E7EB; /* لون حقول الإدخال */
+        --border-color: #D1D5DB; /* لون الحدود */
+        --hover-bg: #F3F4F6; /* لون الخلفية عند التحويم */
+        --danger-color: #EF4444; /* أحمر للحالات الخطرة */
+        --success-color: #34D399; /* أخضر للنجاح */
     }
 
-    <!-- نموذج البحث -->
-    <form asp-action="Index" method="get" class="mb-4">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <input type="text" name="searchString" value="@searchString" class="form-control" placeholder="ابحث بالاسم أو رقم الهاتف" />
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+    }
+
+    .accounts-container {
+        background: var(--background-color);
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* ظل أخف */
+        padding: 35px;
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
+        direction: rtl; /* للتأكد من الاتجاه من اليمين لليسار */
+    }
+
+    .main-title {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.1); /* ظل أخف */
+    }
+
+    /* Summary Cards */
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax for better responsiveness */
+        gap: 1.5rem; /* Reduced gap */
+        margin-bottom: 2rem;
+    }
+
+    .summary-card {
+        background: var(--card-bg); /* استخدام لون الكارد الجديد */
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem; /* Reduced padding */
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* ظل أخف */
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); /* استخدام الألوان الجديدة */
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px); /* Reduced transform */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* ظل أخف عند التحويم */
+        }
+
+    .card-icon {
+        font-size: 2.5rem; /* Reduced icon size */
+        margin-bottom: 0.8rem;
+        display: block;
+    }
+
+    .credit-card .card-icon {
+        color: var(--secondary-color); /* استخدام الذهبي الناعم */
+    }
+
+    .debit-card .card-icon {
+        color: var(--danger-color); /* استخدام الأحمر للحالات الخطرة */
+    }
+
+    .card-title {
+        font-size: 1.1rem; /* Reduced title size */
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        color: var(--text-color);
+    }
+
+    .card-amount {
+        font-size: 2rem; /* Reduced amount size */
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .credit-amount {
+        color: var(--secondary-color); /* استخدام الذهبي الناعم */
+        text-shadow: 0 1px 2px rgba(250, 204, 21, 0.2); /* ظل أخف */
+    }
+
+    .debit-amount {
+        color: var(--danger-color); /* استخدام الأحمر للحالات الخطرة */
+        text-shadow: 0 1px 2px rgba(239, 68, 68, 0.2); /* ظل أخف */
+    }
+
+    /* Alert Messages */
+    .alert-custom {
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* ظل أخف */
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, var(--success-color), #10B981); /* استخدام اللون الأخضر للنجاح */
+        color: white;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, var(--danger-color), #EF4444);
+        color: white;
+    }
+
+    .alert-custom .fas {
+        font-size: 1.2rem;
+    }
+
+    .btn-close-white {
+        filter: invert(0); /* مناسب للخلفية الفاتحة */
+        opacity: 0.8;
+    }
+
+        .btn-close-white:hover {
+            opacity: 1;
+        }
+
+    /* Search Form */
+    .search-form {
+        background: var(--card-bg); /* استخدام لون الكارد الجديد */
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* ظل أخف */
+        border: 1px solid var(--border-color);
+    }
+
+    .form-control-custom,
+    .form-select-custom {
+        background: var(--field-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus,
+        .form-select-custom:focus {
+            background: var(--field-bg);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+            color: var(--text-color);
+        }
+
+        .form-control-custom::placeholder {
+            color: #6B7280;
+        }
+
+    .input-group .form-control-custom,
+    .input-group .form-select-custom {
+        border-top-left-radius: 0; /* Changed for RTL */
+        border-bottom-left-radius: 0; /* Changed for RTL */
+        border-top-right-radius: 8px; /* Changed for RTL */
+        border-bottom-right-radius: 8px; /* Changed for RTL */
+    }
+
+    .input-group-text {
+        background-color: var(--field-bg);
+        border: 2px solid var(--border-color);
+        border-right: none; /* Changed for RTL */
+        border-top-right-radius: 0; /* Changed for RTL */
+        border-bottom-right-radius: 0; /* Changed for RTL */
+        border-top-left-radius: 8px; /* Changed for RTL */
+        border-bottom-left-radius: 8px; /* Changed for RTL */
+        color: #6B7280;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-custom {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), #1E40AF);
+        color: white;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.4);
+            color: white;
+        }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, var(--success-color), #10B981);
+        color: white;
+    }
+
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 211, 153, 0.4);
+            color: white;
+        }
+
+    /* New: Supplier/Customer Card List */
+    .supplier-card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Responsive grid for cards */
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .supplier-item-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .supplier-item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    .supplier-info {
+        margin-bottom: 1rem;
+    }
+
+    .supplier-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .supplier-phone, .supplier-balance {
+        font-size: 1rem;
+        color: #6B7280; /* Medium gray for secondary info */
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .supplier-type-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-right: 0.5rem; /* Space after badge */
+    }
+
+    .supplier-badge {
+        background: rgba(29, 78, 216, 0.1); /* Light primary color background */
+        color: var(--primary-color);
+        border: 1px solid rgba(29, 78, 216, 0.2);
+    }
+
+    .customer-badge {
+        background: rgba(250, 204, 21, 0.1); /* Light secondary color background */
+        color: var(--secondary-color);
+        border: 1px solid rgba(250, 204, 21, 0.2);
+    }
+
+    .balance-summary div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: var(--header-sidebar-bg); /* Light gray background for balance details */
+        border-radius: 8px;
+    }
+
+    .balance-summary span {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .net-balance-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .balance-positive {
+        color: var(--success-color); /* Green for positive balance */
+    }
+
+    .balance-negative {
+        color: var(--danger-color); /* Red for negative balance */
+    }
+
+    .action-buttons-card {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .btn-sm-custom {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        border: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #0EA5E9, #0284C7); /* Info Blue */
+        color: white;
+    }
+
+        .btn-info-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            color: white;
+        }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, var(--secondary-color), #D97706); /* Warning Gold */
+        color: white;
+    }
+
+        .btn-warning-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+    .btn-primary-sm-custom {
+        background: linear-gradient(135deg, var(--primary-color), #1E40AF); /* Primary Indigo Blue */
+        color: white;
+    }
+
+        .btn-primary-sm-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+            color: white;
+        }
+
+    /* Pagination */
+    .pagination-custom {
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+        .pagination-custom .page-item .page-link {
+            background: var(--card-bg); /* لون خلفية الكارد */
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-custom .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination-custom .page-item .page-link:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-color); /* Hover on primary color */
+            color: var(--text-color);
+            transform: translateY(-2px);
+        }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: #6B7280; /* Medium gray for no data message */
+        font-size: 1.1rem;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border: 1px solid var(--border-color);
+    }
+
+        .no-data .fas {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) { /* For tablets and medium screens */
+        .container {
+            padding: 25px;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+        }
+
+        .summary-cards {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust for smaller tablets */
+            gap: 1rem;
+        }
+
+        .summary-card {
+            padding: 1rem;
+        }
+
+        .card-amount {
+            font-size: 1.8rem;
+        }
+
+        .search-form .row.g-3 > div { /* Target direct children of row with g-3 */
+            flex-basis: 100%;
+            max-width: 100%;
+            margin-bottom: 15px; /* Space between form elements */
+        }
+
+            .search-form .row.g-3 > div:last-child {
+                margin-bottom: 0; /* No bottom margin for the last element */
+            }
+
+        .btn-custom {
+            width: 100%; /* Make buttons full width */
+        }
+
+        .supplier-card-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjust for tablet card size */
+            gap: 1rem;
+        }
+
+        .action-buttons-card {
+            flex-direction: column; /* Stack action buttons vertically */
+            gap: 0.3rem;
+        }
+
+        .btn-sm-custom {
+            width: 100%; /* Make small buttons full width */
+            justify-content: center; /* Center content in full width buttons */
+        }
+    }
+
+    @@media (max-width: 768px) { /* For mobile phones */
+        .accounts-container {
+            padding: 1rem 0;
+        }
+
+        .container {
+            padding: 15px;
+            margin-top: 15px !important;
+            margin-bottom: 15px !important;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-cards {
+            grid-template-columns: 1fr; /* Single column for summary cards */
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            padding: 1rem;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+        }
+
+        .card-amount {
+            font-size: 1.5rem;
+        }
+
+        .alert-custom {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+
+            .alert-custom .fas {
+                font-size: 1rem;
+            }
+
+        .search-form {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control-custom, .form-select-custom {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .btn-custom {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .supplier-card-grid {
+            grid-template-columns: 1fr; /* Single column for supplier cards */
+            gap: 1rem;
+        }
+
+        .supplier-name {
+            font-size: 1.3rem;
+        }
+
+        .supplier-type-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .balance-summary div {
+            font-size: 0.9rem;
+            padding: 0.4rem;
+        }
+
+        .net-balance-value {
+            font-size: 1.2rem;
+        }
+
+        .no-data {
+            font-size: 1rem;
+            padding: 2rem;
+        }
+
+            .no-data .fas {
+                font-size: 2.5rem;
+            }
+
+        .pagination-custom .page-item .page-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="accounts-container">
+    <div class="container">
+        <h1 class="main-title">
+            <i class="fas fa-book-open"></i> دفتر الحسابات
+        </h1>
+
+        <div class="summary-cards">
+            <div class="summary-card credit-card">
+                <i class="fas fa-hand-holding-usd card-icon"></i>
+                <h5 class="card-title">إجمالي لي بره</h5>
+                <p class="card-amount credit-amount">@totalCredit.ToString("N2")</p>
             </div>
-            <div class="col-md-3">
-                <select name="type" class="form-select">
-                    <option value="">كل الأنواع</option>
-                    <option value="@SupplierType.Supplier" selected="@(supplierType == SupplierType.Supplier ? "selected" : "")">مورد</option>
-                    <option value="@SupplierType.Customer" selected="@(supplierType == SupplierType.Customer ? "selected" : "")">عميل</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">بحث</button>
-            </div>
-            <div class="col-md-3">
-                <a asp-action="Create" class="btn btn-success w-100">إضافة مورد/عميل</a>
+            <div class="summary-card debit-card">
+                <i class="fas fa-money-bill-wave card-icon"></i>
+                <h5 class="card-title">إجمالي عليا</h5>
+                <p class="card-amount debit-amount">@totalDebit.ToString("N2")</p>
             </div>
         </div>
-    </form>
 
-    <!-- جدول الموردين/العملاء -->
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>الاسم</th>
-                    <th>النوع</th>
-                    <th>رقم الهاتف</th>
-                    <th>إجمالي (له)</th>
-                    <th>إجمالي (عليه)</th>
-                    <th>صافي الرصيد</th>
-                    <th>الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Any())
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="search-form">
+            <form asp-action="Index" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" name="searchString" value="@searchString" class="form-control form-control-custom" placeholder="ابحث بالاسم أو رقم الهاتف" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                            <select name="type" class="form-control form-control-custom">
+                                <option value="">كل الأنواع</option>
+                                <option value="@SupplierType.Supplier" selected="@(supplierType == SupplierType.Supplier ? "selected" : "")">مورد</option>
+                                <option value="@SupplierType.Customer" selected="@(supplierType == SupplierType.Customer ? "selected" : "")">عميل</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-custom btn-primary-custom w-100">
+                            <i class="fas fa-search"></i> بحث
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <a asp-action="Create" class="btn btn-custom btn-success-custom w-100">
+                            <i class="fas fa-plus-circle"></i> إضافة مورد/عميل
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="supplier-card-grid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var supplier in Model)
                 {
-                    foreach (var supplier in Model)
+                    <div class="supplier-item-card">
+                        <div class="supplier-info">
+                            <h3 class="supplier-name">
+                                @if (supplier.Type == SupplierType.Supplier)
+                                {
+                                    <i class="fas fa-truck"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-tie"></i>
+                                }
+                                @supplier.Name
+                                <span class="supplier-type-badge @(supplier.Type == SupplierType.Supplier ? "supplier-badge" : "customer-badge")">
+                                    @(supplier.Type == SupplierType.Supplier ? "مورد" : "عميل")
+                                </span>
+                            </h3>
+                            <p class="supplier-phone">
+                                <i class="fas fa-phone"></i>
+                                @(supplier.PhoneNumber ?? "غير متوفر")
+                            </p>
+                        </div>
+                        <div class="balance-summary">
+                            <div>
+                                <span>إجمالي (له):</span>
+                                <span class="credit-amount">@supplier.CreditTotal.ToString("N2") <i class="fas fa-arrow-up"></i></span>
+                            </div>
+                            <div>
+                                <span>إجمالي (عليه):</span>
+                                <span class="debit-amount">@supplier.DebitTotal.ToString("N2") <i class="fas fa-arrow-down"></i></span>
+                            </div>
+                            <div>
+                                <span>صافي الرصيد:</span>
+                                <span class="net-balance-value @(supplier.NetBalance.Contains("-") ? "balance-negative" : "balance-positive")">@supplier.NetBalance</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons-card">
+                            <a asp-action="Details" asp-route-id="@supplier.Id" class="btn btn-sm-custom btn-info-custom">
+                                <i class="fas fa-info-circle"></i> تفاصيل
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@supplier.Id" class="btn btn-sm-custom btn-warning-custom">
+                                <i class="fas fa-edit"></i> تعديل
+                            </a>
+                            <a asp-action="CreateTransaction" asp-route-supplierId="@supplier.Id" class="btn btn-sm-custom btn-primary-sm-custom">
+                                <i class="fas fa-exchange-alt"></i> معاملة
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <!-- Ensures no-data occupies full width -->
+                    <div class="no-data">
+                        <i class="fas fa-box-open"></i>
+                        لا توجد بيانات لعرضها
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (totalPages > 1)
+        {
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-custom">
+                    @for (int i = 1; i <= totalPages; i++)
                     {
-                        <tr>
-                            <td>@supplier.Name</td>
-                            <td>@(supplier.Type == SupplierType.Supplier ? "مورد" : "عميل")</td>
-                            <td>@(supplier.PhoneNumber ?? "-")</td>
-                            <td>@supplier.CreditTotal.ToString("N2")</td>
-                            <td>@supplier.DebitTotal.ToString("N2")</td>
-                            <td>@supplier.NetBalance</td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@supplier.Id" class="btn btn-info btn-sm">تفاصيل</a>
-                                <a asp-action="Edit" asp-route-id="@supplier.Id" class="btn btn-warning btn-sm">تعديل</a>
-                                <a asp-action="CreateTransaction" asp-route-supplierId="@supplier.Id" class="btn btn-primary btn-sm">إضافة معاملة</a>
-                            </td>
-                        </tr>
+                        <li class="page-item @(i == page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { searchString, type = supplierType, page = i, pageSize })">@i</a>
+                        </li>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="7" class="text-center">لا توجد بيانات لعرضها</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </ul>
+            </nav>
+        }
     </div>
-
-    <!-- ترقيم الصفحات -->
-    @if (totalPages > 1)
-    {
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= totalPages; i++)
-                {
-                    <li class="page-item @(i == page ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { searchString, type = supplierType, page = i, pageSize })">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    }
-
-   
 </div>
 
 @section Scripts {

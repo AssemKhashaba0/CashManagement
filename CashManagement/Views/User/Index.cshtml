@@ -9,188 +9,257 @@
     var employeeCount = Model.Count(u => u.Role == "Employee"); // Assuming 'Employee' is the role name
 
     // Define controller name as a C# variable
-    var currentControllerName = "User"; // <--- Add this line
+    var currentControllerName = "User";
 }
 
 <style>
-    /* Custom CSS for the specified color palette and enhanced design */
+    /* Custom CSS for the specified color palette and enhanced design - Light Theme */
+    @@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+    @@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
     :root {
-        --primary-color: #1E3A8A; /* Dark Blue */
-        --secondary-color: #3B82F6; /* Light Blue */
-        --background-color: #1F2937; /* Dark Gray - Main body background */
-        --card-background-color: #2D3748; /* Slightly lighter dark gray for cards */
-        --accent-color: #34D399; /* Mint Green */
-        --error-color: #F87171; /* Coral Red */
-        --text-color: #F3F4F6; /* Off-white */
-        --muted-text-color: #A0AEC0; /* Light gray for secondary text */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --primary-color: #1D4ED8;   /* Indigo Blue */
+        --text-color: #111827;      /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray - Used for card background */
+        --secondary-color: #FACC15;  /* Soft Gold (for accents/highlights) */
+        --error-color: #F87171;     /* Red for errors */
+        --success-color: #10B981;   /* Green for success */
+        --warning-color: #F59E0B;   /* Orange for warnings */
+        --info-color: #0EA5E9;      /* Light Blue for info/details */
+
+        /* Derived colors for better contrast/depth in light theme */
+        --card-background-color: var(--header-sidebar-bg); /* Use very light gray for card backgrounds */
+        --input-bg: #EBECED; /* Slightly darker light ivory for input fields (if any) */
+        --border-color: #D1D5DB; /* Light gray for subtle borders */
+        --button-text-light: #FFFFFF; /* White text for dark buttons */
+        --button-text-dark: #111827; /* Dark text for light buttons */
+        --muted-text-color: #6B7280; /* Darker gray for secondary text */
+        --shadow-light: rgba(0, 0, 0, 0.08); /* Lighter shadow for light theme */
+        --shadow-medium: rgba(0, 0, 0, 0.15); /* Medium shadow for light theme */
     }
 
     body {
         background-color: var(--background-color);
         color: var(--text-color);
+        font-family: 'Cairo', sans-serif;
+        direction: rtl; /* Ensure overall RTL for Arabic content */
+        text-align: right; /* Default text alignment for Arabic */
     }
 
     h2 {
-        color: var(--text-color);
-        margin-bottom: 25px;
+        color: var(--primary-color); /* Primary color for main heading */
+        margin-bottom: 2.5rem; /* More space below heading */
         text-align: center;
-        font-weight: 700;
+        font-weight: 800; /* Bolder heading */
+        font-size: 2.8em; /* Larger heading */
+        text-shadow: 0 2px 5px var(--shadow-light); /* Subtle text shadow */
     }
 
     /* Info Cards for User Counts */
     .info-card {
         background-color: var(--card-background-color);
         color: var(--text-color);
-        border-radius: 8px;
-        padding: 20px;
+        border-radius: 12px; /* More rounded corners */
+        padding: 25px; /* More padding */
         margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 6px 18px var(--shadow-medium); /* Lighter, softer shadow */
         text-align: center;
-        transition: transform 0.2s ease-in-out;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border: 1px solid var(--border-color); /* Subtle border */
     }
     .info-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-7px); /* More pronounced lift */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
     }
     .info-card h4 {
-        color: var(--secondary-color);
-        margin-bottom: 10px;
+        color: var(--primary-color); /* Primary color for card title */
+        margin-bottom: 15px; /* More space */
+        font-weight: 700;
+        font-size: 1.3em;
     }
     .info-card p {
-        font-size: 2.2em;
+        font-size: 2.5em; /* Larger count number */
         font-weight: bold;
-        color: var(--accent-color);
+        color: var(--secondary-color); /* Secondary color for the count */
+        margin: 0; /* Remove default paragraph margin */
     }
 
     /* Main Action Button (Add New User) */
     .btn-primary-custom {
         background-color: var(--primary-color);
         border-color: var(--primary-color);
-        color: white;
+        color: var(--button-text-light); /* White text */
         transition: all 0.3s ease;
-        display: flex;
+        display: inline-flex; /* Use inline-flex for button */
         align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
+        gap: 10px; /* More space between icon and text */
+        padding: 12px 25px; /* More padding */
         font-size: 1.1em;
+        font-weight: 600;
+        border-radius: 8px; /* Consistent border-radius */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Lighter button shadow */
+        text-decoration: none; /* Remove underline for anchor tag */
+    }
+
+    .btn-primary-custom i {
+        font-size: 1.2em; /* Larger icon */
+        order: 1; /* Icon to the right in RTL */
+    }
+    .btn-primary-custom span { /* For text content */
+        order: 2;
     }
 
     .btn-primary-custom:hover {
-        background-color: #2A52A3; /* Slightly darker primary on hover */
-        border-color: #2A52A3;
-        transform: translateY(-2px);
-        color: white; /* Ensure text remains white on hover */
+        background-color: #17329E; /* Darker primary on hover */
+        border-color: #17329E;
+        transform: translateY(-3px); /* More lift on hover */
+        color: var(--button-text-light); /* Ensure text remains white on hover */
+        box-shadow: 0 6px 15px rgba(29, 78, 216, 0.3); /* Stronger shadow on hover */
     }
 
     /* Alert Styling */
     .alert-success {
-        background-color: var(--accent-color);
-        color: #1F2937; /* Dark text for success alert */
-        border-color: var(--accent-color);
+        background-color: var(--success-color); /* Green for success */
+        color: var(--button-text-light); /* White text on green */
+        border-color: var(--success-color);
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .alert-danger {
+        background-color: var(--error-color); /* Red for error */
+        color: var(--button-text-light); /* White text on red */
+        border-color: var(--error-color);
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .alert .btn-close {
+        filter: invert(1); /* Ensure close button is visible on colored alerts */
     }
 
-    .alert-danger {
-        background-color: var(--error-color);
-        color: #1F2937; /* Dark text for error alert */
-        border-color: var(--error-color);
-    }
 
     /* User Card Styling */
     .user-card {
         background-color: var(--card-background-color);
-        border-radius: 10px;
-        padding: 25px;
+        border-radius: 12px; /* More rounded corners */
+        padding: 30px; /* More padding */
         margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 6px 18px var(--shadow-medium); /* Softer shadow */
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 100%; /* Ensure cards in a row have equal height */
+        height: 100%;
+        border: 1px solid var(--border-color); /* Subtle border */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
     .user-card h5 {
-        color: var(--text-color);
-        font-weight: bold;
-        margin-bottom: 10px;
+        color: var(--primary-color); /* Primary color for user name */
+        font-weight: 700;
+        font-size: 1.4em; /* Larger name */
+        margin-bottom: 15px; /* More space below name */
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .user-card h5 i {
+        color: var(--secondary-color); /* Secondary color for user icon */
+        font-size: 1.3em;
     }
 
     .user-card p {
-        color: var(--muted-text-color);
-        margin-bottom: 8px;
+        color: var(--muted-text-color); /* Muted text for details */
+        margin-bottom: 10px; /* More space between details */
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-size: 0.95em;
+    }
+    .user-card p i {
+        color: var(--primary-color); /* Primary color for detail icons */
+        font-size: 1.1em;
     }
 
     .user-card .card-body {
-        flex-grow: 1; /* Allow card body to expand */
+        flex-grow: 1;
     }
 
     .user-card .card-footer {
         background-color: transparent;
-        border-top: 1px solid #3B4553; /* Subtle border above actions */
-        padding-top: 15px;
-        margin-top: 15px;
+        border-top: 1px solid var(--border-color); /* Use border-color */
+        padding-top: 20px; /* More padding */
+        margin-top: 20px;
         display: flex;
-        flex-wrap: wrap; /* Allow buttons to wrap */
-        gap: 10px; /* Space between buttons */
-        justify-content: center; /* Center buttons horizontally */
+        flex-wrap: wrap;
+        gap: 12px; /* More space between buttons */
+        justify-content: center;
     }
 
     /* Icon Buttons */
     .btn-icon {
-        background-color: var(--primary-color);
+        background-color: var(--primary-color); /* Default primary button color */
         border-color: var(--primary-color);
-        color: white;
-        width: 40px; /* Fixed width for icon buttons */
-        height: 40px; /* Fixed height for icon buttons */
+        color: var(--button-text-light);
+        width: 45px; /* Slightly larger fixed width */
+        height: 45px; /* Slightly larger fixed height */
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%; /* Make them circular */
-        padding: 0; /* Remove default padding */
-        font-size: 1.1em;
+        border-radius: 50%;
+        padding: 0;
+        font-size: 1.2em; /* Larger icon size */
         transition: all 0.2s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Lighter shadow */
+        text-decoration: none; /* Remove underline */
     }
     .btn-icon:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transform: scale(1.15); /* More pronounced scale */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Stronger shadow on hover */
+        color: var(--button-text-light); /* Ensure text remains white */
     }
 
     .btn-details {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
+        background-color: var(--info-color); /* Light Blue for details */
+        border-color: var(--info-color);
     }
     .btn-details:hover {
-        background-color: #5C9EFF;
-        border-color: #5C9EFF;
+        background-color: #0c82bb; /* Darker blue on hover */
+        border-color: #0c82bb;
     }
 
     .btn-edit {
-        background-color: #F6AD55; /* A warm orange for warning/edit */
-        border-color: #F6AD55;
+        background-color: var(--warning-color); /* Orange for edit */
+        border-color: var(--warning-color);
     }
     .btn-edit:hover {
-        background-color: #F9B86D;
-        border-color: #F9B86D;
+        background-color: #E68A00; /* Darker orange on hover */
+        border-color: #E68A00;
     }
 
     .btn-freeze {
-        background-color: var(--error-color);
+        background-color: var(--error-color); /* Red for freeze */
         border-color: var(--error-color);
     }
     .btn-freeze:hover {
-        background-color: #FF8F8F;
-        border-color: #FF8F8F;
+        background-color: #E55C5C; /* Darker red on hover */
+        border-color: #E55C5C;
     }
 
     .btn-unfreeze {
-        background-color: var(--accent-color);
-        border-color: var(--accent-color);
+        background-color: var(--success-color); /* Green for unfreeze */
+        border-color: var(--success-color);
     }
     .btn-unfreeze:hover {
-        background-color: #4EE2AD;
-        border-color: #4EE2AD;
+        background-color: #0E9F71; /* Darker green on hover */
+        border-color: #0E9F71;
     }
 
     .btn-delete {
@@ -204,105 +273,184 @@
 
 
     /* Role Badges */
+    .badge {
+        display: inline-flex; /* Use flexbox for badges */
+        align-items: center;
+        padding: 6px 12px; /* More padding */
+        border-radius: 6px; /* Slightly more rounded */
+        font-size: 0.88em; /* Slightly larger font */
+        font-weight: 600;
+        margin-right: 5px; /* Space between icon and text */
+    }
+
     .badge-admin {
-        background-color: var(--primary-color); /* Admin role distinguished */
-        color: var(--text-color);
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.85em;
+        background-color: var(--primary-color);
+        color: var(--button-text-light);
     }
 
     .badge-employee {
-        background-color: var(--secondary-color); /* Employee role */
-        color: var(--text-color);
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.85em;
+        background-color: var(--info-color); /* Use info color for employee badge */
+        color: var(--button-text-light);
     }
 
     .badge-status-active {
-        background-color: var(--accent-color);
-        color: #1F2937;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.85em;
+        background-color: var(--success-color);
+        color: var(--button-text-light);
     }
 
     .badge-status-frozen {
         background-color: var(--error-color);
-        color: #1F2937;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.85em;
+        color: var(--button-text-light);
     }
 
     /* Modal Styling */
     .modal-content {
         background-color: var(--card-background-color);
         color: var(--text-color);
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        border-radius: 12px; /* Consistent rounded corners */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25); /* Stronger shadow for modal */
+        border: 1px solid var(--border-color);
     }
     .modal-header {
-        border-bottom-color: #3B4553;
-        padding: 20px;
+        border-bottom: 1px solid var(--border-color); /* Use border-color */
+        padding: 20px 25px; /* More padding */
     }
     .modal-title {
-        color: var(--text-color);
+        color: var(--primary-color); /* Primary color for modal title */
+        font-weight: 700;
+        font-size: 1.5em;
     }
     .modal-body {
-        padding: 20px;
+        padding: 25px; /* More padding */
+        color: var(--text-color);
+        font-size: 1.05em;
+    }
+    .modal-body strong {
+        color: var(--primary-color); /* Highlight user name in modal */
     }
     .modal-footer {
-        border-top-color: #3B4553;
-        padding: 20px;
+        border-top: 1px solid var(--border-color); /* Use border-color */
+        padding: 20px 25px; /* More padding */
+        display: flex;
+        justify-content: flex-end; /* Align buttons to the right */
+        gap: 10px;
     }
     .modal-footer .btn {
-        padding: 8px 20px;
+        padding: 10px 22px; /* Adjust button padding */
+        font-size: 0.95em;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     .btn-secondary {
-        background-color: var(--muted-text-color);
+        background-color: var(--muted-text-color); /* Muted gray for secondary */
         border-color: var(--muted-text-color);
-        color: #1F2937; /* Dark text for contrast */
+        color: var(--button-text-light); /* White text */
     }
     .btn-secondary:hover {
-        background-color: #C1C6CC;
-        border-color: #C1C6CC;
+        background-color: #5A606B; /* Darker muted text on hover */
+        border-color: #5A606B;
+        color: var(--button-text-light);
+    }
+    /* Modal confirm button (primary color) */
+    .modal-footer .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--button-text-light);
+    }
+    .modal-footer .btn-primary:hover {
+        background-color: #17329E;
+        border-color: #17329E;
+        color: var(--button-text-light);
+    }
+    .modal-footer .btn-danger { /* For delete action in modal */
+        background-color: var(--error-color);
+        border-color: var(--error-color);
+        color: var(--button-text-light);
+    }
+    .modal-footer .btn-success { /* For unfreeze action in modal */
+        background-color: var(--success-color);
+        border-color: var(--success-color);
+        color: var(--button-text-light);
     }
 
+
     /* Responsive Adjustments */
+    @@media (max-width: 992px) { /* Adjust for medium screens */
+        .user-card {
+            padding: 25px;
+        }
+        .user-card h5 {
+            font-size: 1.3em;
+        }
+        .user-card p {
+            font-size: 0.9em;
+        }
+    }
+
     @@media (max-width: 768px) {
+        h2 {
+            font-size: 2.2em;
+            margin-bottom: 2rem;
+        }
+        .info-card {
+            padding: 20px;
+        }
+        .info-card h4 {
+            font-size: 1.1em;
+        }
+        .info-card p {
+            font-size: 2em;
+        }
         .user-card .card-footer {
             flex-direction: row; /* Keep buttons in a row if space allows */
             justify-content: center;
+            gap: 8px;
         }
         .btn-icon {
-            width: 35px;
-            height: 35px;
-            font-size: 1em;
+            width: 40px;
+            height: 40px;
+            font-size: 1.1em;
         }
     }
 
     @@media (max-width: 576px) {
-        .info-card p {
+        h2 {
             font-size: 1.8em;
+        }
+        .info-card {
+            padding: 15px;
+        }
+        .info-card p {
+            font-size: 1.6em;
+        }
+        .d-flex.justify-content-end.mb-4 { /* Adjust "Add new user" button alignment */
+            justify-content: center !important;
+        }
+        .btn-primary-custom {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+        .user-card {
+            padding: 20px;
         }
         .user-card .card-footer {
             flex-direction: column; /* Stack buttons on very small screens */
-            gap: 8px;
+            gap: 10px;
         }
         .btn-icon {
             width: 100%; /* Make icon buttons full width on very small screens */
             border-radius: 8px; /* Make them rectangular */
             height: auto;
-            padding: 8px 0; /* Add vertical padding */
+            padding: 10px 0; /* Add vertical padding */
         }
     }
 </style>
 
-<div class="d-flex justify-content-center align-items-center mb-4 flex-wrap" dir="rtl">
+<div class="d-flex justify-content-center align-items-center mb-4 flex-wrap">
     <h2 class="w-100">قائمة المستخدمين</h2>
-    <div class="row w-100 justify-content-center mb-3 g-3">
+    <div class="row w-100 justify-content-center mb-4 g-4"> @* Increased gap for better spacing *@
         <div class="col-6 col-md-4 col-lg-3">
             <div class="info-card">
                 <h4>عدد المدراء (Admin)</h4>
@@ -318,29 +466,29 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-end mb-4" dir="rtl">
+<div class="d-flex justify-content-end mb-4"> @* Ensure this is always RTL aligned *@
     <a asp-action="Create" class="btn btn-primary-custom">
         <i class="fas fa-user-plus"></i>
-        إضافة مستخدم جديد
+        <span>إضافة مستخدم جديد</span> @* Wrap text in span for ordering *@
     </a>
 </div>
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert" dir="rtl">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["Success"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" dir="rtl">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         @TempData["Error"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
     </div>
 }
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" dir="rtl">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> @* Increased gap for user cards *@
     @foreach (var user in Model)
     {
         <div class="col">
@@ -394,7 +542,7 @@
     }
 </div>
 
-<div class="modal fade" id="confirmActionModal" tabindex="-1" aria-labelledby="confirmActionModalLabel" aria-hidden="true" dir="rtl">
+<div class="modal fade" id="confirmActionModal" tabindex="-1" aria-labelledby="confirmActionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -444,28 +592,30 @@
                 modalUserIdInput.value = userId;
 
                 let actionText = '';
-                let confirmButtonClass = '';
-                // No longer need 'let controllerName = "User";' here in JavaScript
-                // The URL is generated by Razor on the server side
+                let confirmButtonClass = 'btn-primary'; // Default class for confirm button
+                let modalSpecificTitle = 'تأكيد الإجراء'; // Default modal title
 
                 switch (actionType) {
                     case 'freeze':
                         actionText = `هل أنت متأكد من تجميد حساب المستخدم <strong>${userName}</strong>؟`;
-                        currentActionUrl = `@Url.Action("Freeze", currentControllerName)`; // Use C# variable here
+                        currentActionUrl = `@Url.Action("Freeze", currentControllerName)`;
                         currentHttpMethod = 'POST';
                         confirmButtonClass = 'btn-danger';
+                        modalSpecificTitle = 'تأكيد التجميد';
                         break;
                     case 'unfreeze':
                         actionText = `هل أنت متأكد من إلغاء تجميد حساب المستخدم <strong>${userName}</strong>؟`;
-                        currentActionUrl = `@Url.Action("Unfreeze", currentControllerName)`; // Use C# variable here
+                        currentActionUrl = `@Url.Action("Unfreeze", currentControllerName)`;
                         currentHttpMethod = 'POST';
                         confirmButtonClass = 'btn-success';
+                        modalSpecificTitle = 'تأكيد إلغاء التجميد';
                         break;
                     case 'delete':
                         actionText = `هل أنت متأكد من حذف حساب المستخدم <strong>${userName}</strong> بشكل نهائي؟ هذا الإجراء لا يمكن التراجع عنه.`;
-                        currentActionUrl = `@Url.Action("Delete", currentControllerName)`; // Use C# variable here
+                        currentActionUrl = `@Url.Action("Delete", currentControllerName)`;
                         currentHttpMethod = 'POST';
                         confirmButtonClass = 'btn-danger';
+                        modalSpecificTitle = 'تأكيد الحذف';
                         break;
                     default:
                         actionText = 'هل أنت متأكد من هذا الإجراء؟';
@@ -475,7 +625,7 @@
                         break;
                 }
 
-                modalTitle.textContent = `تأكيد ${actionType === 'freeze' ? 'التجميد' : actionType === 'unfreeze' ? 'إلغاء التجميد' : 'الحذف'}`;
+                modalTitle.textContent = modalSpecificTitle;
                 modalActionMessage.innerHTML = actionText;
 
                 // Update confirm button style

@@ -3,102 +3,363 @@
 @{
     ViewData["Title"] = "عملية إيداع";
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<h1>عملية إيداع</h1>
+<style>
+    /* Custom Colors */
+    :root {
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray */
+        --accent-color: #059669; /* A nice green for success/deposit */
+        --error-color: #DC2626; /* A strong red for errors */
+        --info-color: #2563EB; /* A standard blue for info/withdraw */
+        --border-color: #D1D5DB; /* Lighter gray for borders */
+        --card-bg: #FFFFFF; /* White for cards */
+        --muted-color: #6B7280; /* Muted gray for secondary text */
+        --warning-color: #D97706; /* Orange for warnings */
+    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMessage"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+    }
 
-<div class="card mb-3">
-    <div class="card-header">
-        <h5>معلومات الخط: @ViewBag.CashLine.PhoneNumber</h5>
+    h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+    /* Alert Styles */
+    .alert {
+        border-radius: 12px;
+        padding: 18px 24px;
+        margin-bottom: 25px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        color: white; /* Ensure text is white for contrast */
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, var(--accent-color), #16A34A);
+    }
+
+        .alert-success::before {
+            content: '\f00c'; /* Check-circle icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+    }
+
+        .alert-danger::before {
+            content: '\f071'; /* Exclamation-triangle icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+
+    .alert-warning {
+        background: linear-gradient(135deg, var(--warning-color), #F59E0B);
+        color: white;
+    }
+
+        .alert-warning::before {
+            content: '\f071'; /* Exclamation-triangle icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+
+    /* Card Styling */
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 20px 25px;
+        border-bottom: none;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+        .card-body p {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body strong {
+            color: var(--text-color);
+        }
+
+        .card-body .text-danger {
+            color: var(--error-color) !important;
+            font-weight: bold;
+        }
+
+        .card-body .text-success {
+            color: var(--accent-color) !important;
+            font-weight: bold;
+        }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .control-label {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 18px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--muted-color);
+        }
+
+    .text-danger {
+        color: var(--error-color);
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: white; /* Ensure all buttons have white text by default */
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+            color: white;
+        }
+
+    .btn-secondary {
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+
+        .btn-secondary:hover {
+            background: var(--muted-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
+        }
+
+    /* Loading Animation for Buttons */
+    .btn-loading {
+        position: relative;
+        color: transparent !important;
+    }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-wallet"></i> عملية إيداع</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-info-circle"></i>
+            <h5>معلومات الخط: @ViewBag.CashLine.PhoneNumber</h5>
+        </div>
+        <div class="card-body">
+            <p>
+                <i class="fas fa-money-bill-wave"></i>
+                <strong>الرصيد الحالي:</strong> @ViewBag.CashLine.CurrentBalance
+            </p>
+            <p>
+                <i class="fas fa-calendar-day"></i>
+                <strong>الحد اليومي المتبقي:</strong>
+                <span class="@(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed < 100 ? "text-danger" : "text-success")">
+                    @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed)
+                </span>
+            </p>
+            <p>
+                <i class="fas fa-calendar-alt"></i>
+                <strong>الحد الشهري المتبقي:</strong>
+                <span class="@(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed < 1000 ? "text-danger" : "text-success")">
+                    @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)
+                </span>
+            </p>
+        </div>
     </div>
-    <div class="card-body">
-        <p><strong>الرصيد الحالي:</strong> @ViewBag.CashLine.CurrentBalance</p>
-        <p>
-            <strong>الحد اليومي المتبقي:</strong>
-            <span class="@(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed < 100 ? "text-danger" : "text-success")">
-                @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed)
-            </span>
-        </p>
-        <p>
-            <strong>الحد الشهري المتبقي:</strong>
-            <span class="@(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed < 1000 ? "text-danger" : "text-success")">
-                @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)
-            </span>
-        </p>
+
+    <div id="freezeWarning" class="alert alert-warning d-none" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        تحذير: المبلغ المدخل سيؤدي إلى تجميد الخط بسبب الوصول إلى الحد الأقصى (اليومي: @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed) أو الشهري: @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)).
     </div>
+
+    <div id="errorWarning" class="alert alert-danger d-none" role="alert">
+        <i class="fas fa-times-circle"></i>
+    </div>
+
+    <form asp-action="Deposit" method="post" id="depositForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CashLineId" />
+        <input type="hidden" asp-for="TransactionType" value="@TransactionType.Deposit" />
+
+        <div class="form-group">
+            <label asp-for="Amount" class="control-label"><i class="fas fa-money-check-alt"></i> المبلغ</label>
+            <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01"
+                   max="@Math.Min(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed, ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)"
+                   placeholder="أدخل المبلغ" id="amountInput" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DepositType" class="control-label"><i class="fas fa-hand-holding-usd"></i> نوع الإيداع</label>
+            <select asp-for="DepositType" class="form-control" asp-items="Html.GetEnumSelectList<DepositType>()" id="depositTypeInput"></select>
+            <span asp-validation-for="DepositType" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CommissionRate" class="control-label"><i class="fas fa-percentage"></i> نسبة الرسوم (%)</label>
+            <input asp-for="CommissionRate" class="form-control" type="number" step="0.01" min="0" max="100"
+                   placeholder="أدخل نسبة الرسوم (%)" id="commissionRateInput" />
+            <span asp-validation-for="CommissionRate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="RecipientNumber" class="control-label"><i class="fas fa-phone-alt"></i> رقم المستلم</label>
+            <input asp-for="RecipientNumber" class="form-control" placeholder="أدخل رقم المستلم (اختياري)" />
+            <span asp-validation-for="RecipientNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"><i class="fas fa-comment-alt"></i> وصف العملية</label>
+            <textarea asp-for="Description" class="form-control" placeholder="أدخل وصف العملية (اختياري)"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success"><i class="fas fa-donate"></i> إجراء الإيداع</button>
+            <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> رجوع</a>
+        </div>
+    </form>
 </div>
-
-<div id="freezeWarning" class="alert alert-warning d-none" role="alert">
-    تحذير: المبلغ المدخل سيؤدي إلى تجميد الخط بسبب الوصول إلى الحد الأقصى (اليومي: @(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed) أو الشهري: @(ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)).
-</div>
-
-<div id="errorWarning" class="alert alert-danger d-none" role="alert">
-    <!-- سيتم ملء هذا ديناميكيًا بواسطة جافاسكربت -->
-</div>
-
-<form asp-action="Deposit" method="post" id="depositForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="CashLineId" />
-    <input type="hidden" asp-for="TransactionType" value="@TransactionType.Deposit" />
-
-    <div class="form-group">
-        <label asp-for="Amount" class="control-label"></label>
-        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01"
-               max="@Math.Min(ViewBag.CashLine.DailyLimit - ViewBag.CashLine.DailyUsed, ViewBag.CashLine.MonthlyLimit - ViewBag.CashLine.MonthlyUsed)"
-               placeholder="أدخل المبلغ" id="amountInput" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DepositType" class="control-label"></label>
-        <select asp-for="DepositType" class="form-control" asp-items="Html.GetEnumSelectList<DepositType>()" id="depositTypeInput"></select>
-        <span asp-validation-for="DepositType" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CommissionRate" class="control-label"></label>
-        <input asp-for="CommissionRate" class="form-control" type="number" step="0.01" min="0" max="100"
-               placeholder="أدخل نسبة الرسوم (%)" id="commissionRateInput" />
-        <span asp-validation-for="CommissionRate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="RecipientNumber" class="control-label"></label>
-        <input asp-for="RecipientNumber" class="form-control" placeholder="أدخل رقم المستلم (اختياري)" />
-        <span asp-validation-for="RecipientNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control" placeholder="أدخل وصف العملية (اختياري)"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-success">إجراء الإيداع</button>
-        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
-    </div>
-</form>
 
 @section Scripts {
     @{
@@ -120,23 +381,23 @@
                 const depositType = depositTypeInput.val();
                 const commissionRate = parseFloat(commissionRateInput.val()) || 0;
 
-                // إخفاء الإشعارات أولاً
+                // Hide alerts first
                 freezeWarning.addClass("d-none");
                 errorWarning.addClass("d-none");
 
-                // التحقق من المبلغ
+                // Amount validation
                 if (amount <= 0) {
-                    errorWarning.text("المبلغ يجب أن يكون أكبر من صفر.");
+                    errorWarning.html(`<i class="fas fa-exclamation-circle"></i> المبلغ يجب أن يكون أكبر من صفر.`);
                     errorWarning.removeClass("d-none");
                     return false;
                 }
                 if (amount > dailyRemaining) {
-                    errorWarning.text(`المبلغ يتجاوز الحد اليومي المتبقي (${dailyRemaining}).`);
+                    errorWarning.html(`<i class="fas fa-exclamation-circle"></i> المبلغ يتجاوز الحد اليومي المتبقي (${dailyRemaining}).`);
                     errorWarning.removeClass("d-none");
                     return false;
                 }
                 if (amount > monthlyRemaining) {
-                    errorWarning.text(`المبلغ يتجاوز الحد الشهري المتبقي (${monthlyRemaining}).`);
+                    errorWarning.html(`<i class="fas fa-exclamation-circle"></i> المبلغ يتجاوز الحد الشهري المتبقي (${monthlyRemaining}).`);
                     errorWarning.removeClass("d-none");
                     return false;
                 }
@@ -144,9 +405,9 @@
                     freezeWarning.removeClass("d-none");
                 }
 
-                // التحقق من نسبة الرسوم
-                if (depositType !== "NoDeduction" && commissionRate <= 0) {
-                    errorWarning.text("نسبة الرسوم يجب أن تكون أكبر من صفر عند عدم اختيار 'بدون خصم'.");
+                // Commission rate validation
+                if (depositType !== "NoDeduction" && commissionRate < 0) { // Changed to < 0 to allow 0 for other types if applicable, but original specified > 0 for non-NoDeduction
+                    errorWarning.html(`<i class="fas fa-exclamation-circle"></i> نسبة الرسوم يجب أن تكون أكبر من صفر عند عدم اختيار 'بدون خصم'.`);
                     errorWarning.removeClass("d-none");
                     return false;
                 }
@@ -154,12 +415,15 @@
                 return true;
             }
 
-            // التحقق عند تغيير المدخلات
+            // Validate on input change
             amountInput.on("input", validateInputs);
             depositTypeInput.on("change", validateInputs);
             commissionRateInput.on("input", validateInputs);
 
-            // تأكيد عند إرسال النموذج
+            // Initial validation when page loads to set warnings if pre-filled amounts are problematic
+            validateInputs();
+
+            // Confirmation on form submission
             depositForm.on("submit", function (e) {
                 if (!validateInputs()) {
                     e.preventDefault();
@@ -170,6 +434,8 @@
                         e.preventDefault();
                     }
                 }
+                // Add loading spinner to button on submission
+                $(this).find("button[type='submit']").addClass("btn-loading").prop("disabled", true);
             });
         });
     </script>

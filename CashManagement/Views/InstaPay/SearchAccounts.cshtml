@@ -2,83 +2,518 @@
 
 @{
     ViewData["Title"] = "البحث عن حسابات إنستا باي";
+    // تأكد أن هذا الـ Layout يتضمن ملفات CSS العامة ومتغيرات الألوان
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-4">
-        <h2 class="text-center mb-4">حسابات إنستا باي القادرة على استقبال المبلغ</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.1/css/responsive.dataTables.min.css">
 
+<style>
+    /* Light Color Palette Variables (يفضل أن تكون هذه المتغيرات في ملف CSS عام يتم تضمينه في _LayoutDashbord.cshtml) */
+    :root {
+        --background-color: #FDFDFD; /* Off-white */
+        --primary-color: #1D4ED8; /* Indigo blue */
+        --secondary-color: #FACC15; /* Soft gold */
+        --text-color: #111827; /* Soft black for text */
+        --card-bg: #FFFFFF; /* White for card backgrounds */
+        --header-sidebar-bg: #F3F4F6; /* Very light gray for header/sidebar type elements */
+        --success-color: #10B981; /* Tailwind green-500 */
+        --error-color: #EF4444; /* Tailwind red-500 */
+        --info-color: #3B82F6; /* Tailwind blue-500 */
+        --warning-color: #F59E0B; /* Tailwind amber-500 */
+        --border-color: rgba(0, 0, 0, 0.1); /* Lighter muted border color */
+        --light-text-color: #6B7280; /* Gray for titles/subtitles */
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --accent-success-color: #28A745; /* Deeper green for transaction button */
+    }
+
+    body {
+        background-color: var(--background-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        direction: rtl;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Custom Card Styling */
+    .custom-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.25rem;
+        box-shadow: var(--shadow-medium);
+        margin: 3rem auto;
+        max-width: 900px; /* Adjusted width for search page */
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden;
+    }
+
+    .custom-card .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 1.75rem 2rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-top-left-radius: 1.25rem;
+        border-top-right-radius: 1.25rem;
+    }
+
+    .custom-card .card-body {
+        padding: 2.5rem;
+    }
+
+    /* Alerts Styling */
+    .custom-alert {
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        font-weight: 600;
+        animation: slideInDown 0.6s ease-out;
+        box-shadow: var(--shadow-light);
+        color: white;
+        position: relative;
+    }
+
+    .custom-alert.alert-success {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+    }
+    .custom-alert.alert-warning-custom { /* Custom class for warning alert */
+        background: linear-gradient(135deg, var(--warning-color), #D97706);
+        color: white;
+    }
+    .custom-alert .fas {
+        font-size: 1.5rem;
+        animation: pulse 1.5s infinite;
+        flex-shrink: 0;
+        align-self: center;
+    }
+    .custom-alert .btn-close {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        opacity: 0.8;
+        filter: invert(1);
+        border: none;
+        padding: 0.5rem;
+        margin: -0.5rem;
+        z-index: 10;
+    }
+     .custom-alert .btn-close:hover {
+        opacity: 1;
+     }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 1.5rem; /* More space for form groups */
+    }
+    .form-label {
+        color: var(--light-text-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 1rem;
+    }
+    .form-control {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.85rem 1rem;
+        width: 100%;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+        outline: none;
+        background-color: var(--card-bg);
+    }
+
+    /* General Button Styling */
+    .btn-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.9rem 2.2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 1.05rem;
+        box-shadow: var(--shadow-light);
+        flex-wrap: nowrap;
+    }
+
+    /* Specific Button Styles */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        border: none;
+    }
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        color: white;
+    }
+
+    .btn-action-success { /* For 'إجراء عملية' button */
+        background-color: var(--accent-success-color); /* A deeper green */
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 0.5rem;
+    }
+    .btn-action-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        margin-top: 2.5rem; /* Space from table/alert */
+    }
+    .btn-secondary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        background-color: #E5E7EB;
+        color: var(--text-color);
+    }
+
+    /* Table Styling */
+    .custom-table-container {
+        overflow-x: auto;
+        margin-top: 2.5rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-light);
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0 !important; /* Override DataTables default */
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 1rem 1.2rem;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .custom-table thead {
+        background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+        color: white;
+    }
+
+    .custom-table thead th {
+        font-weight: 700;
+        font-size: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    /* Rounded corners for first/last header cells */
+    .custom-table thead tr:first-child th:first-child {
+        border-top-right-radius: 1rem; /* RTL */
+    }
+    .custom-table thead tr:first-child th:last-child {
+        border-top-left-radius: 1rem; /* RTL */
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+        background-color: var(--header-sidebar-bg);
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: rgba(var(--primary-color-rgb, 29, 78, 216), 0.08);
+        cursor: pointer;
+    }
+
+    /* Empty State for Table */
+    .alert-empty-state {
+        background-color: var(--card-bg);
+        color: var(--light-text-color);
+        border: 1px dashed var(--border-color);
+        border-radius: 1rem;
+        padding: 2rem;
+        text-align: center;
+        margin: 1.5rem 0;
+        font-size: 1.1rem;
+        box-shadow: none;
+    }
+    .alert-empty-state i {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    /* Keyframe Animations */
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .custom-card {
+            max-width: 95%;
+        }
+        .custom-card .card-body {
+            padding: 2rem;
+        }
+        .custom-table th, .custom-table td {
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+        }
+        .btn-custom, .btn-action-success {
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+            width: auto; /* Allow buttons to size naturally within flex */
+        }
+        form.mb-4 {
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem !important;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .custom-card {
+            margin: 1.5rem auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .custom-card .card-header {
+            font-size: 1.4rem;
+            padding: 1.5rem 1rem;
+            border-radius: 0;
+            justify-content: center;
+            text-align: center;
+        }
+        .custom-card .card-body {
+            padding: 1.5rem 1rem;
+        }
+        .form-label {
+            font-size: 0.9rem;
+        }
+        .form-control {
+            padding: 0.7rem 0.9rem;
+        }
+        .btn-custom, .btn-action-success {
+            width: 100%; /* Make buttons full width */
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0.75rem; /* Space between stacked buttons */
+            justify-content: center;
+        }
+        .btn-custom:last-of-type, .btn-action-success:last-of-type {
+            margin-bottom: 0;
+        }
+        .custom-table-container {
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .custom-table thead th {
+            font-size: 0.9rem;
+        }
+        .custom-table th, .custom-table td {
+            font-size: 0.85rem;
+        }
+        .custom-table thead tr:first-child th:first-child,
+        .custom-table thead tr:first-child th:last-child {
+            border-radius: 0;
+        }
+        .alert-empty-state {
+            font-size: 1rem;
+            padding: 1.5rem;
+        }
+        .alert-empty-state i {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .custom-card .card-header {
+            font-size: 1.2rem;
+            padding: 1.2rem 0.8rem;
+        }
+        .custom-card .card-body {
+            padding: 1rem 0.8rem;
+        }
+        .form-control {
+            font-size: 0.9rem;
+        }
+        .btn-action-success {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="custom-card fade-in">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="fas fa-search-dollar"></i>البحث عن حسابات إنستا باي</h3>
+    </div>
+    <div class="card-body">
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @TempData["Success"]
+            <div class="custom-alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <div>@TempData["Success"]</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="custom-alert alert-warning-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>@TempData["Error"]</div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
             </div>
         }
 
-        <form asp-action="SearchAccounts" method="get" class="mb-4">
+        <form asp-action="SearchAccounts" method="get" class="mb-5 p-4 border rounded-3 bg-light-subtle shadow-sm">
+            <h5 class="text-primary mb-4"><i class="fas fa-filter me-2"></i> أدخل المبلغ للبحث عن الحسابات المستلمة</h5>
             <div class="form-group">
-                <label for="amount" class="form-label">المبلغ</label>
-                <input type="number" step="0.01" name="amount" class="form-control" required />
+                <label for="amount" class="form-label">المبلغ المطلوب تحويله</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                    <input type="number" step="0.01" name="amount" id="amount" class="form-control" placeholder="أدخل المبلغ..." required value="@ViewBag.SearchAmount" />
+                </div>
+                <span class="text-danger" data-valmsg-for="amount" data-valmsg-replace="true"></span>
             </div>
-            <button type="submit" class="btn btn-primary mt-2">بحث</button>
+            <div class="text-center">
+                <button type="submit" class="btn-custom btn-primary-custom">
+                    <i class="fas fa-search"></i> بحث عن حسابات
+                </button>
+            </div>
         </form>
 
-        @if (Model.Any())
+        @if (Model != null && Model.Any())
         {
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>رقم الهاتف</th>
-                        <th>اسم البنك</th>
-                        <th>رقم الحساب</th>
-                        <th>الرصيد</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <h5 class="text-primary mb-4"><i class="fas fa-hand-holding-usd me-2"></i> حسابات إنستا باي القادرة على استقبال المبلغ</h5>
+            <div class="custom-table-container">
+                <table id="searchInstaPayTable" class="custom-table display responsive nowrap" style="width:100%">
+                    <thead>
                         <tr>
-                            <td>@item.PhoneNumber</td>
-                            <td>@item.BankName</td>
-                            <td>@item.BankAccountNumber</td>
-                            <td>@item.CurrentBalance.ToString("N2")</td>
-                            <td>
-                                <a asp-action="Transaction" asp-route-id="@item.Id" class="dfa4e3b1-5f2d-4e8c-a3d9-7d8e4f6a5c8b btn btn-success btn-sm">إجراء عملية</a>
-                            </td>
+                            <th><i class="fas fa-phone-alt"></i> رقم الهاتف</th>
+                            <th><i class="fas fa-building"></i> اسم البنك</th>
+                            <th><i class="fas fa-university"></i> رقم الحساب</th>
+                            <th><i class="fas fa-money-bill-wave"></i> الرصيد الحالي</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.PhoneNumber</td>
+                                <td>@item.BankName</td>
+                                <td>@item.BankAccountNumber</td>
+                                <td>@item.CurrentBalance.ToString("N2")</td>
+                                <td>
+                                    <a asp-action="ProcessTransaction" asp-route-id="@item.Id" asp-route-amount="@ViewBag.SearchAmount" class="btn-custom btn-action-success" title="إجراء عملية تحويل لهذا الحساب">
+                                        <i class="fas fa-paper-plane"></i> إجراء عملية
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (ViewBag.SearchAttempted == true)
+        {
+            <div class="alert-empty-state">
+                <i class="fas fa-frown"></i>
+                <p>عذرًا، لم يتم العثور على أي حسابات إنستا باي قادرة على استقبال المبلغ المحدد.</p>
+                <p class="text-muted">يرجى التحقق من المبلغ أو محاولة البحث بمبلغ مختلف.</p>
+            </div>
         }
         else
         {
-            <div class="alert alert-warning" role="alert">
-                لا توجد حسابات قادرة على استقبال هذا المبلغ.
+            <div class="alert-empty-state">
+                <i class="fas fa-info-circle"></i>
+                <p>أدخل المبلغ في حقل البحث أعلاه للعثور على الحسابات القادرة على استلامه.</p>
+                <p class="text-muted">هنا ستظهر الحسابات التي لديها رصيد كافٍ.</p>
             </div>
         }
 
-        <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+        <div class="text-center mt-5">
+            <a asp-action="Index" class="btn-custom btn-secondary-custom">
+                <i class="fas fa-arrow-right"></i> رجوع لإدارة الحسابات
+            </a>
+        </div>
     </div>
+</div>
 
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-</body>
-</html>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables if there are results
+            if ($('#searchInstaPayTable').length && $('#searchInstaPayTable tbody tr').length > 0 && !$('#searchInstaPayTable tbody tr td').hasClass('dataTables_empty')) {
+                $('#searchInstaPayTable').DataTable({
+                    responsive: true,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/Arabic.json'
+                    },
+                    pageLength: 10,
+                    order: [[3, 'desc']], // Sort by CurrentBalance (index 3) descending
+                    dom: '<"top"lf>rt<"bottom"ip><"clear">', // Custom DOM for DataTables layout
+                    "initComplete": function(settings, json) {
+                        // Add Bootstrap classes to DataTables elements for better styling
+                        $('.dataTables_paginate').addClass('d-flex justify-content-center mt-3');
+                        $('.dataTables_filter input').attr('placeholder', 'بحث...').addClass('form-control form-control-sm');
+                        $('.dataTables_length select').addClass('form-select form-select-sm');
+                        $('.dataTables_length').addClass('mb-2'); // Add margin below 'Show entries'
+                        $('.dataTables_filter').addClass('mb-2'); // Add margin below search input
+                    }
+                });
+            }
+
+            // Auto-hide success alert after a few seconds
+            if ($(".custom-alert.alert-success").length || $(".custom-alert.alert-warning-custom").length) {
+                setTimeout(function() {
+                    $(".custom-alert").alert('close');
+                }, 5000); // Close after 5 seconds
+            }
+        });
+    </script>
+}

@@ -3,20 +3,19 @@
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
-<!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-PkV+U9XBx3Xd8dqAFs5BN9FtQmZC+UoHpgKbF8vXMuRg2eD5rGzOoHgZ8H5aTzgvT7JZJWxGLxZghAZr0M2xYQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <style>
     :root {
-        --bg: #0F172A;
-        --card: rgba(255, 255, 255, 0.05);
-        --border: rgba(255, 255, 255, 0.1);
-        --text: #F8FAFC;
-        --muted: #94A3B8;
-        --accent: #3B82F6;
-        --accent-light: #60A5FA;
-        --success: #10B981;
-        --warning: #F59E0B;
+        --bg: #FDFDFD; /* عاجي فاتح */
+        --primary: #1D4ED8; /* أزرق نيلي */
+        --text: #111827; /* أسود ناعم */
+        --secondary-button: #FACC15; /* ذهبي ناعم للأزرار الثانوية */
+        --success-accent: #22C55E; /* أخضر للتمييز أو الحالة الناجحة - تم اختياره ليناسب البالغ */
+        /* الألوان المشتقة من الألوان الأساسية */
+        --card-border: rgba(17, 24, 39, 0.1); /* أسود ناعم شفاف للحدود */
+        --card-bg: rgba(255, 255, 255, 0.8); /* خلفية بطاقة شفافة (يمكن أن تكون أغمق قليلاً مع العاجي) */
+        --muted-text: #6B7280; /* رمادي أفتح للنص الثانوي (تم الإبقاء عليه لتباين جيد) */
     }
 
     * {
@@ -28,29 +27,33 @@
     }
 
     body {
-        background: linear-gradient(135deg, var(--bg) 0%, #1E293B 100%);
+        background: var(--bg);
         color: var(--text);
         min-height: 100vh;
         overflow-x: hidden;
     }
 
-    /* خلفية متحركة */
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-        z-index: -1;
-        animation: float 20s ease-in-out infinite;
-    }
+        /* خلفية متحركة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(250, 204, 21, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
 
     @@keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(1deg); }
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(1deg);
+        }
     }
 
     .welcome {
@@ -63,38 +66,39 @@
     }
 
     .card {
-        background: var(--card);
-        border: 1px solid var(--border);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
         padding: 4rem 3rem;
         border-radius: 24px;
         max-width: 600px;
         width: 100%;
         text-align: center;
-        backdrop-filter: blur(25px);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
-                    0 0 0 1px rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08), /* ظل أغمق قليلاً ليتناسب مع الخلفية الفاتحة */
+        0 0 0 1px rgba(17, 24, 39, 0.03); /* حد ظل أدق */
         position: relative;
         overflow: hidden;
         animation: slideUp 0.8s ease-out;
     }
 
-    /* تأثير الإضاءة */
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
-        opacity: 0.6;
-    }
+        /* تأثير الإضاءة */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.4;
+        }
 
     @@keyframes slideUp {
         from {
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -107,36 +111,46 @@
         justify-content: center;
         width: 120px;
         height: 120px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        background: linear-gradient(135deg, var(--primary), #3B82F6); /* أزرق نيلي مع تدرج أفتح قليلاً */
         border-radius: 50%;
         margin: 0 auto 2rem;
         font-size: 3rem;
         color: white;
-        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 15px 30px rgba(29, 78, 216, 0.2); /* ظل أزرق نيلي أخف */
         animation: pulse 2s infinite;
         position: relative;
     }
 
-    .header-icon::after {
-        content: '';
-        position: absolute;
-        top: -5px;
-        left: -5px;
-        right: -5px;
-        bottom: -5px;
-        border: 2px solid rgba(59, 130, 246, 0.3);
-        border-radius: 50%;
-        animation: rotate 8s linear infinite;
-    }
+        .header-icon::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid rgba(29, 78, 216, 0.2); /* حد أزرق نيلي أخف */
+            border-radius: 50%;
+            animation: rotate 8s linear infinite;
+        }
 
     @@keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
     }
 
     @@keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     .greeting {
@@ -144,7 +158,7 @@
         font-weight: 800;
         color: var(--text);
         margin-bottom: 1rem;
-        background: linear-gradient(135deg, var(--text), var(--accent-light));
+        background: linear-gradient(135deg, var(--text), var(--primary)); /* تدرج من النص الأساسي للأزرق النيلي */
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -152,14 +166,14 @@
 
     .subtitle {
         font-size: 1.3rem;
-        color: var(--accent-light);
+        color: var(--primary); /* أزرق نيلي */
         margin-bottom: 0.5rem;
         font-weight: 600;
     }
 
     .message {
         font-size: 1.1rem;
-        color: var(--muted);
+        color: var(--muted-text);
         margin-bottom: 3rem;
         line-height: 1.8;
         max-width: 400px;
@@ -175,24 +189,24 @@
     }
 
     .feature {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.6); /* خلفية بطاقة أخف */
+        border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 1.5rem;
         transition: all 0.3s ease;
         cursor: pointer;
     }
 
-    .feature:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: var(--accent);
-        transform: translateY(-2px);
-    }
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.9); /* يصبح أكثر وضوحًا عند التمرير */
+            border-color: var(--primary); /* أزرق نيلي */
+            transform: translateY(-2px);
+        }
 
     .feature-icon {
         font-size: 2rem;
         margin-bottom: 0.5rem;
-        color: var(--accent-light);
+        color: var(--primary); /* أزرق نيلي */
     }
 
     .feature-title {
@@ -207,7 +221,7 @@
         justify-content: center;
         gap: 1rem;
         padding-top: 2rem;
-        border-top: 1px solid var(--border);
+        border-top: 1px solid var(--card-border);
         margin-top: 2rem;
     }
 
@@ -220,14 +234,14 @@
     .logo-icon {
         width: 50px;
         height: 50px;
-        background: linear-gradient(135deg, var(--success), #059669);
+        background: linear-gradient(135deg, var(--secondary-button), #FBBF24); /* ذهبي ناعم مع تدرج أغمق قليلاً */
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-size: 1.3rem;
-        box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 8px 16px rgba(250, 204, 21, 0.15); /* ظل ذهبي خفيف */
     }
 
     .company-text {
@@ -243,7 +257,7 @@
 
     .company-tagline {
         font-size: 0.85rem;
-        color: var(--muted);
+        color: var(--muted-text);
         font-weight: 400;
     }
 
@@ -259,17 +273,17 @@
         font-size: 0.8rem;
     }
 
-    .status-indicator.online {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        color: var(--success);
-    }
+        .status-indicator.online {
+            background: rgba(34, 197, 94, 0.1); /* خلفية شفافة للأخضر */
+            border: 1px solid rgba(34, 197, 94, 0.3); /* حد أخضر شفاف */
+            color: var(--success-accent); /* نص أخضر */
+        }
 
-    .status-indicator.offline {
-        background: rgba(245, 158, 11, 0.1);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        color: var(--warning);
-    }
+        .status-indicator.offline {
+            background: rgba(107, 114, 128, 0.1); /* خلفية شفافة للرمادي (من الميوتد تكست) */
+            border: 1px solid rgba(107, 114, 128, 0.3); /* حد رمادي شفاف */
+            color: var(--muted-text); /* نص رمادي */
+        }
 
     .status-dot {
         width: 8px;
@@ -278,17 +292,22 @@
         animation: blink 2s infinite;
     }
 
-    .status-dot.online {
-        background: var(--success);
-    }
+        .status-dot.online {
+            background: var(--success-accent); /* نقطة خضراء */
+        }
 
-    .status-dot.offline {
-        background: var(--warning);
-    }
+        .status-dot.offline {
+            background: var(--muted-text); /* نقطة رمادية */
+        }
 
     @@keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0.3; }
+        0%, 50% {
+            opacity: 1;
+        }
+
+        51%, 100% {
+            opacity: 0.3;
+        }
     }
 
     /* استجابة للشاشات الصغيرة */
@@ -296,54 +315,54 @@
         .welcome {
             padding: 1rem;
         }
-        
+
         .card {
             padding: 3rem 2rem;
         }
-        
+
         .header-icon {
             width: 100px;
             height: 100px;
             font-size: 2.5rem;
         }
-        
+
         .greeting {
             font-size: 2.5rem;
         }
-        
+
         .subtitle {
             font-size: 1.1rem;
         }
-        
+
         .features {
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
-        
+
         .feature {
             padding: 1rem;
         }
-        
+
         .feature-icon {
             font-size: 1.5rem;
         }
-        
+
         .company-info {
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .status-indicator {
             position: static;
             margin-bottom: 1rem;
         }
     }
-    
+
     @@media (max-width: 480px) {
         .features {
             grid-template-columns: 1fr;
         }
-        
+
         .greeting {
             font-size: 2rem;
         }
@@ -356,17 +375,17 @@
             <div class="status-dot online"></div>
             <span id="status-text">متصل</span>
         </div>
-        
+
         <div class="header-icon">
             <i class="fas fa-chart-line"></i>
         </div>
-        
+
         <h1 class="greeting">مرحباً بك</h1>
         <h2 class="subtitle">نظام إدارة الخدمات المالية</h2>
         <p class="message">
             منصة شاملة ومتطورة لإدارة جميع عملياتك المالية بكفاءة وأمان عالي
         </p>
-        
+
         <div class="features">
             <div class="feature">
                 <div class="feature-icon">
@@ -374,14 +393,14 @@
                 </div>
                 <div class="feature-title">إدارة المحافظ</div>
             </div>
-            
+
             <div class="feature">
                 <div class="feature-icon">
                     <i class="fas fa-chart-pie"></i>
                 </div>
                 <div class="feature-title">التقارير المالية</div>
             </div>
-            
+
             <div class="feature">
                 <div class="feature-icon">
                     <i class="fas fa-shield-alt"></i>
@@ -389,7 +408,7 @@
                 <div class="feature-title">الحماية والأمان</div>
             </div>
         </div>
-        
+
         <div class="company-info">
             <div class="logo-container">
                 <div class="logo-icon">
@@ -409,7 +428,7 @@
         const statusIndicator = document.getElementById('connection-status');
         const statusDot = statusIndicator.querySelector('.status-dot');
         const statusText = document.getElementById('status-text');
-        
+
         if (navigator.onLine) {
             statusIndicator.classList.remove('offline');
             statusIndicator.classList.add('online');
@@ -427,11 +446,11 @@
 
     // تحديث الحالة عند التحميل
     window.addEventListener('load', updateConnectionStatus);
-    
+
     // تحديث الحالة عند تغيير حالة الاتصال
     window.addEventListener('online', updateConnectionStatus);
     window.addEventListener('offline', updateConnectionStatus);
-    
+
     // تحديث دوري كل 5 ثوانٍ
     setInterval(updateConnectionStatus, 5000);
 </script>

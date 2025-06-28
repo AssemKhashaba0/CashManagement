@@ -2,6 +2,7 @@
 @model IEnumerable<SupplierViewModel>
 @{
     ViewData["Title"] = "تقرير دفتر الحسابات";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
     var startDate = ViewBag.StartDate as DateTime?;
     var endDate = ViewBag.EndDate as DateTime?;
     var supplierType = ViewBag.SupplierType as SupplierType?;

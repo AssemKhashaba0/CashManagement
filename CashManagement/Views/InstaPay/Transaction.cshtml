@@ -3,71 +3,412 @@
 @{
     ViewData["Title"] = "إجراء عملية إنستا باي";
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
-
 }
 
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Light Color Palette Variables (يفضل أن تكون هذه المتغيرات في ملف CSS عام يتم تضمينه في _LayoutDashbord.cshtml) */
+    :root {
+        --background-color: #FDFDFD; /* Off-white */
+        --primary-color: #1D4ED8; /* Indigo blue */
+        --secondary-color: #FACC15; /* Soft gold */
+        --text-color: #111827; /* Soft black for text */
+        --card-bg: #FFFFFF; /* White for card backgrounds */
+        --header-sidebar-bg: #F3F4F6; /* Very light gray for header/sidebar type elements */
+        --success-color: #10B981; /* Tailwind green-500 */
+        --error-color: #EF4444; /* Tailwind red-500 */
+        --info-color: #3B82F6; /* Tailwind blue-500 */
+        --warning-color: #F59E0B; /* Tailwind amber-500 */
+        --border-color: rgba(0, 0, 0, 0.1); /* Lighter muted border color */
+        --light-text-color: #6B7280; /* Gray for titles/subtitles */
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        background-color: var(--background-color);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        direction: rtl;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Custom Card Styling */
+    .custom-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.25rem;
+        box-shadow: var(--shadow-medium);
+        margin: 3rem auto;
+        max-width: 700px; /* Adjusted width for forms */
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden;
+    }
+
+    .custom-card .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 1.75rem 2rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-top-left-radius: 1.25rem;
+        border-top-right-radius: 1.25rem;
+    }
+
+    .custom-card .card-body {
+        padding: 2.5rem;
+    }
+
+    /* Alerts Styling */
+    .custom-alert {
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        font-weight: 600;
+        animation: slideInDown 0.6s ease-out;
+        box-shadow: var(--shadow-light);
+        color: white;
+        position: relative;
+    }
+
+    .custom-alert.alert-success {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+    }
+    .custom-alert.alert-danger-custom {
+        background: linear-gradient(135deg, var(--error-color), #B91C1C);
+        color: white;
+    }
+    .custom-alert .fas {
+        font-size: 1.5rem;
+        animation: pulse 1.5s infinite;
+        flex-shrink: 0;
+        align-self: center;
+    }
+    .custom-alert .btn-close {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        opacity: 0.8;
+        filter: invert(1);
+        border: none;
+        padding: 0.5rem;
+        margin: -0.5rem;
+        z-index: 10;
+    }
+     .custom-alert .btn-close:hover {
+        opacity: 1;
+     }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 1.5rem; /* More space for form groups */
+    }
+    .form-label {
+        color: var(--light-text-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 1rem;
+    }
+    .form-control, .form-select {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.85rem 1rem;
+        width: 100%;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+        outline: none;
+        background-color: var(--card-bg);
+    }
+    .input-group-text {
+        background-color: var(--header-sidebar-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem 0 0 0.5rem; /* Rounded on the right for RTL */
+        padding: 0.85rem 1rem;
+        color: var(--primary-color);
+        font-size: 1rem;
+    }
+    /* Adjust input-group for RTL */
+    html[dir="rtl"] .input-group > .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+    html[dir="rtl"] .input-group > .input-group-text {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+
+    .text-danger {
+        color: var(--error-color) !important;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* General Button Styling */
+    .btn-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.9rem 2.2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 1.05rem;
+        box-shadow: var(--shadow-light);
+        flex-wrap: nowrap;
+    }
+
+    /* Specific Button Styles */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        border: none;
+    }
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: var(--header-sidebar-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        margin-right: 1rem; /* Space between buttons */
+    }
+    .btn-secondary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        background-color: #E5E7EB;
+        color: var(--text-color);
+    }
+
+    /* Keyframe Animations */
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .custom-card {
+            max-width: 95%;
         }
-    </style>
-</head>
-<body>
-    <div class="container mt-4">
-        <h2 class="text-center mb-4">إجراء عملية إنستا باي</h2>
-        <h4>حساب: @Model.PhoneNumber</h4>
+        .custom-card .card-body {
+            padding: 2rem;
+        }
+        .form-control, .form-select {
+            padding: 0.75rem 0.9rem;
+            font-size: 0.95rem;
+        }
+        .btn-custom {
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .custom-card {
+            margin: 1.5rem auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .custom-card .card-header {
+            font-size: 1.4rem;
+            padding: 1.5rem 1rem;
+            border-radius: 0;
+            justify-content: center;
+            text-align: center;
+        }
+        .custom-card .card-body {
+            padding: 1.5rem 1rem;
+        }
+        .form-label {
+            font-size: 0.9rem;
+        }
+        .form-control, .form-select {
+            font-size: 0.9rem;
+        }
+        .btn-custom {
+            width: 100%; /* Make buttons full width */
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0.75rem; /* Space between stacked buttons */
+            justify-content: center;
+        }
+        .btn-custom:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .custom-card .card-header {
+            font-size: 1.2rem;
+            padding: 1.2rem 0.8rem;
+        }
+        .custom-card .card-body {
+            padding: 1rem 0.8rem;
+        }
+        .form-control, .form-select {
+            font-size: 0.85rem;
+            padding: 0.6rem 0.8rem;
+        }
+    }
+</style>
+
+<div class="custom-card fade-in">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="fas fa-exchange-alt"></i>إجراء عملية إنستا باي</h3>
+    </div>
+    <div class="card-body">
+        <h4 class="mb-4 text-primary"><i class="fas fa-user-circle me-2"></i>الحساب المستهدف: <span class="text-info">@Model.PhoneNumber</span></h4>
 
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @TempData["Success"]
+            <div class="custom-alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <div>@TempData["Success"]</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="custom-alert alert-danger-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>@TempData["Error"]</div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
             </div>
         }
 
-        <form asp-action="Transaction" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="ProcessTransaction" method="post" class="mt-4">
+            <div asp-validation-summary="ModelOnly" class="custom-alert alert-danger-custom" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    الرجاء تصحيح الأخطاء التالية:
+                    <ul>
+                        @foreach (var error in Html.ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+            </div>
+
             <input type="hidden" asp-for="InstaPayId" />
             <input type="hidden" asp-for="PhoneNumber" />
 
-            <div class="form-group mb-3">
-                <label asp-for="TransactionType" class="form-label">نوع العملية</label>
-                <select asp-for="TransactionType" class="form-control" asp-items="Html.GetEnumSelectList<TransactionType>()"></select>
+            <div class="form-group">
+                <label asp-for="TransactionType" class="form-label">
+                    <i class="fas fa-list me-2"></i>نوع العملية
+                </label>
+                <select asp-for="TransactionType" class="form-select" asp-items="Html.GetEnumSelectList<CashManagement.Models.TransactionType>()"></select>
                 <span asp-validation-for="TransactionType" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Amount" class="form-label">المبلغ</label>
-                <input asp-for="Amount" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Amount" class="form-label">
+                    <i class="fas fa-money-bill-wave me-2"></i>المبلغ
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                    <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+                </div>
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="FeesAmount" class="form-label">مبلغ الرسوم (بالجنيه)</label>
-                <input asp-for="FeesAmount" class="form-control" type="number" step="0.01" />
+            <div class="form-group">
+                <label asp-for="FeesAmount" class="form-label">
+                    <i class="fas fa-percent me-2"></i>مبلغ الرسوم (بالجنيه)
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                    <input asp-for="FeesAmount" class="form-control" type="number" step="0.01" />
+                </div>
                 <span asp-validation-for="FeesAmount" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Description" class="form-label">الوصف (اختياري)</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">
+                    <i class="fas fa-comment-dots me-2"></i>الوصف (اختياري)
+                </label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="أدخل وصفًا للعملية..."></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">تأكيد العملية</button>
-            <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn-custom btn-primary-custom">
+                    <i class="fas fa-check-circle"></i> تأكيد العملية
+                </button>
+                <a asp-action="Index" class="btn-custom btn-secondary-custom">
+                    <i class="fas fa-arrow-right"></i> رجوع
+                </a>
+            </div>
         </form>
     </div>
+</div>
 
+@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-</body>
-</html>
+
+    <script>
+        $(document).ready(function () {
+            // Auto-hide success/error alerts after a few seconds
+            if ($(".custom-alert.alert-success").length || $(".custom-alert.alert-danger-custom").length) {
+                setTimeout(function() {
+                    $(".custom-alert").alert('close');
+                }, 7000); // Close after 7 seconds
+            }
+
+            // Client-side validation: Update summary if validation fails
+            // This is handled automatically by jquery.validate.unobtrusive,
+            // but ensuring the custom alert appears for ModelOnly summary
+            $('form').on('submit', function() {
+                if (!$(this).valid()) {
+                    var modelStateErrors = $('.validation-summary-errors ul li');
+                    if (modelStateErrors.length > 0) {
+                        $('.custom-alert.alert-danger-custom').show(); // Show the custom alert if hidden
+                        // Optionally, you can rebuild the ul list inside the custom alert
+                        // for more dynamic updates, but unobtrusive handles the text-danger spans
+                    } else {
+                        $('.custom-alert.alert-danger-custom').hide();
+                    }
+                }
+            });
+        });
+    </script>
+}

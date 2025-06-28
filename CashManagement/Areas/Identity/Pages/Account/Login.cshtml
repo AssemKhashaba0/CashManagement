@@ -11,232 +11,250 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root {
-    --primary-color: #1E3A8A;
-    --secondary-color: #3B82F6;
-    --background-color: #1F2937;
-    --accent-color: #34D399;
-    --error-color: #F87171;
-    --text-color: #F3F4F6;
-    --card-bg: #374151;
-    --input-bg: #4B5563;
-    --border-color: #6B7280;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-}
+    :root {
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --text-color: #111827; /* أسود ناعم */
+        --header-sidebar-bg: #F3F4F6; /* رمادي فاتح جدًا */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --card-bg: #FFFFFF; /* لون أبيض نقي للخلفيات الداخلية (مثل بطاقة تسجيل الدخول) */
+        --field-bg: #E5E7EB; /* لون حقول الإدخال */
+        --border-color: #D1D5DB; /* لون الحدود */
+        --hover-bg: #F3F4F6; /* لون الخلفية عند التحويم */
+        --danger-color: #EF4444; /* أحمر للحالات الخطرة */
+        --subtitle-color: #6B7280; /* لون رمادي متوسط للعناوين الفرعية والنصوص الثانوية */
+        --icon-color: #9CA3AF; /* لون أيقونات الحقول */
+    }
 
-* {
-    box-sizing: border-box;
-}
+    * {
+        box-sizing: border-box;
+    }
 
-body {
-    background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
-    min-height: 100vh;
-    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    direction: rtl;
-    text-align: right;
-}
+    body {
+        background-color: var(--background-color); /* استخدام لون الخلفية الجديد */
+        min-height: 100vh;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color); /* استخدام لون النص الجديد */
+        margin: 0;
+        padding: 0;
+        direction: rtl;
+        text-align: right;
+    }
 
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
 
-.login-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    width: 100%;
-    max-width: 420px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 32px;
-}
-
-.login-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.login-subtitle {
-    color: var(--border-color);
-    font-size: 16px;
-    margin: 0;
-}
-
-.form-group {
-    margin-bottom: 24px;
-    position: relative;
-}
-
-.form-input {
-    width: 100%;
-    padding: 16px 50px 16px 20px;
-    background: var(--input-bg);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    color: var(--text-color);
-    font-size: 16px;
-    font-family: 'Cairo', sans-serif;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--secondary-color);
-    background: rgba(59, 130, 246, 0.1);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-.form-input::placeholder {
-    color: var(--border-color);
-    font-family: 'Cairo', sans-serif;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--text-color);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.input-icon {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--border-color);
-    font-size: 16px;
-}
-
-.label-icon {
-    color: var(--secondary-color);
-    font-size: 14px;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 12px;
-}
-
-.checkbox-input {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--secondary-color);
-    cursor: pointer;
-}
-
-.checkbox-label {
-    color: var(--text-color);
-    font-size: 14px;
-    cursor: pointer;
-    margin: 0;
-}
-
-.login-button {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: 'Cairo', sans-serif;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.login-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-}
-
-.login-button:active {
-    transform: translateY(0);
-}
-
-.form-links {
-    text-align: center;
-    border-top: 1px solid var(--border-color);
-    padding-top: 24px;
-}
-
-.form-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--secondary-color);
-    text-decoration: none;
-    font-size: 14px;
-    margin-bottom: 12px;
-    transition: color 0.3s ease;
-}
-
-.form-link:hover {
-    color: var(--accent-color);
-}
-
-.error-message {
-    color: var(--error-color);
-    font-size: 14px;
-    margin-top: 8px;
-    display: block;
-}
-
-.validation-summary {
-    background: rgba(248, 113, 113, 0.1);
-    border-right: 4px solid var(--error-color);
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 24px;
-    color: var(--error-color);
-    font-size: 14px;
-}
-
-@@media (max-width: 480px) {
     .login-card {
-        margin: 10px;
-        padding: 24px;
+        background: var(--card-bg); /* استخدام لون البطاقة الجديد */
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* ظل أخف */
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+        border: 1px solid var(--border-color); /* حدود أخف */
     }
-    
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .login-logo {
+        max-width: 120px; /* حجم اللوجو */
+        height: auto;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)); /* ظل خفيف للوجو */
+    }
+
     .login-title {
-        font-size: 24px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-color); /* لون النص العادي للعنوان */
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* استخدام تدرج الألوان الأساسي والثانوي */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
-}
+
+    .login-subtitle {
+        color: var(--subtitle-color); /* استخدام لون جديد للعناوين الفرعية */
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+        position: relative;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 16px 50px 16px 20px; /* مساحة للأيقونة */
+        background: var(--field-bg); /* استخدام لون حقل الإدخال الجديد */
+        border: 2px solid var(--border-color); /* حدود ألوان ثابتة */
+        border-radius: 12px;
+        color: var(--text-color);
+        font-size: 16px;
+        font-family: 'Cairo', sans-serif;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color); /* لون التركيز الأساسي */
+            background: var(--card-bg); /* خلفية بيضاء عند التركيز */
+            box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.1); /* ظل خفيف للأزرق النيلي */
+        }
+
+        .form-input::placeholder {
+            color: var(--subtitle-color); /* لون placeholder مناسب */
+            font-family: 'Cairo', sans-serif;
+        }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 16px; /* للأيقونة داخل الحقل */
+        top: 50%; /* تم تعديل top لتوسيط الأيقونة مع المحاذاة اليمنى في RTL */
+        transform: translateY(-50%);
+        color: var(--icon-color); /* لون أيقونات الحقول */
+        font-size: 16px;
+    }
+
+    .label-icon {
+        color: var(--primary-color); /* لون أيقونات الـ label */
+        font-size: 14px;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+        gap: 12px;
+    }
+
+    .checkbox-input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary-color); /* لون التشيك بوكس الأساسي */
+        cursor: pointer;
+    }
+
+    .checkbox-label {
+        color: var(--text-color);
+        font-size: 14px;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary-color), #1E40AF); /* تدرج الألوان للأزرار */
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Cairo', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 5px 15px rgba(29, 78, 216, 0.2); /* ظل خفيف للأزرار */
+    }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+    .form-links {
+        text-align: center;
+        border-top: 1px solid var(--border-color); /* حدود ألوان ثابتة */
+        padding-top: 24px;
+    }
+
+    .form-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--primary-color); /* لون أزرق نيلي للروابط */
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 12px;
+        transition: color 0.3s ease;
+    }
+
+        .form-link:hover {
+            color: var(--secondary-color); /* يتغير للذهبي الناعم عند التحويم */
+        }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 14px;
+        margin-top: 8px;
+        display: block;
+    }
+
+    .validation-summary {
+        background: rgba(239, 68, 68, 0.05); /* خلفية حمراء فاتحة جدًا */
+        border-right: 4px solid var(--danger-color); /* حدود حمراء */
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        color: var(--danger-color);
+        font-size: 14px;
+    }
+
+    @@media (max-width: 480px) {
+        .login-card {
+            margin: 10px;
+            padding: 24px;
+        }
+
+        .login-title {
+            font-size: 24px;
+        }
+
+        .form-input {
+            padding: 14px 45px 14px 15px; /* Adjust padding for smaller screens */
+        }
+
+        .input-icon {
+            right: 12px; /* Adjust icon position for smaller screens */
+        }
+    }
 </style>
 
 <div class="login-container">
     <div class="login-card">
         <div class="login-header">
+            <img src="~/Logo/ASVS Logo.png" alt="Company Logo" class="login-logo" onerror="this.onerror=null;this.src='https://placehold.co/120x80/F3F4F6/111827?text=Logo+Missing';">
             <h1 class="login-title">@ViewData["Title"]</h1>
             <p class="login-subtitle">مرحباً بك مرة أخرى</p>
         </div>
@@ -244,17 +262,17 @@ body {
         <section>
             <form id="account" method="post">
                 <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
-                
+
                 <div class="form-group">
                     <label asp-for="Input.Email" class="form-label">
                         <i class="fas fa-envelope label-icon"></i>
                         البريد الإلكتروني
                     </label>
                     <div style="position: relative;">
-                        <input asp-for="Input.Email" 
-                               class="form-input" 
-                               autocomplete="username" 
-                               aria-required="true" 
+                        <input asp-for="Input.Email"
+                               class="form-input"
+                               autocomplete="username"
+                               aria-required="true"
                                placeholder="أدخل بريدك الإلكتروني" />
                         <i class="fas fa-at input-icon"></i>
                     </div>
@@ -267,10 +285,10 @@ body {
                         كلمة المرور
                     </label>
                     <div style="position: relative;">
-                        <input asp-for="Input.Password" 
-                               class="form-input" 
-                               autocomplete="current-password" 
-                               aria-required="true" 
+                        <input asp-for="Input.Password"
+                               class="form-input"
+                               autocomplete="current-password"
+                               aria-required="true"
                                placeholder="أدخل كلمة المرور" />
                         <i class="fas fa-key input-icon"></i>
                     </div>
@@ -289,11 +307,11 @@ body {
                     تسجيل الدخول
                 </button>
 
-@*                 <div class="form-links">
-                    <a id="forgot-password" asp-page="./ForgotPassword" class="form-link">
-                        <i class="fas fa-question-circle"></i>
-                        هل نسيت كلمة المرور؟
-                    </a>
+                @* <div class="form-links">
+                <a id="forgot-password" asp-page="./ForgotPassword" class="form-link">
+                <i class="fas fa-question-circle"></i>
+                هل نسيت كلمة المرور؟
+                </a>
                 </div> *@
             </form>
         </section>

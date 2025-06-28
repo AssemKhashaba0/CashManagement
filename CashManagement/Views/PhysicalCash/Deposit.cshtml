@@ -5,21 +5,21 @@
 }
 
 <style>
-    /* الألوان المخصصة */
+    /* Custom Colors - Professional Palette */
     :root {
-        --primary-color: #1E3A8A;
-        --secondary-color: #3B82F6;
-        --background-color: #1F2937;
-        --accent-color: #34D399;
-        --error-color: #F87171;
-        --text-color: #F3F4F6;
-        --card-bg: #374151;
-        --input-bg: #4B5563;
-        --border-color: #6B7280;
+        --background-color: #FDFDFD; /* Light Ivory */
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray - Used for card background */
+        --secondary-color: #FACC15; /* Soft Gold - Used for success/accent */
+        --error-color: #F87171; /* Red for errors */
+        --input-bg: #EBECED; /* Slightly darker light ivory for input fields */
+        --border-color: #D1D5DB; /* Light gray for borders */
+        --card-bg: var(--header-sidebar-bg); /* Using header/sidebar color for cards */
     }
 
     .page-container {
-        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        background: var(--background-color);
         min-height: 100vh;
         padding: 2rem 1rem;
         color: var(--text-color);
@@ -31,47 +31,47 @@
         padding: 3rem 2.5rem;
         max-width: 600px;
         margin: 0 auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(59, 130, 246, 0.1);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
         position: relative;
         overflow: hidden;
     }
 
-    .deposit-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
-    }
+        .deposit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
 
     .page-title {
         text-align: center;
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 3rem;
-        color: var(--text-color);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        color: var(--primary-color); /* Title color from primary */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         position: relative;
     }
 
-    .page-title::after {
-        content: '';
-        position: absolute;
-        bottom: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 3px;
-        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
-        border-radius: 2px;
-    }
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--secondary-color); /* Underline from secondary */
+            border-radius: 2px;
+        }
 
-    /* رسائل الخطأ */
+    /* Error Messages */
     .alert-danger {
-        background: rgba(248, 113, 113, 0.15);
+        background: rgba(248, 113, 113, 0.1); /* Lighter background for alerts */
         border: 1px solid var(--error-color);
         border-radius: 12px;
         padding: 1rem 1.5rem;
@@ -82,36 +82,38 @@
         overflow: hidden;
         display: flex;
         align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    .alert-danger::before {
-        content: '\f071';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 1.2rem;
-        margin-left: 0.75rem;
-    }
+        .alert-danger::before {
+            content: '\f071'; /* Font Awesome warning icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-left: 0.75rem;
+            color: var(--error-color);
+        }
 
-    /* تنسيق النموذج */
+    /* Form Styling */
     .form-group {
         margin-bottom: 2rem;
         position: relative;
     }
 
-    .form-group label {
-        display: block;
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.75rem;
-        color: var(--text-color);
-        text-align: right;
-    }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            text-align: right;
+        }
 
     .form-control {
         width: 100%;
         padding: 1rem 1.5rem;
         background: var(--input-bg);
-        border: 2px solid var(--border-color);
+        border: 1px solid var(--border-color); /* Thinner border for inputs */
         border-radius: 12px;
         color: var(--text-color);
         font-size: 1rem;
@@ -120,24 +122,24 @@
         direction: rtl;
     }
 
-    .form-control:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        transform: translateY(-1px);
-    }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Focus border from primary */
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1); /* Primary color shadow on focus */
+            transform: translateY(-1px);
+        }
 
-    .form-control::placeholder {
-        color: #9CA3AF;
-        opacity: 0.7;
-    }
+        .form-control::placeholder {
+            color: #9CA3AF;
+            opacity: 0.8;
+        }
 
     textarea.form-control {
         min-height: 120px;
         resize: vertical;
     }
 
-    /* رسائل التحقق */
+    /* Validation Messages */
     .text-danger {
         color: var(--error-color);
         font-size: 0.875rem;
@@ -147,12 +149,13 @@
         font-weight: 500;
     }
 
-    /* الأزرار */
+    /* Buttons */
     .btn-container {
         display: flex;
         gap: 1rem;
         margin-top: 2.5rem;
         flex-wrap: wrap;
+        justify-content: flex-end; /* Align buttons to the right */
     }
 
     .btn {
@@ -172,47 +175,48 @@
         overflow: hidden;
     }
 
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-    }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); /* Stronger hover shine */
+            transition: left 0.5s;
+        }
 
-    .btn:hover::before {
-        left: 100%;
-    }
+        .btn:hover::before {
+            left: 100%;
+        }
 
     .btn-success {
-        background: linear-gradient(135deg, var(--accent-color), #10B981);
-        color: #065F46;
-        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+        background: var(--primary-color); /* Primary color for success */
+        color: #FFFFFF; /* White text for contrast */
+        box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
     }
 
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(52, 211, 153, 0.4);
-    }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.4);
+            background: #103CA6; /* Slightly darker primary on hover */
+        }
 
     .btn-secondary {
-        background: linear-gradient(135deg, var(--border-color), #4B5563);
+        background: var(--border-color); /* Border color for secondary */
         color: var(--text-color);
-        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+        box-shadow: 0 4px 15px rgba(209, 213, 219, 0.3);
     }
 
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        background: linear-gradient(135deg, #6B7280, #374151);
-    }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(209, 213, 219, 0.4);
+            background: #C4C9D0; /* Slightly darker border color on hover */
+        }
 
-    /* أيقونات Font Awesome للأزرار */
+    /* Font Awesome Icons for Buttons */
     .btn-success::before {
-        content: '\f058';
+        content: '\f058'; /* Check-circle icon */
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
         margin-left: 0.75rem;
@@ -220,14 +224,14 @@
     }
 
     .btn-secondary::before {
-        content: '\f2ea';
+        content: '\f2ea'; /* Undo icon (or f112 for reply) */
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
         margin-left: 0.75rem;
         font-size: 1rem;
     }
 
-    /* تأثيرات بصرية إضافية */
+    /* Additional Visual Effects */
     .deposit-card {
         animation: slideUp 0.6s ease-out;
     }
@@ -237,13 +241,14 @@
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
 
-    /* استجابة للشاشات الصغيرة */
+    /* Responsive Design */
     @@media (max-width: 768px) {
         .page-container {
             padding: 1rem 0.5rem;
@@ -261,6 +266,8 @@
 
         .btn-container {
             flex-direction: column;
+            align-items: stretch; /* Stretch buttons to full width */
+            justify-content: center;
         }
 
         .btn {
@@ -268,13 +275,13 @@
         }
     }
 
-    /* تحسينات إضافية للتباين */
+    /* Enhanced Contrast for Focus States */
     .form-group:focus-within label {
-        color: var(--secondary-color);
+        color: var(--primary-color); /* Label color changes to primary on focus */
         transition: color 0.3s ease;
     }
 
-    /* خلفية متحركة خفيفة */
+    /* Subtle Animated Background */
     .page-container::before {
         content: '';
         position: fixed;
@@ -282,10 +289,9 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 40% 80%, rgba(30, 58, 138, 0.05) 0%, transparent 50%);
+        background: radial-gradient(circle at 20% 50%, rgba(29, 78, 216, 0.03) 0%, transparent 50%), /* Primary color subtle glow */
+        radial-gradient(circle at 80% 20%, rgba(250, 204, 21, 0.03) 0%, transparent 50%), /* Secondary color subtle glow */
+        radial-gradient(circle at 40% 80%, rgba(17, 24, 39, 0.03) 0%, transparent 50%); /* Text color subtle glow */
         pointer-events: none;
         z-index: 0;
     }
@@ -295,42 +301,48 @@
         z-index: 1;
     }
 
-    /* تأثير hover للزر لإظهار الأيقونة بشكل أفضل */
-    .btn:hover::before {
+    /* Button hover pulse effect */
+    .btn:hover {
         animation: pulse 0.6s ease-in-out;
     }
 
     @@keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.02);
+        }
+        /* Slightly less aggressive pulse */
+        100% {
+            transform: scale(1);
+        }
     }
 </style>
 
 <div class="page-container">
     <h1 class="page-title">إيداع نقدي</h1>
-    
+
     <div class="deposit-card">
-        <!-- رسائل الخطأ -->
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
-        
-        <!-- نموذج الإيداع -->
+
         <form asp-action="Deposit" method="post">
             <div class="form-group">
                 <label asp-for="Amount">المبلغ</label>
                 <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0" placeholder="أدخل المبلغ المراد إيداعه" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="Description">الوصف</label>
                 <textarea asp-for="Description" class="form-control" placeholder="اكتب وصفاً للعملية (اختياري)"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            
+
             <div class="btn-container">
                 <button type="submit" class="btn btn-success">تأكيد الإيداع</button>
                 <a asp-action="Index" class="btn btn-secondary">رجوع</a>

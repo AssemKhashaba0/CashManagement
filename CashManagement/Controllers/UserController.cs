@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CashManagement.Controllers
 {
-    // [Authorize(Roles = "Admin")] // المدير فقط يمكنه الوصول إلى هذا الكونترولر
+     [Authorize(Roles = "Admin")] 
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

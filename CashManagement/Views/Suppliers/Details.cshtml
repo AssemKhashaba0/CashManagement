@@ -2,118 +2,611 @@
 @model SupplierDetailsViewModel
 @{
     ViewData["Title"] = $"تفاصيل: {Model.Supplier.Name}";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center mb-4">تفاصيل: @Model.Supplier.Name (@(Model.Supplier.Type == SupplierType.Supplier ? "مورد" : "عميل"))</h1>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- رسائل التنبيه -->
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+<style>
+    /* تحديد متغيرات الألوان لسهولة التعديل */
+    :root {
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --accent-color: #34D399; /* أخضر نعناعي - للحفاظ على تمييز المبالغ الدائنة */
+        --error-color: #F87171; /* أحمر مرجاني - للحفاظ على تمييز المبالغ المدينة */
+        --text-color: #111827; /* أسود ناعم */
+        --header-sidebar-bg: #F3F4F6; /* رمادي فاتح جدًا */
+        --card-bg: #FFFFFF; /* لون أبيض نقي للبطاقات والخلفيات الداخلية */
+        --field-bg: #E5E7EB; /* لون حقول الإدخال */
+        --border-color: #D1D5DB; /* لون الحدود */
+        --hover-bg: #F3F4F6; /* لون الخلفية عند التحويم */
     }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
     }
 
-    <!-- ملخص الرصيد -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <h5>إجمالي (له)</h5>
-                    <p class="fs-5">@Model.CreditTotal.ToString("N2")</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>إجمالي (عليه)</h5>
-                    <p class="fs-5">@Model.DebitTotal.ToString("N2")</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>صافي الرصيد</h5>
-                    <p class="fs-5">@Model.NetBalance</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    .details-container {
+        background: var(--background-color); /* استخدام لون الخلفية الجديد */
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    <!-- نموذج تصفية المعاملات -->
-    <form asp-action="Details" asp-route-id="@Model.Supplier.Id" method="get" class="mb-4">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label">من تاريخ</label>
-                <input type="date" name="startDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" class="form-control" />
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">إلى تاريخ</label>
-                <input type="date" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="form-control" />
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">نوع المعاملة</label>
-                <select name="debitCreditType" class="form-select">
-                    <option value="">الكل</option>
-                    <option value="@DebitCreditType.Credit" selected="@(Model.DebitCreditType == DebitCreditType.Credit ? "selected" : "")">له</option>
-                    <option value="@DebitCreditType.Debit" selected="@(Model.DebitCreditType == DebitCreditType.Debit ? "selected" : "")">عليه</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100 mt-4">تصفية</button>
-            </div>
-        </div>
-    </form>
+    .container {
+        background-color: var(--card-bg); /* استخدام لون البطاقة الجديد */
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* ظل أخف للخلفية الفاتحة */
+        padding: 35px;
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
+    }
 
-    <!-- جدول المعاملات -->
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>التاريخ</th>
-                    <th>النوع</th>
-                    <th>المبلغ</th>
-                    <th>الوصف</th>
-                    <th>المستخدم</th>
-                    <th>تعديل</th>
+    .main-title {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.1); /* ظل أخف */
+    }
 
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Transactions != null && Model.Transactions.Any())
+    /* Summary Card */
+    .summary-card-custom {
+        background: var(--card-bg); /* استخدام لون البطاقة الجديد */
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* ظل أخف */
+        position: relative;
+        overflow: hidden;
+    }
+
+        .summary-card-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); /* استخدام الألوان الجديدة */
+        }
+
+        .summary-card-custom .col-md-4 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+            position: relative;
+        }
+
+            .summary-card-custom .col-md-4:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 20%;
+                bottom: 20%;
+                width: 1px;
+                background-color: var(--border-color);
+            }
+
+        .summary-card-custom h5 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-card-custom .fs-5 {
+            font-size: 2rem !important;
+            font-weight: 700;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .summary-card-custom .credit-amount {
+            color: var(--accent-color); /* تم الإبقاء على الأخضر للدلالة الإيجابية */
+            text-shadow: 0 2px 4px rgba(52, 211, 153, 0.3);
+        }
+
+        .summary-card-custom .debit-amount {
+            color: var(--error-color); /* تم الإبقاء على الأحمر للدلالة السلبية */
+            text-shadow: 0 2px 4px rgba(248, 113, 113, 0.3);
+        }
+
+    .balance-positive {
+        color: var(--accent-color);
+    }
+
+    .balance-negative {
+        color: var(--error-color);
+    }
+
+    /* Alert Messages */
+    .alert-custom {
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* ظل أخف */
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, var(--accent-color), #10B981);
+        color: white;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, var(--error-color), #EF4444);
+        color: white;
+    }
+
+    .alert-custom .fas {
+        font-size: 1.2rem;
+    }
+
+    .btn-close-white {
+        filter: invert(0); /* تم تغيير هذا ليتناسب مع الخلفية الفاتحة للـ alert */
+        opacity: 0.8;
+    }
+
+        .btn-close-white:hover {
+            opacity: 1;
+        }
+
+    /* Filter Form */
+    .filter-form {
+        background: var(--card-bg); /* استخدام لون البطاقة الجديد */
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* ظل أخف */
+        border: 1px solid var(--border-color);
+    }
+
+    .form-control-custom {
+        background: var(--field-bg); /* استخدام لون حقل الإدخال الجديد */
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            background: var(--field-bg); /* استخدام لون حقل الإدخال الجديد */
+            border-color: var(--primary-color); /* لون التركيز الأساسي */
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2); /* ظل أزرق نيلي */
+            color: var(--text-color);
+        }
+
+        .form-control-custom::placeholder {
+            color: #6B7280; /* لون placeholder مناسب للخلفية الفاتحة */
+        }
+
+    .form-label-custom {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .input-group .form-control-custom,
+    .input-group .form-select-custom {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-group > .input-group-prepend > .input-group-text,
+    .input-group > .input-group-append > .input-group-text {
+        background-color: var(--field-bg); /* استخدام لون حقل الإدخال الجديد */
+        border: 2px solid var(--border-color);
+        border-left: none;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #6B7280; /* لون أيقونة مناسب للخلفية الفاتحة */
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group > .form-control-custom:not(:first-child),
+    .input-group > .form-select-custom:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .btn-custom {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), #1E40AF); /* استخدام الأزرق النيلي والظل */
+        color: white;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.4); /* ظل للأزرق النيلي */
+            color: white;
+        }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, var(--secondary-color), #D97706); /* استخدام الذهبي الناعم والظل */
+        color: white;
+    }
+
+        .btn-warning-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.4); /* ظل للذهبي الناعم */
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6B7280, #4B5563);
+        color: white;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+            color: white;
+        }
+
+    /* Table Styling */
+    .data-table {
+        background: var(--card-bg); /* استخدام لون البطاقة الجديد */
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* ظل أخف */
+        border: 1px solid var(--border-color);
+    }
+
+    .table-custom {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+        .table-custom thead {
+            background: linear-gradient(135deg, var(--primary-color), #1E40AF); /* استخدام الأزرق النيلي والظل */
+        }
+
+            .table-custom thead th {
+                padding: 1.2rem;
+                font-weight: 600;
+                border: none;
+                color: white;
+                text-align: right;
+            }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+            .table-custom tbody tr:hover {
+                background: var(--hover-bg);
+                transform: scale(1.01);
+            }
+
+        .table-custom tbody td {
+            padding: 1rem 1.2rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+    .transaction-credit {
+        color: var(--accent-color); /* تم الإبقاء على الأخضر */
+        font-weight: 600;
+    }
+
+    .transaction-debit {
+        color: var(--error-color); /* تم الإبقاء على الأحمر */
+        font-weight: 600;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: #6B7280; /* لون نص مناسب للخلفية الفاتحة */
+        font-size: 1.1rem;
+    }
+
+        .no-data .fas {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .container {
+            padding: 25px;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+        }
+
+        .summary-card-custom .col-md-4 {
+            padding: 1rem;
+        }
+
+            .summary-card-custom .col-md-4:not(:last-child)::after {
+                width: 80%;
+                height: 1px;
+                bottom: unset;
+                left: 10%;
+                top: 100%;
+            }
+
+        .filter-form .col-md-3 {
+            flex-basis: 100%;
+            max-width: 100%;
+            margin-bottom: 15px;
+        }
+
+            .filter-form .col-md-3:last-child {
+                margin-bottom: 0;
+            }
+
+        .btn-custom {
+            width: 100%;
+        }
+
+        .table-custom thead th,
+        .table-custom tbody td {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .details-container {
+            padding: 1rem 0;
+        }
+
+        .container {
+            padding: 15px;
+            margin-top: 15px !important;
+            margin-bottom: 15px !important;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card-custom {
+            padding: 1.5rem;
+        }
+
+            .summary-card-custom .col-md-4 {
+                padding: 0.8rem 0;
+            }
+
+            .summary-card-custom h5 {
+                font-size: 1.1rem;
+            }
+
+            .summary-card-custom .fs-5 {
+                font-size: 1.5rem !important;
+            }
+
+            .summary-card-custom .col-md-4:not(:last-child)::after {
+                display: none; /* Hide vertical separator on small screens */
+            }
+
+        .alert-custom {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+
+            .alert-custom .fas {
+                font-size: 1rem;
+            }
+
+        .filter-form {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control-custom, .form-select-custom {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .btn-custom {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .table-custom thead th,
+        .table-custom tbody td {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+        }
+
+        .no-data {
+            font-size: 1rem;
+            padding: 2rem;
+        }
+
+            .no-data .fas {
+                font-size: 2.5rem;
+            }
+    }
+</style>
+
+<div class="details-container" dir="rtl">
+    <div class="container">
+        <h1 class="main-title">
+            <i class="fas fa-file-invoice"></i> تفاصيل: @Model.Supplier.Name
+            <span class="badge @(Model.Supplier.Type == SupplierType.Supplier ? "bg-primary" : "bg-success") me-2">
+                @if (Model.Supplier.Type == SupplierType.Supplier)
                 {
-                    foreach (var transaction in Model.Transactions)
-                    {
-                        <tr>
-                            <td>@transaction.TransactionDate.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>@(transaction.DebitCreditType == DebitCreditType.Credit ? "له" : "عليه")</td>
-                            <td>@transaction.Amount.ToString("N2")</td>
-                            <td>@(transaction.Description ?? "-")</td>
-                            <td>@(transaction.User.FullName ?? "-")</td>
-                            <td>
-                                <a asp-action="EditTransaction" asp-route-transactionId="@transaction.Id" class="btn btn-warning btn-sm">تعديل</a>
-                            </td>
-                        </tr>
-                    }
+                    <i class="fas fa-truck"></i>
                 }
                 else
                 {
-                    <tr>
-                        <td colspan="5" class="text-center">لا توجد معاملات لعرضها</td>
-                    </tr>
+                    <i class="fas fa-user-tie"></i>
                 }
-            </tbody>
-        </table>
-    </div>
+            </span>
+        </h1>
 
-    <!-- إجراءات -->
-    <div class="mt-4 text-center">
-        
-        <a asp-action="CreateTransaction" asp-route-supplierId="@Model.Supplier.Id" class="btn btn-primary me-2">إضافة معاملة جديدة</a>
-        <a asp-action="Index" class="btn btn-secondary">رجوع إلى القائمة</a>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="summary-card-custom mb-4">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-arrow-alt-circle-up"></i> إجمالي (له)</h5>
+                    <p class="fs-5 credit-amount">@Model.CreditTotal.ToString("N2")</p>
+                </div>
+                <div class="col-md-4">
+                    <h5><i class="fas fa-arrow-alt-circle-down"></i> إجمالي (عليه)</h5>
+                    <p class="fs-5 debit-amount">@Model.DebitTotal.ToString("N2")</p>
+                </div>
+                <div class="col-md-4">
+                    <h5><i class="fas fa-balance-scale"></i> صافي الرصيد</h5>
+                    <p class="fs-5 ">
+                        @Model.NetBalance
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Details" asp-route-id="@Model.Supplier.Id" method="get" class="filter-form">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label-custom" for="startDate"><i class="fas fa-calendar-alt"></i> من تاريخ</label>
+                    <input type="date" id="startDate" name="startDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" class="form-control form-control-custom" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label-custom" for="endDate"><i class="fas fa-calendar-alt"></i> إلى تاريخ</label>
+                    <input type="date" id="endDate" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="form-control form-control-custom" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label-custom" for="debitCreditType"><i class="fas fa-exchange-alt"></i> نوع المعاملة</label>
+                    <select id="debitCreditType" name="debitCreditType" class="form-control form-control-custom">
+                        <option value="">الكل</option>
+                        <option value="@DebitCreditType.Credit" selected="@(Model.DebitCreditType == DebitCreditType.Credit ? "selected" : "")">له (دائن)</option>
+                        <option value="@DebitCreditType.Debit" selected="@(Model.DebitCreditType == DebitCreditType.Debit ? "selected" : "")">عليه (مدين)</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-custom btn-primary-custom w-100">
+                        <i class="fas fa-filter"></i> تصفية
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="data-table">
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar-alt"></i> التاريخ</th>
+                            <th><i class="fas fa-tags"></i> النوع</th>
+                            <th><i class="fas fa-money-bill-wave-alt"></i> المبلغ</th>
+                            <th><i class="fas fa-file-alt"></i> الوصف</th>
+                            <th><i class="fas fa-user-circle"></i> المستخدم</th>
+                            <th><i class="fas fa-wrench"></i> تعديل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Transactions != null && Model.Transactions.Any())
+                        {
+                            foreach (var transaction in Model.Transactions)
+                            {
+                                <tr>
+                                    <td>@transaction.TransactionDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="@(transaction.DebitCreditType == DebitCreditType.Credit ? "transaction-credit" : "transaction-debit")">
+                                        @if (transaction.DebitCreditType == DebitCreditType.Credit)
+                                        {
+                                            <i class="fas fa-arrow-up"></i>
+                                            <h6>لة </h6>
+
+                                                    }
+                                        else
+                                        {
+                                            <i class="fas fa-arrow-down"></i>
+                                            <h6>علية </h6>
+                                        }
+                                    </td>
+                                    <td>@transaction.Amount.ToString("N2")</td>
+                                    <td>@(transaction.Description ?? "<span class='text-muted'>لا يوجد وصف</span>")</td>
+                                    <td>@(transaction.User?.FullName ?? "<span class='text-muted'>مستخدم غير معروف</span>")</td>
+                                    <td>
+                                        <a asp-action="EditTransaction" asp-route-transactionId="@transaction.Id" class="btn btn-sm-custom btn-warning-custom">
+                                            <i class="fas fa-edit"></i> تعديل
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="no-data">
+                                    <i class="fas fa-empty-set"></i>
+                                    لا توجد معاملات لعرضها
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center d-flex justify-content-center gap-3">
+            <a asp-action="CreateTransaction" asp-route-supplierId="@Model.Supplier.Id" class="btn btn-custom btn-primary-custom">
+                <i class="fas fa-plus-circle"></i> إضافة معاملة جديدة
+            </a>
+            <a asp-action="Index" class="btn btn-custom btn-secondary-custom">
+                <i class="fas fa-arrow-alt-circle-right"></i> رجوع إلى القائمة
+            </a>
+        </div>
     </div>
 </div>
 

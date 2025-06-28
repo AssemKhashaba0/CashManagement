@@ -1,0 +1,566 @@
+﻿@model CashManagement.Models.SupplierDashboardViewModel
+
+@{
+    ViewData["Title"] = "لوحة تحكم الموردين/العملاء";
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
+}
+
+<style>
+    /* استيراد الخطوط والأيقونات */
+    @@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+    @@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+    /* تحديد متغيرات الألوان لسهولة التعديل */
+    :root {
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --text-color: #111827; /* أسود ناعم */
+        --header-sidebar-color: #F3F4F6; /* رمادي فاتح جدًا */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --error-color: #dc3545; /* أحمر قياسي للأخطاء */
+    }
+
+    /* الإعدادات العامة */
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Tajawal', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+    }
+
+    /* العنوان الرئيسي */
+    .dashboard-title {
+        text-align: center;
+        color: var(--text-color); /* لون النص أسود ناعم */
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin: 2rem 0;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* ظل أخف */
+        position: relative;
+    }
+
+        .dashboard-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #3B82F6); /* تدرج أزرق نيلي */
+            border-radius: 2px;
+        }
+
+    /* فلتر البحث */
+    .filter-section {
+        background: var(--header-sidebar-color); /* رمادي فاتح جدًا */
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* ظل أخف */
+        border: 1px solid #E5E7EB; /* حدود خفيفة */
+    }
+
+    .filter-form {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-label {
+        color: var(--text-color); /* لون النص أسود ناعم */
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-select {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+        border: 1px solid #D1D5DB; /* حدود رمادية فاتحة */
+        color: var(--text-color); /* لون النص أسود ناعم */
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        min-width: 150px;
+        transition: all 0.3s ease;
+    }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color); /* أزرق نيلي عند التركيز */
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2); /* ظل أزرق خفيف */
+            background-color: #FFFFFF;
+        }
+
+        .filter-select option {
+            background-color: #FFFFFF; /* خلفية بيضاء لخيارات القائمة */
+            color: var(--text-color); /* لون النص أسود ناعم */
+        }
+
+    .filter-btn {
+        background-color: var(--primary-color); /* أزرق نيلي */
+        color: white; /* نص أبيض */
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(29, 78, 216, 0.2); /* ظل أزرق خفيف */
+    }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            background-color: #1A3EAE; /* درجة أغمق للأزرق عند التحويم */
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.3);
+        }
+
+    /* بطاقات الإحصائيات */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        border: 1px solid #E5E7EB; /* حدود خفيفة */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05); /* ظل أخف */
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color)); /* تدرج ألوان أساسي وثانوي */
+            animation: shimmer 3s infinite;
+        }
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1); /* ظل أثقل عند التحويم */
+    }
+
+    .stat-card.total-suppliers {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+    }
+
+    .stat-card.credit-card {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+    }
+
+    .stat-card.debit-card {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color); /* لون النص أسود ناعم */
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        padding: 1rem;
+        border-radius: 50%;
+        background-color: var(--header-sidebar-color); /* رمادي فاتح جدًا */
+        color: var(--primary-color); /* أزرق نيلي */
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-color); /* لون النص أسود ناعم */
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* ظل أخف */
+        margin: 0.5rem 0;
+    }
+
+    /* قسم المخططات */
+    .charts-section {
+        margin-bottom: 2rem;
+    }
+
+    .chart-card {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid #E5E7EB; /* حدود خفيفة */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* ظل أخف */
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-color); /* لون النص أسود ناعم */
+        border-bottom: 2px solid var(--primary-color); /* أزرق نيلي كحد سفلي */
+        padding-bottom: 1rem;
+    }
+
+    .chart-icon {
+        font-size: 1.5rem;
+        color: var(--primary-color); /* أزرق نيلي */
+    }
+
+    .chart-container {
+        max-width: 450px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* جدول المعاملات */
+    .transactions-card {
+        background-color: #FFFFFF; /* خلفية بيضاء */
+        border-radius: 20px;
+        border: 1px solid #E5E7EB; /* حدود خفيفة */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* ظل أخف */
+        overflow: hidden;
+    }
+
+    .transactions-header {
+        background: var(--primary-color); /* أزرق نيلي */
+        color: white; /* نص أبيض */
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+
+    .transactions-icon {
+        font-size: 1.5rem;
+        color: white; /* أيقونة بيضاء */
+    }
+
+    .transactions-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: transparent;
+    }
+
+        .transactions-table th {
+            background: var(--header-sidebar-color); /* رمادي فاتح جدًا */
+            color: var(--text-color); /* أسود ناعم */
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid #D1D5DB; /* حدود رمادية فاتحة */
+            text-align: right;
+        }
+
+        .transactions-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #E5E7EB; /* حدود رمادية فاتحة جدًا */
+            color: var(--text-color); /* أسود ناعم */
+            text-align: right;
+            transition: background-color 0.3s ease;
+        }
+
+        .transactions-table tbody tr:hover {
+            background-color: rgba(29, 78, 216, 0.05); /* ظل أزرق خفيف عند التحويم */
+        }
+
+    .transaction-amount {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .transaction-credit {
+        color: var(--secondary-color); /* ذهبي ناعم */
+    }
+
+    .transaction-debit {
+        color: var(--error-color); /* أحمر للأخطاء */
+    }
+
+    .transaction-type {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .transaction-type.credit {
+            background: rgba(250, 204, 21, 0.1); /* خلفية خفيفة من الذهبي */
+            color: var(--secondary-color); /* ذهبي ناعم */
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+
+        .transaction-type.debit {
+            background: rgba(220, 53, 69, 0.1); /* خلفية خفيفة من الأحمر */
+            color: var(--error-color); /* أحمر للأخطاء */
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+    /* تأثيرات الحركة */
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* استجابة الشاشات */
+    @@media (max-width: 768px) {
+        .dashboard-title {
+            font-size: 2rem;
+        }
+
+        .filter-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .stats-row {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .transactions-table {
+            font-size: 0.9rem;
+        }
+
+            .transactions-table th,
+            .transactions-table td {
+                padding: 0.75rem 0.5rem;
+            }
+    }
+
+    /* تخصيص شريط التمرير */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #F1F1F1; /* لون فاتح للخلفية */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--primary-color), #1A3EAE); /* تدرج أزرق نيلي */
+        border-radius: 4px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #60A5FA, var(--primary-color)); /* تدرج أزرق أفتح عند التحويم */
+        }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // إعداد المخطط الدائري
+        const ctxPie = document.getElementById('balanceDistributionChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['لهم', 'عليهم', 'رصيد صفري'],
+                datasets: [{
+                    data: [@Model.CreditSuppliersCount, @Model.DebitSuppliersCount, @Model.ZeroBalanceSuppliersCount],
+                    backgroundColor: ['var(--secondary-color)', 'var(--error-color)', '#6B7280'], // Soft Gold, Error Red, Gray
+                    borderColor: ['#E0B819', '#EF4444', '#4B5563'], // Darker shades for border
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Tajawal',
+                                size: 14
+                            },
+                            color: 'var(--text-color)', // Text color for legend
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    title: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)', // White background for tooltips
+                        titleColor: 'var(--text-color)', // Text color for tooltip title
+                        bodyColor: 'var(--text-color)', // Text color for tooltip body
+                        borderColor: 'var(--primary-color)', // Primary color for tooltip border
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        titleFont: {
+                            family: 'Tajawal'
+                        },
+                        bodyFont: {
+                            family: 'Tajawal'
+                        }
+                    }
+                }
+            }
+        });
+
+        // تأثيرات الحركة عند التحميل
+        document.addEventListener('DOMContentLoaded', function () {
+            const elements = document.querySelectorAll('.stat-card, .chart-card, .transactions-card');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('fade-in');
+                }, index * 100);
+            });
+        });
+    </script>
+}
+
+<h2 class="dashboard-title">
+    <i class="fas fa-chart-line" style="color: var(--primary-color); margin-left: 1rem;"></i>
+    لوحة تحكم الموردين/العملاء
+</h2>
+
+<div class="filter-section">
+    <form asp-action="Dashboard" method="get" class="filter-form">
+        <label for="SupplierType" class="filter-label">
+            <i class="fas fa-filter"></i>
+            نوع:
+        </label>
+        <select asp-for="SupplierType" class="filter-select" name="type">
+            <option value="">الكل</option>
+            <option value="Supplier">مورد</option>
+            <option value="Customer">عميل</option>
+        </select>
+        <button type="submit" class="filter-btn">
+            <i class="fas fa-search"></i>
+            تصفية
+        </button>
+    </form>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card total-suppliers">
+        <div class="stat-header">
+            <i class="fas fa-users stat-icon"></i>
+            إجمالي الموردين/العملاء
+        </div>
+        <div class="stat-value">@Model.TotalSuppliers</div>
+    </div>
+    <div class="stat-card credit-card">
+        <div class="stat-header">
+            <i class="fas fa-arrow-down stat-icon"></i>
+            إجمالي الرصيد (لهم)
+        </div>
+        <div class="stat-value transaction-credit">@Model.TotalCredit.ToString("N2")</div>
+    </div>
+    <div class="stat-card debit-card">
+        <div class="stat-header">
+            <i class="fas fa-arrow-up stat-icon"></i>
+            إجمالي الرصيد (عليهم)
+        </div>
+        <div class="stat-value transaction-debit">@Model.TotalDebit.ToString("N2")</div>
+    </div>
+</div>
+
+<div class="charts-section">
+    <div class="chart-card">
+        <div class="chart-header">
+            <i class="fas fa-chart-pie chart-icon"></i>
+            توزيع الأرصدة
+        </div>
+        <div class="chart-container">
+            <canvas id="balanceDistributionChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="transactions-card">
+    <div class="transactions-header">
+        <i class="fas fa-history transactions-icon"></i>
+        آخر المعاملات
+    </div>
+    <div style="overflow-x: auto;">
+        <table class="transactions-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user" style="margin-left: 0.5rem;"></i>اسم المورد/العميل</th>
+                    <th><i class="fas fa-money-bill-wave" style="margin-left: 0.5rem;"></i>المبلغ</th>
+                    <th><i class="fas fa-exchange-alt" style="margin-left: 0.5rem;"></i>النوع</th>
+                    <th><i class="fas fa-calendar" style="margin-left: 0.5rem;"></i>التاريخ</th>
+                    <th><i class="fas fa-file-alt" style="margin-left: 0.5rem;"></i>الوصف</th>
+                    <th><i class="fas fa-user-tie" style="margin-left: 0.5rem;"></i>المستخدم</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model.LatestTransactions)
+                {
+                    <tr>
+                        <td>@transaction.SupplierName</td>
+                        <td class="transaction-amount @(transaction.DebitCreditType == DebitCreditType.Credit ? "transaction-credit" : "transaction-debit")">
+                            @transaction.Amount.ToString("N2")
+                        </td>
+                        <td>
+                            <span class="transaction-type @(transaction.DebitCreditType == DebitCreditType.Credit ? "credit" : "debit")">
+                                <i class="fas fa-@(transaction.DebitCreditType == DebitCreditType.Credit ? "arrow-down" : "arrow-up")"></i>
+                                @(transaction.DebitCreditType == DebitCreditType.Credit ? "له" : "عليه")
+                            </span>
+                        </td>
+                        <td>@transaction.TransactionDate.ToString("dd/MM/yyyy")</td>
+                        <td>@transaction.Description</td>
+                        <td>@transaction.UserName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

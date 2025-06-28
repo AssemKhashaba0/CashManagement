@@ -5,169 +5,228 @@
     Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <style>
-    /* Custom CSS for Professional Dark Theme */
+    /* تعريف المتغيرات للألوان */
+    :root {
+        --primary-color: #1D4ED8; /* أزرق نيلي */
+        --secondary-color: #FACC15; /* ذهبي ناعم */
+        --background-color: #FDFDFD; /* عاجي فاتح */
+        --text-color: #111827; /* أسود ناعم */
+        --card-bg: #F3F4F6; /* رمادي فاتح جداً (للترويسة/شريط جانبي، استخدمناه هنا لخلفية البطاقة/النموذج) */
+        --input-bg: #FFFFFF; /* أبيض نقي */
+        --border-color-light: #E5E7EB; /* لون حدود فاتح جداً */
+        --border-color-medium: #D1D5DB; /* لون حدود متوسط */
+        --accent-success: #10B981; /* أخضر للنجاح */
+        --accent-error: #EF4444; /* أحمر للخطأ */
+        --accent-warning: #F59E0B; /* برتقالي للتحذير (للأزرار) */
+        --shadow-light: rgba(0, 0, 0, 0.05); /* ظل خفيف */
+        --shadow-medium: rgba(0, 0, 0, 0.1); /* ظل متوسط */
+        --shadow-dark: rgba(0, 0, 0, 0.2); /* ظل داكن */
+    }
+
+    /* General Body Styles */
+    body {
+        background-color: var(--background-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        min-height: 100vh;
+        direction: rtl; /* Ensure RTL for the whole page */
+    }
+
+    /* Page Header Styles */
     .page-header {
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
-        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%); /* أزرق نيلي موحد */
+        padding: 2.5rem 2rem;
         border-radius: 16px;
         margin-bottom: 2rem;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3);
+        box-shadow: 0 12px 35px rgba(29, 78, 216, 0.3); /* ظل بلون Primary */
     }
 
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
-    }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%); /* تأثير لامع أفتح */
+            animation: float 6s ease-in-out infinite;
+        }
 
     @@keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(180deg); }
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+        }
     }
 
     .page-title {
-        color: #F3F4F6;
+        color: white; /* عنوان أبيض */
         font-size: 2.5rem;
         font-weight: 700;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 1px 1px 3px var(--shadow-dark); /* ظل خفيف للنص */
         position: relative;
         z-index: 2;
     }
 
+    /* Alert Messages */
     .alert-success-custom {
-        background: linear-gradient(135deg, #34D399, #10B981);
+        background: linear-gradient(135deg, var(--accent-success), #059669);
         border: none;
         border-radius: 12px;
         color: white;
         padding: 1rem 1.5rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         animation: slideInDown 0.5s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     .alert-danger-custom {
-        background: linear-gradient(135deg, #F87171, #EF4444);
+        background: linear-gradient(135deg, var(--accent-error), #DC2626);
         border: none;
         border-radius: 12px;
         color: white;
         padding: 1rem 1.5rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         animation: slideInDown 0.5s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     @@keyframes slideInDown {
-        from { transform: translateY(-30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
+    /* Info Card Styles */
     .info-card {
-        background: #1F2937;
+        background: var(--card-bg); /* خلفية البطاقة رمادي فاتح جداً */
         border-radius: 20px;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-color-medium); /* حدود متوسطة */
+        box-shadow: 0 10px 40px var(--shadow-medium); /* ظل متوسط */
         margin-bottom: 2rem;
         overflow: hidden;
         transition: all 0.3s ease;
         position: relative;
     }
 
-    .info-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #1E3A8A, #3B82F6, #34D399);
-    }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px; /* شريط علوي أسمك */
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); /* تدرج Primary و Secondary */
+        }
 
-    .info-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-    }
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px var(--shadow-dark); /* ظل أعمق عند التمرير */
+        }
 
     .card-header-custom {
-        background: linear-gradient(135deg, #374151, #4B5563);
+        background: linear-gradient(135deg, var(--input-bg), #F9FAFB); /* خلفية رأس البطاقة أفتح قليلاً */
         padding: 1.5rem 2rem;
-        border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        border-bottom: 1px solid var(--border-color-light); /* حدود رأس البطاقة فاتحة */
     }
 
-    .card-header-custom h4 {
-        color: #F3F4F6;
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-    }
+        .card-header-custom h4 {
+            color: var(--text-color); /* لون نص رأس البطاقة أسود ناعم */
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700; /* خط أثقل قليلاً */
+            display: flex;
+            align-items: center;
+        }
 
-    .card-header-custom h4::before {
-        content: '💳';
-        margin-left: 0.5rem;
-        font-size: 1.2rem;
-    }
+            .card-header-custom h4::before {
+                content: ''; /* Remove content here, use Font Awesome icon below */
+                margin-left: 0.75rem;
+                font-size: 1.5rem;
+            }
+            /* Add specific icon for card header */
+            .card-header-custom h4 .icon {
+                margin-left: 0.75rem;
+                font-size: 1.5rem;
+                color: var(--primary-color); /* Color for the icon */
+            }
 
     .card-body-custom {
         padding: 2rem;
-        background: #1F2937;
+        background: var(--card-bg);
     }
 
     .info-row {
         display: flex;
         align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+        padding: 1.1rem 0; /* مسافة داخلية أكبر */
+        border-bottom: 1px solid var(--border-color-light); /* حدود صفوف المعلومات أفتح */
         transition: all 0.3s ease;
     }
 
-    .info-row:hover {
-        background: rgba(59, 130, 246, 0.05);
-        border-radius: 8px;
-        margin: 0 -1rem;
-        padding: 1rem;
-    }
+        .info-row:hover {
+            background: rgba(29, 78, 216, 0.03); /* تأثير تمرير خفيف بلون Primary */
+            border-radius: 8px;
+            margin: 0 -1rem;
+            padding: 1.1rem 1rem;
+        }
 
-    .info-row:last-child {
-        border-bottom: none;
-    }
+        .info-row:last-child {
+            border-bottom: none;
+        }
 
     .info-label {
         font-weight: 600;
-        color: #3B82F6;
-        min-width: 150px;
-        margin-left: 1rem;
+        color: var(--primary-color); /* أزرق نيلي للتسميات */
+        min-width: 170px; /* عرض أكبر للتسمية */
+        margin-left: 1.2rem; /* مسافة أكبر */
         display: flex;
         align-items: center;
+        font-size: 0.95rem;
     }
 
     .info-value {
-        color: #F3F4F6;
+        color: var(--text-color);
         font-weight: 500;
         flex: 1;
+        font-size: 1rem;
     }
 
+    /* Progress Bars */
     .progress-container {
-        background: rgba(31, 41, 55, 0.8);
+        background: var(--border-color-light); /* خلفية شريط التقدم فاتحة */
         border-radius: 12px;
-        padding: 0.3rem;
+        padding: 0.25rem; /* حشوة أصغر */
         margin-top: 0.5rem;
         position: relative;
         overflow: hidden;
     }
 
     .progress-bar-custom {
-        height: 12px;
-        border-radius: 8px;
+        height: 14px; /* ارتفاع أكبر لشريط التقدم */
+        border-radius: 9px; /* حواف أكثر استدارة */
         position: relative;
         overflow: hidden;
         transition: all 0.8s ease;
@@ -175,18 +234,23 @@
     }
 
     .progress-daily {
-        background: linear-gradient(90deg, #34D399, #10B981);
-        box-shadow: 0 0 15px rgba(52, 211, 153, 0.5);
+        background: linear-gradient(90deg, var(--accent-success), #059669);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
     }
 
     .progress-monthly {
-        background: linear-gradient(90deg, #3B82F6, #1E3A8A);
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        background: linear-gradient(90deg, var(--primary-color), #0D47A1); /* أزرق نيلي أغمق قليلاً */
+        box-shadow: 0 0 15px rgba(29, 78, 216, 0.4);
     }
 
     @@keyframes progressGlow {
-        0% { box-shadow: 0 0 15px rgba(52, 211, 153, 0.3); }
-        100% { box-shadow: 0 0 25px rgba(52, 211, 153, 0.6); }
+        0% {
+            box-shadow: 0 0 10px rgba(29, 78, 216, 0.2);
+        }
+
+        100% {
+            box-shadow: 0 0 20px rgba(29, 78, 216, 0.4);
+        }
     }
 
     .progress-text {
@@ -195,90 +259,142 @@
         left: 50%;
         transform: translate(-50%, -50%);
         color: white;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-shadow: 1px 1px 2px var(--shadow-medium);
     }
 
+    /* Transactions Section */
     .transactions-section {
         margin-top: 3rem;
     }
 
     .section-title {
-        color: #F3F4F6;
-        font-size: 1.8rem;
-        font-weight: 600;
+        color: var(--text-color); /* عنوان القسم أسود ناعم */
+        font-size: 2rem; /* حجم خط أكبر */
+        font-weight: 700; /* خط أثقل */
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #3B82F6;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid var(--secondary-color); /* شريط سفلي بلون Secondary */
     }
 
-    .section-title::before {
-        content: '📊';
-        margin-left: 0.5rem;
-        font-size: 1.5rem;
-    }
+        .section-title .icon {
+            margin-left: 0.75rem;
+            font-size: 1.8rem;
+            color: var(--primary-color); /* Color for the icon */
+        }
 
     .table-container {
-        background: #1F2937;
+        background: var(--card-bg); /* خلفية الجدول رمادي فاتح جداً */
         border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(59, 130, 246, 0.2);
+        overflow: hidden; /* For responsiveness on small screens */
+        box-shadow: 0 10px 30px var(--shadow-medium);
+        border: 1px solid var(--border-color-medium);
     }
 
     .table-custom {
         margin: 0;
-        color: #F3F4F6;
+        color: var(--text-color);
+        width: 100%;
+        border-collapse: separate; /* Allows border-radius on cells */
+        border-spacing: 0; /* Removes space between cells */
     }
 
-    .table-custom thead {
-        background: linear-gradient(135deg, #1E3A8A, #3B82F6);
-    }
+        .table-custom thead {
+            background: linear-gradient(135deg, var(--primary-color), #0D47A1); /* رأس الجدول أزرق نيلي متدرج */
+        }
 
-    .table-custom thead th {
-        color: white;
-        font-weight: 600;
-        padding: 1.2rem 1rem;
-        border: none;
-        text-align: center;
-        position: relative;
-    }
+            .table-custom thead th {
+                color: white;
+                font-weight: 700; /* Bold headers */
+                padding: 1.2rem 1rem;
+                text-align: center;
+                position: relative;
+                font-size: 1rem; /* Slightly larger font for headers */
+                border-bottom: none; /* No border for headers */
+            }
 
-    .table-custom tbody tr {
-        border-bottom: 1px solid rgba(75, 85, 99, 0.3);
-        transition: all 0.3s ease;
-    }
+            /* Table head corners */
+            .table-custom thead tr th:first-child {
+                border-top-right-radius: 16px; /* Apply radius to first header */
+            }
 
-    .table-custom tbody tr:hover {
-        background: rgba(59, 130, 246, 0.1);
-        transform: scale(1.01);
-    }
+            .table-custom thead tr th:last-child {
+                border-top-left-radius: 16px; /* Apply radius to last header */
+            }
 
-    .table-custom tbody td {
-        padding: 1rem;
-        border: none;
-        text-align: center;
-        vertical-align: middle;
-    }
+        .table-custom tbody tr {
+            transition: all 0.2s ease-in-out;
+        }
+
+            .table-custom tbody tr:nth-child(even) {
+                background-color: #F9FAFB; /* Light stripe for even rows */
+            }
+
+            .table-custom tbody tr:nth-child(odd) {
+                background-color: var(--card-bg); /* Base color for odd rows */
+            }
+
+            .table-custom tbody tr:hover {
+                background: rgba(29, 78, 216, 0.08); /* Stronger hover effect */
+                transform: scale(1.005);
+                box-shadow: 0 4px 15px rgba(29, 78, 216, 0.1); /* Subtle shadow on hover */
+            }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color-light);
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.95rem; /* Slightly larger font for cells */
+            color: #374151; /* Darker text for better readability */
+        }
+
+        .table-custom tbody tr:last-child td {
+            border-bottom: none; /* No border for the last row */
+        }
 
     .status-badge {
         padding: 0.4rem 0.8rem;
         border-radius: 20px;
         font-size: 0.85rem;
         font-weight: 600;
-        text-transform: uppercase;
+        text-transform: capitalize;
+        display: inline-flex; /* Use flex for icon alignment */
+        align-items: center;
+        gap: 0.4rem; /* Space between text and icon */
+        min-width: 90px; /* Ensure consistent width */
+        justify-content: center;
     }
 
+        .status-badge .icon {
+            font-size: 0.75rem; /* Smaller icon for badge */
+        }
+
     .status-active {
-        background: linear-gradient(135deg, #34D399, #10B981);
+        background: linear-gradient(135deg, var(--accent-success), #059669);
         color: white;
     }
 
     .status-inactive {
-        background: linear-gradient(135deg, #F87171, #EF4444);
+        background: linear-gradient(135deg, var(--accent-error), #DC2626);
+        color: white;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, var(--accent-success), #059669);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, var(--accent-warning), #D97706);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, var(--accent-error), #DC2626);
         color: white;
     }
 
@@ -287,22 +403,25 @@
         padding: 3rem;
         color: #9CA3AF;
         font-style: italic;
-        background: #1F2937;
+        background: var(--card-bg);
         border-radius: 16px;
-        border: 2px dashed rgba(156, 163, 175, 0.3);
+        border: 2px dashed var(--border-color-medium);
+        box-shadow: 0 5px 15px var(--shadow-light);
     }
 
+    /* Action Buttons */
     .action-buttons {
-        margin-top: 2rem;
+        margin-top: 2.5rem;
         display: flex;
-        gap: 1rem;
+        gap: 1.2rem;
         flex-wrap: wrap;
+        justify-content: flex-start;
     }
 
     .btn-custom {
-        padding: 0.8rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
+        padding: 0.9rem 2.2rem;
+        border-radius: 14px;
+        font-weight: 700;
         text-decoration: none;
         transition: all 0.3s ease;
         position: relative;
@@ -311,32 +430,34 @@
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.6rem;
     }
 
     .btn-secondary-custom {
-        background: linear-gradient(135deg, #4B5563, #6B7280);
-        color: white;
-        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+        background: var(--secondary-color);
+        color: var(--text-color);
+        box-shadow: 0 4px 15px rgba(250, 204, 21, 0.3);
     }
 
-    .btn-secondary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        color: white;
-    }
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 204, 21, 0.4);
+            background: #E5BE00;
+            color: var(--text-color);
+        }
 
     .btn-warning-custom {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
+        background: var(--primary-color);
         color: white;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
     }
 
-    .btn-warning-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        color: white;
-    }
+        .btn-warning-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.4);
+            background: #0D47A1;
+            color: white;
+        }
 
     .btn-custom::before {
         content: '';
@@ -345,7 +466,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         transition: left 0.5s;
     }
 
@@ -353,30 +474,69 @@
         left: 100%;
     }
 
-    /* Icons for info labels */
-    .info-label[data-icon="phone"]::before { content: '📱'; margin-left: 0.5rem; }
-    .info-label[data-icon="user"]::before { content: '👤'; margin-left: 0.5rem; }
-    .info-label[data-icon="network"]::before { content: '🌐'; margin-left: 0.5rem; }
-    .info-label[data-icon="balance"]::before { content: '💰'; margin-left: 0.5rem; }
-    .info-label[data-icon="limit"]::before { content: '⏰'; margin-left: 0.5rem; }
-    .info-label[data-icon="status"]::before { content: '📊'; margin-left: 0.5rem; }
+    /* Icons for info labels - Using Font Awesome now */
+    .info-label .icon {
+        margin-left: 0.5rem;
+        font-size: 1.1rem; /* Slightly larger icons for labels */
+        color: #6B7280; /* A subtle grey for icons in info labels */
+    }
 
     /* Responsive Design */
     @@media (max-width: 768px) {
-        .page-title { font-size: 1.8rem; }
-        .info-row { flex-direction: column; align-items: flex-start; }
-        .info-label { min-width: auto; margin-bottom: 0.5rem; }
-        .action-buttons { justify-content: center; }
-        .table-container { overflow-x: auto; }
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.8rem 0;
+        }
+
+        .info-label {
+            min-width: auto;
+            margin-bottom: 0.4rem;
+            margin-left: 0;
+        }
+
+            .info-label .icon {
+                margin-left: 0.3rem;
+            }
+
+        .info-value {
+            text-align: right;
+        }
+
+        .action-buttons {
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .btn-custom {
+            width: 100%;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-custom thead th, .table-custom tbody td {
+            padding: 0.8rem 0.5rem;
+        }
     }
 </style>
 
-<!-- Page Header -->
 <div class="page-header">
-    <h1 class="page-title">تفاصيل الخط النقدي</h1>
+    <h1 class="page-title text-center">
+        <i class="fas fa-money-check-alt"></i> تفاصيل الخط النقدي
+    </h1>
 </div>
 
-<!-- Success/Error Messages -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert-success-custom">
@@ -392,55 +552,57 @@
     </div>
 }
 
-<!-- Cash Line Information Card -->
 <div class="info-card">
     <div class="card-header-custom">
-        <h4>معلومات الخط</h4>
+        <h4><i class="fas fa-info-circle icon"></i> معلومات الخط</h4>
     </div>
     <div class="card-body-custom">
         <div class="info-row">
-            <div class="info-label" data-icon="phone">رقم الهاتف</div>
+            <div class="info-label"><i class="fas fa-phone-alt icon"></i> رقم الهاتف</div>
             <div class="info-value">@Html.DisplayFor(model => model.PhoneNumber)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="user">اسم المالك</div>
+            <div class="info-label"><i class="fas fa-user icon"></i> اسم المالك</div>
             <div class="info-value">@Html.DisplayFor(model => model.OwnerName)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="network">نوع الشبكة</div>
+            <div class="info-label"><i class="fas fa-network-wired icon"></i> نوع الشبكة</div>
             <div class="info-value">@Html.DisplayFor(model => model.NetworkType)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="balance">الرصيد الحالي</div>
+            <div class="info-label"><i class="fas fa-money-bill-wave icon"></i> الرصيد الحالي</div>
             <div class="info-value">@Html.DisplayFor(model => model.CurrentBalance)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="limit">الحد اليومي</div>
+            <div class="info-label"><i class="fas fa-calendar-day icon"></i> الحد اليومي</div>
             <div class="info-value">@Html.DisplayFor(model => model.DailyLimit)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="limit">الحد الشهري</div>
+            <div class="info-label"><i class="fas fa-calendar-alt icon"></i> الحد الشهري</div>
             <div class="info-value">@Html.DisplayFor(model => model.MonthlyLimit)</div>
         </div>
 
         <div class="info-row">
-            <div class="info-label" data-icon="status">الحالة</div>
+            <div class="info-label"><i class="fas fa-toggle-on icon"></i> الحالة</div>
             <div class="info-value">
-              
-                    <span class="status-badge status-active">نشط</span>
-               
-                    @Html.DisplayFor(model => model.Status)
-                </span>
+                @if (Model.Status.ToString() == "Active")
+                {
+                    <span class="status-badge status-active"><i class="fas fa-check-circle icon"></i> نشط</span>
+                }
+                else
+                {
+                    <span class="status-badge status-inactive"><i class="fas fa-times-circle icon"></i> غير نشط</span>
+                }
             </div>
         </div>
 
         <div class="info-row">
-            <div class="info-label">النسبة المتبقية يوميًا</div>
+            <div class="info-label"><i class="fas fa-chart-pie icon"></i> النسبة المتبقية يوميًا</div>
             <div class="info-value">
                 <div class="progress-container">
                     <div class="progress-bar-custom progress-daily" style="width: @Model.DailyRemainingPercentage%;">
@@ -451,7 +613,7 @@
         </div>
 
         <div class="info-row">
-            <div class="info-label">النسبة المتبقية شهريًا</div>
+            <div class="info-label"><i class="fas fa-chart-bar icon"></i> النسبة المتبقية شهريًا</div>
             <div class="info-value">
                 <div class="progress-container">
                     <div class="progress-bar-custom progress-monthly" style="width: @Model.MonthlyRemainingPercentage%;">
@@ -463,23 +625,26 @@
     </div>
 </div>
 
-<!-- Transactions Section -->
+
+
 <div class="transactions-section">
-    <h3 class="section-title">العمليات المرتبطة</h3>
-    
+    <h3 class="section-title">
+        <i class="fas fa-exchange-alt icon"></i> العمليات المرتبطة
+    </h3>
+
     @if (Model.Transactions != null && Model.Transactions.Any())
     {
         <div class="table-container">
             <table class="table table-custom">
                 <thead>
                     <tr>
-                        <th>رقم العملية</th>
-                        <th>المبلغ</th>
-                        <th>الرسوم</th>
-                        <th>المبلغ الصافي</th>
-                        <th>نوع العملية</th>
-                        <th>الحالة</th>
-                        <th>تاريخ الإنشاء</th>
+                        <th><i class="fas fa-hashtag"></i> رقم العملية</th>
+                        <th><i class="fas fa-money-bill-alt"></i> المبلغ</th>
+                        <th><i class="fas fa-hand-holding-usd"></i> الرسوم</th>
+                        <th><i class="fas fa-money-check"></i> المبلغ الصافي</th>
+                        <th><i class="fas fa-sliders-h"></i> نوع العملية</th>
+                        <th><i class="fas fa-info-circle"></i> الحالة</th>
+                        <th><i class="fas fa-calendar-alt"></i> تاريخ الإنشاء</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -492,10 +657,37 @@
                             <td>@Html.DisplayFor(modelItem => transaction.NetAmount)</td>
                             <td>@Html.DisplayFor(modelItem => transaction.TransactionType)</td>
                             <td>
-                              
-                                    <span class="status-badge status-active">مكتمل</span>
-                               
-
+                                @{
+                                    string transactionStatusClass = "";
+                                    string transactionStatusText = "";
+                                    string transactionStatusIcon = "";
+                                    switch (transaction.Status.ToString())
+                                    {
+                                        case "Completed":
+                                            transactionStatusClass = "status-completed";
+                                            transactionStatusText = "مكتمل";
+                                            transactionStatusIcon = "fas fa-check-circle";
+                                            break;
+                                        case "Pending":
+                                            transactionStatusClass = "status-pending";
+                                            transactionStatusText = "معلق";
+                                            transactionStatusIcon = "fas fa-clock";
+                                            break;
+                                        case "Cancelled":
+                                            transactionStatusClass = "status-cancelled";
+                                            transactionStatusText = "ملغاة";
+                                            transactionStatusIcon = "fas fa-times-circle";
+                                            break;
+                                        default:
+                                            transactionStatusClass = "status-inactive"; // Fallback
+                                            transactionStatusText = transaction.Status.ToString();
+                                            transactionStatusIcon = "fas fa-question-circle";
+                                            break;
+                                    }
+                                }
+                                <span class="status-badge @transactionStatusClass">
+                                    <i class="@transactionStatusIcon icon"></i> @transactionStatusText
+                                </span>
                             </td>
                             <td>@Html.DisplayFor(modelItem => transaction.CreatedAt)</td>
                         </tr>
@@ -507,13 +699,14 @@
     else
     {
         <div class="no-transactions">
-            <i class="fas fa-inbox fa-3x mb-3" style="color: #4B5563;"></i>
+            <i class="fas fa-inbox fa-3x mb-3" style="color: #A0AEC0;"></i>
             <p>لا توجد عمليات مرتبطة بهذا الخط.</p>
         </div>
     }
 </div>
 
-<!-- Action Buttons -->
+
+
 <div class="action-buttons">
     <a asp-action="Index" class="btn-custom btn-secondary-custom">
         <i class="fas fa-arrow-right"></i>

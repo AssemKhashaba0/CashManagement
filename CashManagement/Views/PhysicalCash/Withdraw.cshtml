@@ -5,73 +5,98 @@
 }
 
 <style>
-    /* الألوان المخصصة */
+    /* Custom Colors - Professional Palette (Light Theme) */
     :root {
-        --primary-color: #1E3A8A;
-        --secondary-color: #3B82F6;
-        --background-color: #1F2937;
-        --accent-color: #34D399;
-        --error-color: #F87171;
-        --text-color: #F3F4F6;
-        --card-bg: #374151;
-        --input-bg: #4B5563;
-        --border-color: #6B7280;
+        --background-color: #FDFDFD; /* Light Ivory */
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray - Used for card background */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --error-color: #F87171; /* Red for errors */
+        --success-color: #10B981; /* Green for success */
+        --warning-color: #F59E0B; /* Orange for warnings */
+        --info-color: #0EA5E9; /* Light Blue for info/details */
+        /* Derived colors for better contrast/depth */
+        --card-bg: var(--header-sidebar-bg); /* Use very light gray for card backgrounds */
+        --input-bg: #EBECED; /* Slightly darker light ivory for input fields */
+        --border-color: #D1D5DB; /* Light gray for subtle borders */
+        --button-text-light: #FFFFFF; /* White text for dark buttons */
+        --button-text-dark: #111827; /* Dark text for light buttons */
+    }
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl; /* Ensure overall RTL for Arabic content */
+        text-align: right; /* Default text alignment for Arabic */
     }
 
     .page-container {
-        background: linear-gradient(135deg, var(--background-color) 0%, #111827 100%);
+        background-color: var(--background-color); /* Solid background color as per palette */
         min-height: 100vh;
         padding: 2rem 1rem;
-        color: var(--text-color);
-    }
-
-    .withdrawal-card {
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 3rem 2.5rem;
-        max-width: 600px;
-        margin: 0 auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(59, 130, 246, 0.1);
         position: relative;
-        overflow: hidden;
+        display: flex; /* Use flexbox to center content */
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        align-items: center; /* Center horizontally */
     }
 
-    .withdrawal-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
-    }
+        /* No animated background for the light theme, keeping it clean */
+        .page-container::before {
+            display: none; /* Hide the animated background */
+        }
 
     .page-title {
         text-align: center;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 3rem;
-        color: var(--text-color);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-size: 2.8rem; /* Slightly larger for prominence */
+        font-weight: 800; /* Bolder title */
+        margin-bottom: 3.5rem; /* Increased margin for better separation */
+        color: var(--primary-color); /* Title color from primary */
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lighter shadow */
         position: relative;
     }
 
-    .page-title::after {
-        content: '';
-        position: absolute;
-        bottom: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 3px;
-        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
-        border-radius: 2px;
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px; /* Adjust position */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px; /* Wider underline */
+            height: 4px; /* Thicker underline */
+            background: var(--secondary-color); /* Underline from secondary */
+            border-radius: 2px;
+        }
+
+    .withdrawal-card {
+        background: var(--card-bg); /* Very Light Gray */
+        border-radius: 16px;
+        padding: 3rem 2.5rem;
+        max-width: 600px;
+        width: 100%; /* Ensure it takes full width on small screens */
+        margin: 0 auto; /* Center the card horizontally */
+        box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+        border: 1px solid var(--border-color); /* Light gray border */
+        position: relative;
+        overflow: hidden;
+        z-index: 1; /* Ensure card is above any pseudo-elements if added */
     }
 
-    /* رسائل الخطأ */
+        .withdrawal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px; /* Thicker top border */
+            background: var(--warning-color); /* Use warning color for withdrawal card top border */
+        }
+
+    /* Error Messages */
     .alert-danger {
-        background: rgba(248, 113, 113, 0.15);
+        background: rgba(248, 113, 113, 0.1); /* Lighter error background */
         border: 1px solid var(--error-color);
         border-radius: 12px;
         padding: 1rem 1.5rem;
@@ -80,35 +105,40 @@
         font-weight: 500;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: center;
     }
 
-    .alert-danger::before {
-        content: '⚠️';
-        font-size: 1.2rem;
-        margin-left: 0.5rem;
-    }
+        .alert-danger::before {
+            content: '\f071'; /* Font Awesome exclamation triangle icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-left: 0.75rem; /* Space from text in RTL */
+            color: var(--error-color);
+        }
 
-    /* تنسيق النموذج */
+    /* Form Styling */
     .form-group {
         margin-bottom: 2rem;
         position: relative;
     }
 
-    .form-group label {
-        display: block;
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.75rem;
-        color: var(--text-color);
-        text-align: right;
-    }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 1.05rem; /* Slightly larger label font */
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            text-align: right;
+        }
 
     .form-control {
         width: 100%;
         padding: 1rem 1.5rem;
-        background: var(--input-bg);
-        border: 2px solid var(--border-color);
-        border-radius: 12px;
+        background: var(--input-bg); /* Light ivory derived color */
+        border: 1px solid var(--border-color); /* Lighter border */
+        border-radius: 10px; /* Consistent border-radius */
         color: var(--text-color);
         font-size: 1rem;
         transition: all 0.3s ease;
@@ -116,24 +146,24 @@
         direction: rtl;
     }
 
-    .form-control:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        transform: translateY(-1px);
-    }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--warning-color); /* Focus border using warning color for withdrawal form */
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15); /* Warning color shadow on focus */
+            transform: translateY(-1px);
+        }
 
-    .form-control::placeholder {
-        color: #9CA3AF;
-        opacity: 0.7;
-    }
+        .form-control::placeholder {
+            color: #9CA3AF;
+            opacity: 0.8; /* Slightly more opaque placeholder */
+        }
 
     textarea.form-control {
         min-height: 120px;
         resize: vertical;
     }
 
-    /* رسائل التحقق */
+    /* Validation Messages */
     .text-danger {
         color: var(--error-color);
         font-size: 0.875rem;
@@ -143,12 +173,13 @@
         font-weight: 500;
     }
 
-    /* الأزرار */
+    /* Buttons */
     .btn-container {
         display: flex;
-        gap: 1rem;
-        margin-top: 2.5rem;
+        gap: 1.5rem; /* Increased gap between buttons */
+        margin-top: 3rem; /* Increased margin top */
         flex-wrap: wrap;
+        justify-content: center; /* Center the buttons */
     }
 
     .btn {
@@ -163,82 +194,90 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 140px;
+        min-width: 160px; /* Slightly wider buttons */
         position: relative;
         overflow: hidden;
     }
 
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-    }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); /* Stronger shimmer */
+            transition: left 0.5s;
+        }
 
-    .btn:hover::before {
-        left: 100%;
-    }
+        .btn:hover::before {
+            left: 100%;
+        }
 
     .btn-warning {
-        background: linear-gradient(135deg, var(--accent-color), #10B981);
-        color: #065F46;
-        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+        background: var(--warning-color); /* Solid warning color for main action */
+        color: var(--button-text-light); /* White text for warning button */
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
     }
 
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(52, 211, 153, 0.4);
-    }
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            background-color: #D68F0A; /* Darker warning on hover */
+        }
 
     .btn-secondary {
-        background: linear-gradient(135deg, var(--border-color), #4B5563);
-        color: var(--text-color);
-        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+        background: var(--border-color); /* Light gray for secondary action */
+        color: var(--text-color); /* Soft black text for secondary button */
+        box-shadow: 0 4px 15px rgba(209, 213, 219, 0.3);
     }
 
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        background: linear-gradient(135deg, #6B7280, #374151);
-    }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(209, 213, 219, 0.4);
+            background-color: #C4C9D0; /* Darker border color on hover */
+        }
 
-    /* أيقونات الأزرار */
+    /* Button Icons (using Font Awesome) */
+    /* Icons should be to the *right* for RTL layout */
     .btn-warning::after {
-        content: '💰';
-        margin-right: 0.5rem;
+        content: '\f068'; /* Font Awesome minus icon for withdrawal */
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.6rem;
         font-size: 1.1rem;
     }
 
     .btn-secondary::after {
-        content: '↩️';
-        margin-right: 0.5rem;
+        content: '\f053'; /* Font Awesome angle left icon for back */
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        margin-right: 0.6rem;
         font-size: 1rem;
     }
 
-    /* تأثيرات بصرية إضافية */
+    /* Animations */
     .withdrawal-card {
-        animation: slideUp 0.6s ease-out;
+        animation: slideUp 0.7s ease-out; /* Slightly longer animation */
     }
 
     @@keyframes slideUp {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
         }
+        /* Start further down */
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
 
-    /* استجابة للشاشات الصغيرة */
+    /* Responsive Design */
     @@media (max-width: 768px) {
         .page-container {
             padding: 1rem 0.5rem;
+            justify-content: flex-start; /* Align to top on small screens if content is long */
         }
 
         .withdrawal-card {
@@ -247,12 +286,13 @@
         }
 
         .page-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
         }
 
         .btn-container {
             flex-direction: column;
+            gap: 0.75rem;
         }
 
         .btn {
@@ -260,58 +300,35 @@
         }
     }
 
-    /* تحسينات إضافية للتباين */
+    /* Additional Enhancements for Contrast */
     .form-group:focus-within label {
-        color: var(--secondary-color);
+        color: var(--primary-color); /* Label changes color when input is focused */
         transition: color 0.3s ease;
-    }
-
-    /* خلفية متحركة خفيفة */
-    .page-container::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 40% 80%, rgba(30, 58, 138, 0.05) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .withdrawal-card {
-        position: relative;
-        z-index: 1;
     }
 </style>
 
 <div class="page-container">
     <h1 class="page-title">سحب نقدي</h1>
-    
+
     <div class="withdrawal-card">
-        <!-- رسائل الخطأ -->
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
-        
-        <!-- نموذج السحب -->
+
         <form asp-action="Withdraw" method="post">
             <div class="form-group">
                 <label asp-for="Amount">المبلغ</label>
                 <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0" placeholder="أدخل المبلغ المراد سحبه" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="Description">الوصف</label>
                 <textarea asp-for="Description" class="form-control" placeholder="اكتب وصفاً للعملية (اختياري)"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            
+
             <div class="btn-container">
                 <button type="submit" class="btn btn-warning">تأكيد السحب</button>
                 <a asp-action="Index" class="btn btn-secondary">رجوع</a>

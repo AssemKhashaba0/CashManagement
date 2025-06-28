@@ -6,19 +6,20 @@
 }
 
 <style>
-    /* الألوان المخصصة */
+    /* Custom Colors - Updated */
     :root {
-        --primary-color: #1E3A8A;
-        --secondary-color: #3B82F6;
-        --background-color: #1F2937;
-        --accent-color: #34D399;
-        --error-color: #F87171;
-        --text-color: #F3F4F6;
-        --card-bg: #374151;
-        --border-color: #4B5563;
-        --warning-color: #F59E0B;
-        --info-color: #06B6D4;
-        --muted-color: #9CA3AF;
+        --primary-color: #1D4ED8; /* Indigo Blue */
+        --secondary-color: #FACC15; /* Soft Gold */
+        --background-color: #FDFDFD; /* Light Ivory */
+        --text-color: #111827; /* Soft Black */
+        --header-sidebar-bg: #F3F4F6; /* Very Light Gray */
+        --accent-color: #059669; /* A nice green for success/deposit */
+        --error-color: #DC2626; /* A strong red for errors */
+        --info-color: #2563EB; /* A standard blue for info/withdraw */
+        --border-color: #D1D5DB; /* Lighter gray for borders */
+        --card-bg: #FFFFFF; /* White for cards */
+        --muted-color: #6B7280; /* Muted gray for secondary text */
+        --warning-color: #D97706; /* Orange for warnings */
     }
 
     .available-lines-container {
@@ -30,32 +31,37 @@
         font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Page Header */
+    /* Page Header - Updated Background */
     .page-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color)); /* Using primary and info for gradient */
         padding: 30px;
         border-radius: 15px;
         margin-bottom: 30px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Lighter shadow */
         position: relative;
         overflow: hidden;
     }
 
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        transform: rotate(45deg);
-        animation: shimmer 3s infinite;
-    }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
 
     @@keyframes shimmer {
-        0%, 100% { transform: translateX(-100%) rotate(45deg); }
-        50% { transform: translateX(100%) rotate(45deg); }
+        0%, 100% {
+            transform: translateX(-100%) rotate(45deg);
+        }
+
+        50% {
+            transform: translateX(100%) rotate(45deg);
+        }
     }
 
     .page-header h1 {
@@ -69,7 +75,7 @@
         z-index: 2;
     }
 
-    /* Alert Styles */
+    /* Alert Styles - Updated Colors */
     .alert {
         border-radius: 12px;
         padding: 18px 24px;
@@ -79,40 +85,39 @@
         align-items: center;
         gap: 12px;
         font-weight: 500;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Lighter shadow */
+        color: white; /* Ensure text is white for contrast */
     }
 
     .alert-success {
-        background: linear-gradient(135deg, var(--accent-color), #10B981);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color), #16A34A);
     }
 
-    .alert-success::before {
-        content: '\f058';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 1.3rem;
-    }
+        .alert-success::before {
+            content: '\f00c'; /* Check-circle icon for success */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
 
     .alert-danger {
         background: linear-gradient(135deg, var(--error-color), #EF4444);
-        color: white;
     }
 
-    .alert-danger::before {
-        content: '\f057';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 1.3rem;
-    }
+        .alert-danger::before {
+            content: '\f071'; /* Exclamation-triangle icon for danger */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
 
-    /* Search Container */
+    /* Search Container - Updated Colors */
     .search-container {
         background: var(--card-bg);
         padding: 25px;
         border-radius: 15px;
         margin-bottom: 30px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         border: 1px solid var(--border-color);
     }
 
@@ -144,21 +149,21 @@
         padding: 15px 20px 15px 50px;
         border: 2px solid var(--border-color);
         border-radius: 10px;
-        background: var(--background-color);
+        background: var(--header-sidebar-bg); /* Using header-sidebar-bg for input background */
         color: var(--text-color);
         font-size: 1.1rem;
         transition: all 0.3s ease;
     }
 
-    .search-input:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Primary color on focus */
+            box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.1);
+        }
 
-    .search-input::placeholder {
-        color: var(--muted-color);
-    }
+        .search-input::placeholder {
+            color: var(--muted-color);
+        }
 
     .search-icon {
         position: absolute;
@@ -171,7 +176,7 @@
 
     .search-btn {
         padding: 15px 25px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color)); /* Using primary and info for gradient */
         color: white;
         border: none;
         border-radius: 10px;
@@ -186,10 +191,10 @@
         justify-content: center;
     }
 
-    .search-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
-    }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.3);
+        }
 
     /* Cards Container */
     .cards-container {
@@ -199,43 +204,43 @@
         margin-bottom: 30px;
     }
 
-    /* Available Line Card */
+    /* Available Line Card - Updated Colors */
     .available-line-card {
         background: var(--card-bg);
         border-radius: 15px;
         border: 1px solid var(--border-color);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
     }
 
-    .available-line-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-        border-color: var(--accent-color);
-    }
+        .available-line-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border-color: var(--secondary-color); /* Secondary color on hover */
+        }
 
-    .available-line-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent-color), var(--info-color));
-    }
+        .available-line-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); /* Secondary and primary for top border */
+        }
 
     .card-header {
         padding: 20px;
         border-bottom: 1px solid var(--border-color);
-        background: rgba(0, 0, 0, 0.1);
+        background: var(--header-sidebar-bg); /* Use header-sidebar-bg for card header */
     }
 
     .phone-number {
         font-size: 1.4rem;
         font-weight: bold;
-        color: var(--accent-color);
+        color: var(--primary-color); /* Primary color for phone number */
         margin: 0 0 8px 0;
         display: flex;
         align-items: center;
@@ -256,11 +261,11 @@
     }
 
     .balance-section {
-        background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(16, 185, 129, 0.1));
+        background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), rgba(245, 158, 11, 0.1)); /* Soft gold tints */
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 20px;
-        border: 1px solid rgba(52, 211, 153, 0.2);
+        border: 1px solid rgba(250, 204, 21, 0.2);
     }
 
     .balance-label {
@@ -275,10 +280,10 @@
     .balance-value {
         font-size: 1.5rem;
         font-weight: bold;
-        color: var(--accent-color);
+        color: var(--secondary-color); /* Secondary color for balance value */
     }
 
-    /* Progress Sections */
+    /* Progress Sections - Updated Colors */
     .progress-section {
         margin-bottom: 20px;
     }
@@ -300,12 +305,12 @@
         border-radius: 14px;
         overflow: hidden;
         position: relative;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .progress-bar-custom {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent-color), #10B981);
+        background: linear-gradient(90deg, var(--accent-color), #22C55E); /* Accent color for healthy progress */
         border-radius: 14px;
         transition: width 0.5s ease;
         display: flex;
@@ -326,11 +331,11 @@
         background: linear-gradient(90deg, var(--error-color), #EF4444);
     }
 
-    /* Card Actions */
+    /* Card Actions - Updated Colors */
     .card-actions {
         padding: 18px 20px;
         border-top: 1px solid var(--border-color);
-        background: rgba(0, 0, 0, 0.1);
+        background: var(--header-sidebar-bg); /* Use header-sidebar-bg for card actions background */
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
@@ -351,31 +356,29 @@
         gap: 6px;
         font-size: 0.9rem;
         min-width: 90px;
+        color: white; /* Ensure text is white for all buttons */
     }
 
     .btn-withdraw {
-        background: linear-gradient(135deg, var(--info-color), #0891B2);
-        color: white;
+        background: linear-gradient(135deg, var(--info-color), #3B82F6); /* Info color for withdraw */
     }
 
     .btn-deposit {
-        background: linear-gradient(135deg, var(--accent-color), #10B981);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color), #10B981); /* Accent color for deposit */
     }
 
     .btn-details {
-        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color), #4F46E5); /* Primary color for details */
     }
 
     .action-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         text-decoration: none;
         color: white;
     }
 
-    /* No Results Message */
+    /* No Results Message - Updated Colors */
     .no-results {
         background: var(--card-bg);
         padding: 40px;
@@ -383,6 +386,7 @@
         text-align: center;
         border: 2px dashed var(--border-color);
         margin-bottom: 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
     }
 
     .no-results-icon {
@@ -397,7 +401,7 @@
         margin: 0;
     }
 
-    /* Back Button */
+    /* Back Button - Updated Colors */
     .back-container {
         margin-top: 30px;
         text-align: center;
@@ -405,9 +409,9 @@
 
     .back-btn {
         padding: 12px 25px;
-        background: var(--border-color);
-        color: var(--text-color);
-        border: none;
+        background: var(--header-sidebar-bg); /* Header/Sidebar background for back button */
+        color: var(--text-color); /* Text color for back button */
+        border: 1px solid var(--border-color); /* Add a subtle border */
         border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
@@ -419,43 +423,13 @@
         font-size: 1rem;
     }
 
-    .back-btn:hover {
-        background: var(--secondary-color);
-        color: white;
-        transform: translateY(-2px);
-        text-decoration: none;
-    }
-
-    /* Responsive Design */
-    @@media (max-width: 768px) {
-        .available-lines-container {
-            padding: 15px;
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
         }
-        
-        .page-header h1 {
-            font-size: 2rem;
-        }
-        
-        .search-form {
-            flex-direction: column;
-        }
-        
-        .search-input-group {
-            min-width: 100%;
-        }
-        
-        .cards-container {
-            grid-template-columns: 1fr;
-        }
-        
-        .card-actions {
-            flex-direction: column;
-        }
-        
-        .action-btn {
-            flex: none;
-        }
-    }
 
     /* Loading Animation */
     .btn-loading {
@@ -463,24 +437,29 @@
         color: transparent !important;
     }
 
-    .btn-loading::after {
-        content: '';
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid transparent;
-        border-top-color: #ffffff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
     @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     /* Card Animation */
@@ -490,13 +469,13 @@
         transform: translateY(20px);
     }
 
-    .available-line-card:nth-child(odd) {
-        animation-delay: 0.1s;
-    }
+        .available-line-card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
 
-    .available-line-card:nth-child(even) {
-        animation-delay: 0.2s;
-    }
+        .available-line-card:nth-child(even) {
+            animation-delay: 0.2s;
+        }
 
     @@keyframes fadeInUp {
         to {
@@ -507,15 +486,12 @@
 </style>
 
 <div class="available-lines-container">
-    <!-- Page Header -->
     <div class="page-header">
         <h1>
-            <i class="fas fa-list-ul"></i>
-            الخطوط المتاحة
+            <i class="fas fa-mobile-alt"></i> الخطوط المتاحة
         </h1>
     </div>
 
-    <!-- Alert Messages -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -529,65 +505,53 @@
         </div>
     }
 
-    <!-- Search Container -->
     <div class="search-container">
         <div class="search-title">
-            <i class="fas fa-search"></i>
-            البحث عن الخطوط المتاحة
+            <i class="fas fa-filter"></i> البحث عن الخطوط المتاحة
         </div>
         <form asp-action="SearchAvailableLines" method="post" class="search-form">
             <div class="search-input-group">
-                <input type="number" name="amount" class="search-input" 
-                       placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة" 
+                <input type="number" name="amount" class="search-input"
+                       placeholder="أدخل المبلغ للبحث عن الخطوط المتاحة"
                        step="0.01" min="0" required />
-                <i class="fas fa-dollar-sign search-icon"></i>
+                <i class="fas fa-coins search-icon"></i>
             </div>
             <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i>
-                بحث
+                <i class="fas fa-search-dollar"></i> بحث
             </button>
         </form>
     </div>
 
-    <!-- Available Lines Cards -->
     @if (Model.Any())
     {
         <div class="cards-container">
             @foreach (var item in Model)
             {
                 <div class="available-line-card">
-                    <!-- Card Header -->
                     <div class="card-header">
                         <h3 class="phone-number">
-                            <i class="fas fa-phone"></i>
-                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            <i class="fas fa-phone-square-alt"></i> @Html.DisplayFor(modelItem => item.PhoneNumber)
                         </h3>
                         <p class="owner-name">
-                            <i class="fas fa-user"></i>
-                            @Html.DisplayFor(modelItem => item.OwnerName)
+                            <i class="fas fa-id-badge"></i> @Html.DisplayFor(modelItem => item.OwnerName)
                         </p>
                     </div>
 
-                    <!-- Card Body -->
                     <div class="card-body">
-                        <!-- Balance Section -->
                         <div class="balance-section">
                             <div class="balance-label">
-                                <i class="fas fa-wallet"></i>
-                                الرصيد الحالي
+                                <i class="fas fa-money-check-alt"></i> الرصيد الحالي
                             </div>
                             <div class="balance-value">@Html.DisplayFor(modelItem => item.CurrentBalance)</div>
                         </div>
 
-                        <!-- Daily Progress -->
                         <div class="progress-section">
                             <div class="progress-title">
-                                <i class="fas fa-chart-pie"></i>
-                                النسبة المتبقية يوميًا
+                                <i class="fas fa-chart-line"></i> النسبة المتبقية يوميًا
                             </div>
                             @{
-                                var dailyClass = item.DailyRemainingPercentage > 50 ? "" : 
-                                                item.DailyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                                var dailyClass = item.DailyRemainingPercentage > 50 ? "" :
+                                item.DailyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
                             }
                             <div class="progress-container">
                                 <div class="progress-bar-custom @dailyClass" style="width: @item.DailyRemainingPercentage%;">
@@ -596,15 +560,13 @@
                             </div>
                         </div>
 
-                        <!-- Monthly Progress -->
                         <div class="progress-section">
                             <div class="progress-title">
-                                <i class="fas fa-chart-line"></i>
-                                النسبة المتبقية شهريًا
+                                <i class="fas fa-chart-bar"></i> النسبة المتبقية شهريًا
                             </div>
                             @{
-                                var monthlyClass = item.MonthlyRemainingPercentage > 50 ? "" : 
-                                                  item.MonthlyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
+                                var monthlyClass = item.MonthlyRemainingPercentage > 50 ? "" :
+                                item.MonthlyRemainingPercentage > 25 ? "progress-warning" : "progress-danger";
                             }
                             <div class="progress-container">
                                 <div class="progress-bar-custom @monthlyClass" style="width: @item.MonthlyRemainingPercentage%;">
@@ -614,15 +576,12 @@
                         </div>
                     </div>
 
-                    <!-- Card Actions -->
                     <div class="card-actions">
                         <a asp-action="Withdraw" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="action-btn btn-withdraw">
-                            <i class="fas fa-arrow-down"></i>
-                            سحب
+                            <i class="fas fa-hand-holding-usd"></i> سحب
                         </a>
                         <a asp-action="Deposit" asp-controller="CashTransactions" asp-route-cashLineId="@item.Id" class="action-btn btn-deposit">
-                            <i class="fas fa-arrow-up"></i>
-                            إيداع
+                            <i class="fas fa-cash-register"></i> إيداع
                         </a>
                         <a asp-action="Details" asp-controller="CashTransactions" asp-route-id="@item.Id" class="action-btn btn-details">
                             <i class="fas fa-info-circle"></i>
@@ -637,17 +596,15 @@
     {
         <div class="no-results">
             <div class="no-results-icon">
-                <i class="fas fa-search-minus"></i>
+                <i class="fas fa-folder-open"></i>
             </div>
             <p class="no-results-text">لا توجد خطوط متاحة لهذا المبلغ</p>
         </div>
     }
 
-    <!-- Back Button -->
     <div class="back-container">
         <a asp-action="Index" class="back-btn">
-            <i class="fas fa-arrow-right"></i>
-            رجوع إلى الصفحة الرئيسية
+            <i class="fas fa-arrow-left"></i> رجوع إلى الصفحة الرئيسية
         </a>
     </div>
 </div>
@@ -655,41 +612,41 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // إضافة تأثير بصري للأزرار عند الإرسال
+            // Add visual effect to buttons on submission
             $("form").submit(function () {
                 var submitBtn = $(this).find("button[type='submit']");
                 var originalText = submitBtn.html();
-                
+
                 submitBtn.addClass("btn-loading");
                 submitBtn.prop("disabled", true);
-                
-                // إعادة تفعيل الزر بعد 3 ثواني في حالة عدم الانتقال
-                setTimeout(function() {
+
+                // Re-enable button after 3 seconds in case of no redirection
+                setTimeout(function () {
                     submitBtn.removeClass("btn-loading");
                     submitBtn.prop("disabled", false);
                     submitBtn.html(originalText);
                 }, 3000);
             });
 
-            // تحسين تجربة المستخدم للكروت
+            // Enhance user experience for cards on hover (retained as good practice, though CSS handles main effect)
             $('.available-line-card').hover(
-                function() {
-                    $(this).addClass('card-hover-effect');
+                function () {
+                    $(this).addClass('card-hover-effect'); // This class is not defined in the provided CSS, but is harmless.
                 },
-                function() {
+                function () {
                     $(this).removeClass('card-hover-effect');
                 }
             );
 
-            // إضافة تأثيرات التحريك للكروت عند التحميل
-            $('.available-line-card').each(function(index) {
+            // Add animation effects to cards on load
+            $('.available-line-card').each(function (index) {
                 $(this).css('animation-delay', (index * 0.1) + 's');
             });
 
-            // تحسين تفاعل حقل البحث
-            $('.search-input').on('focus', function() {
-                $(this).parent().find('.search-icon').css('color', 'var(--secondary-color)');
-            }).on('blur', function() {
+            // Enhance search field interaction
+            $('.search-input').on('focus', function () {
+                $(this).parent().find('.search-icon').css('color', 'var(--primary-color)'); // Changed to primary-color on focus
+            }).on('blur', function () {
                 $(this).parent().find('.search-icon').css('color', 'var(--muted-color)');
             });
         });

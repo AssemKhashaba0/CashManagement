@@ -2,13 +2,13 @@
 
 @{
     ViewData["Title"] = "إضافة حساب إنستا باي";
-    Layout = "/Views/Shared/_LayoutDashbord.cshtml"; // Ensure this layout includes your custom CSS variables
+    Layout = "/Views/Shared/_LayoutDashbord.cshtml";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <style>
-    /* Global Color Palette & Base Styles (Ensure these are also in your _LayoutDashbord.cshtml or a shared CSS file) */
+    /* Light Color Palette Variables */
     :root {
         --background-color: #FDFDFD; /* Off-white */
         --primary-color: #1D4ED8; /* Indigo blue */
@@ -24,16 +24,15 @@
         --light-text-color: #6B7280; /* Gray for titles/subtitles */
     }
 
+    /* General Styling */
     body {
         background-color: var(--background-color);
         font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: var(--text-color);
         direction: rtl; /* Ensure Right-to-Left for Arabic */
-        margin: 0; /* Reset default body margin */
-        padding: 0; /* Reset default body padding */
     }
 
-    /* Custom Card Styling */
+    /* Card Styling */
     .custom-card {
         background-color: var(--card-bg);
         border: 1px solid var(--border-color);
@@ -42,7 +41,7 @@
         margin: 3rem auto; /* Center the card and add vertical space */
         max-width: 600px; /* Max width for the form card */
         animation: fadeIn 0.8s ease-out;
-        overflow: hidden; /* Ensures inner elements respect border-radius */
+        overflow: hidden;
     }
 
     .custom-card .card-header {
@@ -63,8 +62,8 @@
         padding: 2rem;
     }
 
-    /* Alerts Styling */
-    .custom-alert {
+    /* Alerts */
+    .alert {
         padding: 1rem 1.5rem;
         border-radius: 0.75rem;
         margin-bottom: 1.5rem;
@@ -78,24 +77,24 @@
         position: relative; /* For close button positioning */
     }
 
-    .custom-alert.alert-success {
+    .alert-success {
         background: linear-gradient(135deg, var(--success-color), #059669);
     }
 
-    .custom-alert.alert-danger {
+    .alert-danger {
         background: linear-gradient(135deg, var(--error-color), #B91C1C);
     }
 
-    .custom-alert .fas {
+    .alert .fas {
         font-size: 1.5rem;
         animation: pulse 1.5s infinite;
         flex-shrink: 0; /* Prevent icon from shrinking */
         align-self: center; /* Center icon vertically */
     }
 
-    .custom-alert .btn-close {
+    .alert .btn-close {
         position: absolute;
-        left: 1rem; /* Adjust for RTL positioning */
+        left: 1rem; /* Adjust for RTL */
         top: 50%;
         transform: translateY(-50%);
         color: white; /* Ensure close button is visible */
@@ -104,9 +103,8 @@
         border: none;
         padding: 0.5rem;
         margin: -0.5rem; /* Allow more clickable area */
-        z-index: 10; /* Ensure it's above text */
     }
-     .custom-alert .btn-close:hover {
+     .alert .btn-close:hover {
         opacity: 1;
      }
 
@@ -125,7 +123,7 @@
         50% { transform: scale(1.05); }
     }
 
-    /* Form Elements Styling */
+    /* Form Styling */
     .form-label {
         color: var(--light-text-color);
         font-weight: 600;
@@ -137,15 +135,15 @@
     .input-group-text {
         background-color: var(--header-sidebar-bg);
         border: 1px solid var(--border-color);
-        border-left: none; /* For RTL: no border on the side touching the input */
-        border-radius: 0.5rem 0 0 0.5rem; /* Rounded on the right side for RTL */
+        border-left: none; /* For RTL */
+        border-radius: 0.5rem 0 0 0.5rem; /* Rounded on right for RTL */
         padding: 0.75rem 1rem;
         color: var(--primary-color);
     }
 
     .input-group .form-control {
-        border-right: none; /* For RTL: no border on the side touching the icon */
-        border-radius: 0 0.5rem 0.5rem 0; /* Rounded on the left side for RTL */
+        border-right: none; /* For RTL */
+        border-radius: 0 0.5rem 0.5rem 0; /* Rounded on left for RTL */
     }
 
     .form-control {
@@ -171,7 +169,6 @@
         opacity: 0.7;
     }
 
-    /* Validation Feedback */
     .form-control.is-invalid {
         border-color: var(--error-color);
     }
@@ -187,7 +184,7 @@
         display: block;
     }
 
-    /* Buttons Styling */
+    /* Buttons */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -202,30 +199,30 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-primary-custom { /* Custom class for primary action */
+    .btn-tamam {
         background: linear-gradient(135deg, var(--success-color), #059669);
         color: white;
         border: none;
         margin-left: 1rem; /* Space between buttons for RTL */
     }
 
-    .btn-primary-custom:hover {
+    .btn-tamam:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-        color: white; /* Ensure text remains white on hover */
+        color: white;
     }
 
-    .btn-secondary-custom { /* Custom class for secondary action */
+    .btn-secondary {
         background: var(--header-sidebar-bg);
         color: var(--text-color);
         border: 1px solid var(--border-color);
     }
 
-    .btn-secondary-custom:hover {
+    .btn-secondary:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         background-color: #E5E7EB; /* Slightly darker on hover */
-        color: var(--text-color); /* Ensure text remains the same color on hover */
+        color: var(--text-color);
     }
 
     /* Responsive adjustments */
@@ -239,18 +236,16 @@
             font-size: 1.3rem;
             padding: 1.2rem 1rem;
             border-radius: 0; /* Match card */
-            justify-content: center; /* Center header text and icon */
-            text-align: center;
         }
         .custom-card .card-body {
             padding: 1.5rem 1rem;
         }
-        .custom-alert {
+        .alert {
             padding: 0.8rem 1rem;
             font-size: 0.9rem;
             gap: 0.75rem;
         }
-        .custom-alert .fas {
+        .alert .fas {
             font-size: 1.2rem;
         }
         .btn {
@@ -261,9 +256,6 @@
         }
         .btn:last-child {
             margin-bottom: 0; /* No bottom margin for the last button */
-        }
-        .form-group.mb-3:last-of-type { /* Adjust spacing for the last form group before buttons */
-            margin-bottom: 1.5rem !important;
         }
     }
 
@@ -277,32 +269,26 @@
         .form-label, .form-control, .btn {
             font-size: 0.9rem;
         }
-        .input-group-text {
-            padding: 0.65rem 0.8rem;
-        }
-        .form-control {
-            padding: 0.75rem 0.9rem;
-        }
     }
 </style>
 
 <div class="custom-card">
     <div class="card-header">
-        <h3 class="mb-0"><i class="fas fa-plus-circle"></i>إضافة حساب إنستا باي جديد</h3>
+        <h3 class="mb-0"><i class="fas fa-plus-circle me-2"></i>إضافة حساب إنستا باي جديد</h3>
     </div>
     <div class="card-body">
-        @if (TempData["Success"] != null)
+        @if (TempData["SuccessMessage"] != null)
         {
-            <div class="custom-alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle"></i>
-                <div>@TempData["Success"]</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                <div>@TempData["SuccessMessage"]</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
-        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any()))
+        @if (!ViewData.ModelState.IsValid)
         {
-            <div class="custom-alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i>
                 <div>
                     @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
@@ -310,31 +296,19 @@
                         <p class="mb-0">@error.ErrorMessage</p>
                     }
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
-        <form asp-action="Create" method="post" class="needs-validation" novalidate>
-            @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> Removed in favor of Bootstrap's client-side validation display *@
-
+        <form asp-action="AddInstaPayAccount" method="post" class="needs-validation" novalidate>
             <div class="mb-3">
                 <label asp-for="PhoneNumber" class="form-label">رقم الهاتف</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="أدخل رقم الهاتف" required />
+                    <span class="input-group-text"><i class="fas fa-phone-alt"></i></span> @* Changed to phone-alt for better fit *@
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="مثال: 01xxxxxxxxx" required />
                 </div>
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="BankName" class="form-label">اسم البنك</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-building"></i></span>
-                    <input asp-for="BankName" class="form-control" placeholder="أدخل اسم البنك" required />
-                </div>
-                <span asp-validation-for="BankName" class="text-danger"></span>
-            </div>
-
             <div class="mb-3">
                 <label asp-for="BankAccountNumber" class="form-label">رقم الحساب البنكي</label>
                 <div class="input-group">
@@ -343,33 +317,38 @@
                 </div>
                 <span asp-validation-for="BankAccountNumber" class="text-danger"></span>
             </div>
-
+            <div class="mb-3">
+                <label asp-for="BankName" class="form-label">اسم البنك</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                    <input asp-for="BankName" class="form-control" placeholder="أدخل اسم البنك (مثال: بنك مصر)" required />
+                </div>
+                <span asp-validation-for="BankName" class="text-danger"></span>
+            </div>
             <div class="mb-3">
                 <label asp-for="CurrentBalance" class="form-label">الرصيد الحالي</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
-                    <input asp-for="CurrentBalance" class="form-control" type="number" step="0.01" placeholder="أدخل الرصيد" required />
+                    <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span> @* Changed icon for money *@
+                    <input asp-for="CurrentBalance" class="form-control" type="number" step="0.01" placeholder="أدخل الرصيد الأولي للحساب" required />
                 </div>
                 <span asp-validation-for="CurrentBalance" class="text-danger"></span>
             </div>
-
             <div class="mb-3">
                 <label asp-for="Status" class="form-label">حالة الحساب</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-toggle-on"></i></span>
+                    <span class="input-group-text"><i class="fas fa-toggle-on"></i></span> @* Icon for status *@
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<AccountStatus>()" required>
                         <option value="">-- اختر الحالة --</option>
                     </select>
                 </div>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-
-            <div class="mt-4 text-center">
-                <button type="submit" class="btn btn-primary-custom">
-                    <i class="fas fa-plus"></i> إضافة الحساب
+            <div class="mt-4 text-center"> @* Added text-center for button alignment *@
+                <button type="submit" class="btn btn-tamam">
+                    <i class="fas fa-check"></i> حفظ الحساب
                 </button>
-                <a asp-action="Index" class="btn btn-secondary-custom">
-                    <i class="fas fa-arrow-right"></i> رجوع
+                <a asp-action="Manage" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> رجوع لإدارة الحسابات
                 </a>
             </div>
         </form>
@@ -378,33 +357,30 @@
 
 @section Scripts {
     @{
-        // This partial view typically includes jQuery Validation and Unobtrusive Validation scripts.
-        // If your _LayoutDashbord.cshtml already includes them, you might not need this line here.
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        // Enable Bootstrap's custom form validation styles
-        (function () {
-            'use strict';
-            var form = document.querySelector('.needs-validation');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            }
-        })();
+        // Custom validation feedback, if you want to override Bootstrap's default
+        // The `needs-validation` and `novalidate` attributes on the form, along with
+        // the default Bootstrap CSS classes for validation (`is-invalid`, `is-valid`),
+        // handle most of this automatically.
+        // This script is largely redundant if Bootstrap's default validation feedback
+        // is sufficient, but can be kept if you have specific custom validation needs.
+        $(document).ready(function () {
+            // Re-apply `is-invalid` and `is-valid` classes after initial load or submit
+            // This is often handled by built-in MVC client-side validation scripts.
+            $("form").on('submit', function() {
+                $(this).addClass('was-validated'); // Trigger Bootstrap's validation styles
+            });
 
-        // Optional: Re-hide alerts after a few seconds if they are success messages
-        $(document).ready(function() {
-            if ($(".custom-alert.alert-success").length) {
-                setTimeout(function() {
-                    $(".custom-alert.alert-success").alert('close');
-                }, 5000); // Close after 5 seconds
-            }
+            // If you want more granular control over specific input classes:
+            $('input, select, textarea').on('input change', function() {
+                if ($(this).hasClass('is-invalid') && $(this).val() !== '') {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                } else if ($(this).attr('required') && $(this).val() === '') {
+                     $(this).removeClass('is-valid').addClass('is-invalid');
+                }
+            });
         });
     </script>
 }
